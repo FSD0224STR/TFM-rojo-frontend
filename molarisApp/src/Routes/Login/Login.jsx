@@ -53,7 +53,7 @@ export const Login = () => {
         })
         .then((data) => {
           // Set token
-          console.log(data);
+          // console.log(data);
           const access_token = data.token;
           localStorage.setItem("accessToken", access_token);
         });

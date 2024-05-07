@@ -59,6 +59,7 @@ export const CreateUserForm = () => {
   const [country, setCountry] = useState("");
   const [province, setProvince] = useState("");
   const [birthDay, setBirthDay] = useState("");
+  const [role, setRole] = useState("Paciente");
   const [politicsAccepted, setPoliticsAccepted] = useState(false);
 
   const findProvince = async (e) => {
@@ -90,6 +91,7 @@ export const CreateUserForm = () => {
     country,
     province,
     birthDay,
+    role,
     politicsAccepted
   ) => {
     if (password === confirmPassword) {
@@ -102,7 +104,7 @@ export const CreateUserForm = () => {
           country: country,
           province: province,
           birthDay: new Date(String(birthDay)).toISOString(),
-          roles: "user",
+          roles: role,
         };
         // console.log(newUser);
         fetch(`${host}/user/newUser`, {
@@ -115,9 +117,9 @@ export const CreateUserForm = () => {
           console.log(response);
           if (response.status === 200) {
             toast.success("Usuario creado correctamente");
-            setTimeout(() => {
-              navigate("/login");
-            }, 1000);
+            // setTimeout(() => {
+            //   navigate("/login");
+            // }, 1000);
           } else if (response.status === 409) {
             toast.error("Este usuario ya existe");
           } else {
@@ -132,18 +134,24 @@ export const CreateUserForm = () => {
     }
   };
 
+  const roleOptions = [
+    { value: "Admin" },
+    { value: "Paciente" },
+    { value: "Doctor" },
+  ];
+
   return (
     <>
       <Form
-        labelCol={{ span: 4 }}
+        labelCol={{ span: 6 }}
         wrapperCol={{ span: 14 }}
         layout="horizontal"
         style={{
           maxWidth: "1000px",
           width: "600px",
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
+          // display: "flex",
+          // flexDirection: "column",
+          // justifyContent: "center",
         }}
       >
         <h1 style={{ textAlign: "center" }}>Crear un usuario nuevo</h1>
@@ -190,7 +198,7 @@ export const CreateUserForm = () => {
         </Form.Item>
         <Form.Item
           name="email"
-          label="email"
+          label="E-mail"
           rules={[
             {
               required: true,
@@ -211,7 +219,7 @@ export const CreateUserForm = () => {
         </Form.Item>
         <Form.Item
           name="contraseña"
-          label="contraseña"
+          label="Contraseña"
           rules={[
             {
               required: true,
@@ -260,7 +268,7 @@ export const CreateUserForm = () => {
         </Form.Item>
         <Form.Item
           name="pais"
-          label="pais"
+          label="País"
           rules={[
             {
               required: false,
@@ -273,6 +281,7 @@ export const CreateUserForm = () => {
             placeholder="Pais"
             options={countries}
             onChange={(e) => {
+              setProvince();
               findProvince(e);
               setCountry(e);
             }}
@@ -281,6 +290,7 @@ export const CreateUserForm = () => {
         <Form.Item
           name="Provincia"
           label="Provincia"
+          dependencies={["pais"]}
           rules={[
             {
               required: false,
@@ -296,11 +306,28 @@ export const CreateUserForm = () => {
           ></Select>
         </Form.Item>
         <Form.Item
-          name="fecha de nacimiento"
-          label="fecha "
+          name="Rol"
+          label="Rol"
           rules={[
             {
-              required: false,
+              required: true,
+              message: "Seleccione un rol",
+            },
+          ]}
+        >
+          <Select
+            size="large"
+            options={roleOptions}
+            value={role}
+            onChange={(e) => setRole(e)}
+          ></Select>
+        </Form.Item>
+        <Form.Item
+          name="fecha"
+          label="fecha de nacimiento"
+          rules={[
+            {
+              required: true,
               message: "Seleccione su fecha de cumpleaños",
             },
           ]}
@@ -312,8 +339,8 @@ export const CreateUserForm = () => {
           />
         </Form.Item>
         <Form.Item
-          name="pais"
-          label="pais"
+          name="Foto de perfil"
+          label="Foto de perfil"
           rules={[
             {
               required: false,
@@ -366,6 +393,7 @@ export const CreateUserForm = () => {
                 country,
                 province,
                 birthDay,
+                role,
                 politicsAccepted
               );
             }}

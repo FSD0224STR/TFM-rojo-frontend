@@ -51,6 +51,7 @@ export const CreateUserForm = () => {
   const navigate = useNavigate();
 
   // User Data
+  const [dni, setDni] = useState();
   const [name, setName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
@@ -83,6 +84,7 @@ export const CreateUserForm = () => {
 
   // Crear usuario
   const createUser = (
+    dni,
     name,
     lastName,
     email,
@@ -118,7 +120,7 @@ export const CreateUserForm = () => {
           if (response.status === 200) {
             toast.success("Usuario creado correctamente");
             // setTimeout(() => {
-            //   navigate("/login");
+            //   navigate("/");
             // }, 1000);
           } else if (response.status === 409) {
             toast.error("Este usuario ya existe");
@@ -135,9 +137,9 @@ export const CreateUserForm = () => {
   };
 
   const roleOptions = [
-    { value: "Admin" },
-    { value: "Paciente" },
-    { value: "Doctor" },
+    { value: "admin" },
+    { value: "paciente" },
+    { value: "doctor" },
   ];
 
   return (
@@ -157,12 +159,33 @@ export const CreateUserForm = () => {
         <h1 style={{ textAlign: "center" }}>Crear un usuario nuevo</h1>
 
         <Form.Item
+          name="DNI"
+          label="DNI"
+          rules={[
+            {
+              required: false,
+              message: "Entre un DNI valido",
+            },
+          ]}
+        >
+          <Input
+            type="number"
+            size="large"
+            placeholder="DNI"
+            value={dni}
+            onChange={(e) => {
+              // console.log("name", e.target.value);
+              setDni(e.target.value);
+            }}
+          />
+        </Form.Item>
+        <Form.Item
           name="Nombre"
           label="Nombre"
           rules={[
             {
               required: true,
-              message: "Entre una contraseña valida",
+              message: "Entre un nombre valida",
             },
           ]}
         >
@@ -385,6 +408,7 @@ export const CreateUserForm = () => {
             size="large"
             onClick={() => {
               createUser(
+                dni,
                 name,
                 lastName,
                 email,
@@ -401,11 +425,11 @@ export const CreateUserForm = () => {
             Crear
           </Button>
           <Button size="large">
-            <Link to={"/login"}>Cancelar</Link>
+            <Link to={"/"}>Cancelar</Link>
           </Button>
         </div>
       </Form>
-      <ToastContainer />
+      {/* <ToastContainer /> */}
     </>
   );
 };

@@ -8,6 +8,7 @@ import "./index.css";
 import { App } from "./App.jsx";
 import { Login } from "./Routes/Login/Login.jsx";
 import { CreateUserForm } from "./Routes/CreateUserForm/CreateUserForm.jsx";
+import { DashBoard } from "./Routes/dashboard/DashBoard.jsx";
 
 const router = createBrowserRouter([
   {
@@ -15,20 +16,21 @@ const router = createBrowserRouter([
     // errorElement: <ErrorPage />,
     children: [
       {
-        path: "/Login",
+        path: "/",
         element: <Login />,
       },
+
       {
-        path: "/CreateUser",
+        path: "/createUser",
         element: <CreateUserForm />,
       },
       {
-        path: "/",
+        path: "/app",
         element: <App />,
       },
       {
-        path: "/Dashboard",
-        element: <App />,
+        path: "/dashboard",
+        element: <DashBoard />,
       },
     ],
   },

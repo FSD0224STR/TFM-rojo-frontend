@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
   PlusOutlined,
@@ -7,14 +7,15 @@ import {
 } from "@ant-design/icons";
 
 // Form
-import { Button, Form, Input } from "antd";
+import { Alert, Button, Form, Input, Spin } from "antd";
 
 // Notifications
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-// Host
-const host = "http://localhost:3000";
+// UserApi
+import { LoginApi } from "../../apiService/userApi.js";
+import { AuthContext } from "../../contexts/authContext.jsx";
 
 export const Login = () => {
   const [passwordVisible, setPasswordVisible] = React.useState(false);
@@ -23,44 +24,7 @@ export const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  //Navigate
-  const navigate = useNavigate();
-
-  // Backend
-  const loginFunction = (email, password) => {
-    const user = { email: email, password: password };
-
-    if (user.email !== "") {
-      fetch(`${host}/user/login`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(user),
-      })
-        .then((response) => {
-          if (response.status === 200) {
-            toast.success("Success");
-            return response.json();
-          } else if (response.status === 403) {
-            toast.error("La contraseña es incorrecta");
-          } else if (response.status === 404) {
-            toast.error("El usuario no existe");
-            setTimeout(() => {
-              navigate("/CreateUser");
-            }, 1000);
-          }
-        })
-        .then((data) => {
-          // Set token
-          // console.log(data);
-          const access_token = data.token;
-          localStorage.setItem("accessToken", access_token);
-        });
-    } else {
-      toast.warning("Por favor ingrese un correo");
-    }
-  };
+  const { login, loading, error } = useContext(AuthContext);
 
   return (
     <>
@@ -136,7 +100,7 @@ export const Login = () => {
               size="large"
               style={{ width: "300px" }}
               onClick={() => {
-                loginFunction(email, password);
+                login(email, password);
               }}
             >
               Iniciar sesión
@@ -147,7 +111,6 @@ export const Login = () => {
           </div>
         </Form>
       </div>
-      <ToastContainer />
     </>
   );
 };

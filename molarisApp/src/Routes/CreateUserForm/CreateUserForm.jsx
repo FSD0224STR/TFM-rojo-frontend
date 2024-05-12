@@ -10,7 +10,6 @@ import {
   Button,
   Cascader,
   Checkbox,
-  ColorPicker,
   DatePicker,
   Form,
   Input,
@@ -29,27 +28,18 @@ import {
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-// Navigate
-import { useNavigate } from "react-router-dom";
-
 // BD for countries
 import { countries } from "./Countries.js";
 import { provinces } from "./Provinces.js";
 import { AuthContext } from "../../contexts/authContext.jsx";
-
-// Host
-const host = "http://localhost:3000";
-
-// Backend
+// import Search from "antd/lib/transfer/search.js";
+// import Search from "antd/lib/input/Search.js";
 
 export const CreateUserForm = () => {
   const [passwordVisible, setPasswordVisible] = useState(false);
 
   const [selectCountry, setSelectCountry] = useState([]);
   const [selectProvinces, setSelectProvinces] = useState([]);
-
-  // Navigate
-  const navigate = useNavigate();
 
   // User Data
   const [dni, setDni] = useState();
@@ -117,6 +107,23 @@ export const CreateUserForm = () => {
       >
         <h1 style={{ textAlign: "center" }}>Crear un usuario nuevo</h1>
 
+        {/* <Form.Item
+          name="DNI"
+          label="DNI"
+          rules={[
+            {
+              required: false,
+              message: "Entre un DNI valido",
+            },
+          ]}
+        >
+          <Search
+            placeholder="input search text"
+            enterButton="Search"
+            size="large"
+            loading
+          />
+        </Form.Item> */}
         <Form.Item
           name="DNI"
           label="DNI"

@@ -9,6 +9,7 @@ import { App } from "./App.jsx";
 import { Login } from "./Routes/Login/Login.jsx";
 import { CreateUserForm } from "./Routes/CreateUserForm/CreateUserForm.jsx";
 import { DashBoard } from "./Routes/dashboard/DashBoard.jsx";
+import { CreateNewDate } from "./Components/CreateNewDate/CreateNewDate.jsx";
 
 const router = createBrowserRouter([
   {
@@ -31,6 +32,10 @@ const router = createBrowserRouter([
       {
         path: "/dashboard",
         element: <DashBoard />,
+      },
+      {
+        path: "/createnewdate",
+        element: <CreateNewDate />,
       },
     ],
   },

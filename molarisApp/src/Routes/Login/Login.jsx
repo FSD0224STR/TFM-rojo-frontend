@@ -14,17 +14,22 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 // UserApi
-import { LoginApi } from "../../apiService/userApi.js";
 import { AuthContext } from "../../contexts/authContext.jsx";
 
 export const Login = () => {
-  const [passwordVisible, setPasswordVisible] = React.useState(false);
+  // const [passwordVisible, setPasswordVisible] = React.useState(false);
 
   // User data
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const { login, loading, error } = useContext(AuthContext);
+
+  useEffect(() => {
+    if (error) {
+      toast.error(error);
+    }
+  }, []);
 
   return (
     <>
@@ -110,6 +115,7 @@ export const Login = () => {
             </Button>
           </div>
         </Form>
+        <ToastContainer />
       </div>
     </>
   );

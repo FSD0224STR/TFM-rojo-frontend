@@ -16,6 +16,7 @@ export const LoginApi = async (user) => {
 
 // Get users
 export const getAllUsers = async (token) => {
+  // console.log("userApiToken", token);
   const response = await fetch(`${baseUrl}/user/getUsers`, {
     method: "GET",
     headers: {
@@ -36,7 +37,28 @@ export const getMyUser = async (token) => {
       authorization: `${token}`,
     },
   });
-  console.log("Esta es la respuesta userApi:", response.json().data());
-  if (!response.ok) return { error: response.status };
-  return await response;
+  if (!response.ok) {
+    const error = await response.json();
+    return { error: error.message };
+  }
+
+  return { data: await response.json() };
+};
+
+export const createUser = async (newUser) => {
+  console.log("new user Api", newUser);
+  const response = await fetch(`${baseUrl}/user/newUser`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(newUser),
+  });
+  console.log(response);
+  if (!response.ok) {
+    const error = await response;
+    return error.status;
+  }
+
+  return response.status;
 };

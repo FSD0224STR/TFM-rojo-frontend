@@ -1,42 +1,14 @@
-import React, { useEffect, useState } from "react";
-import { Avatar, Button, List, Radio, Space } from "antd";
+import { useContext } from "react";
+import { Avatar, Button, List } from "antd";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
-import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
-import { getAllUsers } from "../../apiService/userApi.js";
+import { AuthContext } from "../../contexts/authContext.jsx";
 
 export const Users = () => {
-  const [data, setData] = useState([]);
-
-  // Navigate
-  const navigate = useNavigate();
-
-  //   GetUsers
-  // Host
-  const GetUsers = async () => {
-    // console.log("token", localStorage.getItem("access_token"));
-    const token = ` ${localStorage.getItem("access_token")}`;
-    // console.log("Token", token);
-    const response = await getAllUsers(token);
-
-    if (response.error === 400) {
-      localStorage.removeItem("access_token");
-      navigate("/");
-    } else if (response.error === 403) {
-      setData([]);
-    } else {
-      setData(response);
-      // console.log(response);
-    }
-  };
-
-  // Call get users
-  useEffect(() => {
-    GetUsers();
-  }, []);
+  const { data } = useContext(AuthContext);
 
   return (
     <>
+      {/* {console.log(data)} */}
       <h1 style={{ textAlign: "center" }}>Users Info</h1>
       {data.length ? (
         <List
@@ -54,7 +26,16 @@ export const Users = () => {
                   />
                 }
                 title={<a href="https://ant.design">{item.name}</a>}
-                description={item.email}
+                description={
+                  <div>
+                    <p style={{ margin: 0 }}>
+                      {item.email ? item.email : "No register email"}
+                    </p>
+                    <p style={{ margin: 0 }}>
+                      {item.dni ? item.dni : "No register dni"}
+                    </p>
+                  </div>
+                }
               />
               <h3 style={{ marginRight: "2em" }}>{item.roles}</h3>
               <Button>

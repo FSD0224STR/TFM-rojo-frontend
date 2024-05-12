@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import {
   PlusOutlined,
@@ -35,6 +35,7 @@ import { useNavigate } from "react-router-dom";
 // BD for countries
 import { countries } from "./Countries.js";
 import { provinces } from "./Provinces.js";
+import { AuthContext } from "../../contexts/authContext.jsx";
 
 // Host
 const host = "http://localhost:3000";
@@ -60,7 +61,7 @@ export const CreateUserForm = () => {
   const [country, setCountry] = useState("");
   const [province, setProvince] = useState("");
   const [birthDay, setBirthDay] = useState("");
-  const [role, setRole] = useState("Paciente");
+  const [role, setRole] = useState("");
   const [politicsAccepted, setPoliticsAccepted] = useState(false);
 
   const findProvince = async (e) => {
@@ -82,65 +83,23 @@ export const CreateUserForm = () => {
     setSelectProvinces(provinceFound);
   };
 
-  // Crear usuario
-  const createUser = (
-    dni,
-    name,
-    lastName,
-    email,
-    password,
-    confirmPassword,
-    country,
-    province,
-    birthDay,
-    role,
-    politicsAccepted
-  ) => {
-    if (password === confirmPassword) {
-      if (politicsAccepted) {
-        const newUser = {
-          name: name,
-          lastName: lastName,
-          email: email,
-          password: password,
-          country: country,
-          province: province,
-          birthDay: new Date(String(birthDay)).toISOString(),
-          roles: role,
-        };
-        // console.log(newUser);
-        fetch(`${host}/user/newUser`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(newUser),
-        }).then((response) => {
-          console.log(response);
-          if (response.status === 200) {
-            toast.success("Usuario creado correctamente");
-            // setTimeout(() => {
-            //   navigate("/");
-            // }, 1000);
-          } else if (response.status === 409) {
-            toast.error("Este usuario ya existe");
-          } else {
-            toast.error("Error al crear el usuario");
-          }
-        });
-      } else {
-        toast.error("Debes aceptar las politicas de privacidad");
-      }
-    } else {
-      toast.error("Las contraseñas no coinciden");
-    }
-  };
-
   const roleOptions = [
     { value: "admin" },
     { value: "paciente" },
     { value: "doctor" },
   ];
+
+  const { createNewUser, success, error } = useContext(AuthContext);
+
+  useEffect(() => {
+    // console.log("error", error);
+    if (success) {
+      toast.success(success);
+    }
+    if (error) {
+      toast.error(error);
+    }
+  }, [error, success]);
 
   return (
     <>
@@ -407,7 +366,7 @@ export const CreateUserForm = () => {
             htmlType="submit"
             size="large"
             onClick={() => {
-              createUser(
+              createNewUser(
                 dni,
                 name,
                 lastName,
@@ -429,7 +388,7 @@ export const CreateUserForm = () => {
           </Button>
         </div>
       </Form>
-      {/* <ToastContainer /> */}
+      <ToastContainer />
     </>
   );
 };

@@ -12,7 +12,8 @@ import { AuthContext } from "../../contexts/authContext";
 import Sider from "antd/es/layout/Sider";
 
 export const Navbar = () => {
-  const { logout, isLoggedIn } = useContext(AuthContext);
+  const { logout, isLoggedIn, roleData, userName } = useContext(AuthContext);
+
   const Items = [
     isLoggedIn && {
       key: "1",
@@ -30,7 +31,7 @@ export const Navbar = () => {
     {
       key: "Login",
       icon: <FileOutlined />,
-      label: "User",
+      label: isLoggedIn ? `${userName.split("")[0]} - ${roleData}` : "",
       type: "group",
       children: [
         !isLoggedIn && {
@@ -51,8 +52,6 @@ export const Navbar = () => {
       ],
     },
   ];
-
-  useEffect(() => {});
 
   return (
     <>

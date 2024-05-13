@@ -4,6 +4,7 @@ import {
   LogoutOutlined,
   UserAddOutlined,
   HomeOutlined,
+  DiffOutlined,
 } from "@ant-design/icons";
 import { Menu } from "antd";
 import { useContext, useEffect } from "react";
@@ -19,6 +20,11 @@ export const Navbar = () => {
       key: "1",
       icon: <HomeOutlined />,
       label: <Link to={"/app"}>Home</Link>,
+    },
+    {
+      key: "1",
+      icon: <DiffOutlined />,
+      label: <Link to={"/createnewdate"}>Create Date</Link>,
     },
     isLoggedIn && {
       key: "2",

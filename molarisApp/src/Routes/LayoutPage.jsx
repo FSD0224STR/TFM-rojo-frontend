@@ -2,42 +2,41 @@ import { Outlet } from "react-router-dom";
 import { Layout, Spin } from "antd";
 import { AuthContext, AuthProvider } from "../contexts/authContext";
 import { Navbar } from "./Navbar/Navbar";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
+import { ToastContainer, toast } from "react-toastify";
+import "./LayoutPage.css";
 
 const { Content, Footer } = Layout;
 
 export const LayoutPage = () => {
-  const { loading } = useContext(AuthContext);
+  const { loading, success, error } = useContext(AuthContext);
 
+  useEffect(() => {
+    // console.log("error", error);
+    if (success) {
+      toast.success(success);
+    }
+    if (error) {
+      toast.error(error);
+    }
+  }, [error, success]);
   return (
-    <Layout
-      style={{
-        minHeight: "100vh",
-      }}
-    >
-      <Navbar />
-      <Layout className="OutletContainer">
-        <Content
-          style={{
-            width: "100%",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            // marginLeft: "400px",
-          }}
-        >
-          <Outlet />
-        </Content>
-        <Footer
-          style={{
-            textAlign: "center",
-          }}
-        >
-          Ant Design ©{new Date().getFullYear()} Created by Ant UED
-        </Footer>
-        {/* <ToastContainer /> */}
+    <>
+      <Layout className="LayoutContainer">
+        <Navbar />
+        <Layout className="OutletContainer">
+          <Content className="OutletContent">
+            <Outlet className="Outlet" />
+          </Content>
+        </Layout>
       </Layout>
-      <Spin spinning={loading} fullscreen />
-    </Layout>
+      <Footer>
+        <div>
+          <p>Molaris Copyright © 2024</p>
+        </div>
+      </Footer>
+      <Spin spinning={loading} fullscreen="true" size="large" />
+      <ToastContainer />
+    </>
   );
 };

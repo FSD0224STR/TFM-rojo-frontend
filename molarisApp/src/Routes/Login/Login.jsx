@@ -23,13 +23,7 @@ export const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const { login, loading, error } = useContext(AuthContext);
-
-  useEffect(() => {
-    if (error) {
-      toast.error(error);
-    }
-  }, []);
+  const { login } = useContext(AuthContext);
 
   return (
     <>

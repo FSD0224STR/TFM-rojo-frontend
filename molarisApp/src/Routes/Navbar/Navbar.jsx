@@ -1,6 +1,7 @@
 import {
   FileOutlined,
   LoginOutlined,
+  UserOutlined,
   LogoutOutlined,
   UserAddOutlined,
   HomeOutlined,
@@ -22,14 +23,14 @@ export const Navbar = () => {
       label: <Link to={"/app"}>Home</Link>,
     },
     {
-      key: "1",
+      key: "2",
       icon: <DiffOutlined />,
       label: <Link to={"/createnewdate"}>Create Date</Link>,
     },
     isLoggedIn && {
-      key: "2",
-      icon: <LogoutOutlined />,
-      label: <Link to={"/dashboard"}>DashBoard</Link>,
+      key: "3",
+      icon: <UserOutlined />,
+      label: <Link to={"/userdata"}>Users Data</Link>,
     },
     {
       type: "divider",
@@ -37,7 +38,13 @@ export const Navbar = () => {
     {
       key: "Login",
       icon: <FileOutlined />,
-      label: isLoggedIn ? `${userName.split("")[0]} - ${roleData}` : "",
+      label: isLoggedIn && (
+        <>
+          <p style={{ color: "white" }}>
+            {userName.split(" ")[0]} - {roleData}
+          </p>
+        </>
+      ),
       type: "group",
       children: [
         !isLoggedIn && {
@@ -46,13 +53,14 @@ export const Navbar = () => {
           label: <Link to={"/"}>Login</Link>,
           id: "loggedin",
         },
-        !isLoggedIn && {
+        isLoggedIn && {
           key: "user2",
           icon: <UserAddOutlined />,
-          label: <Link to={"/CreateUser"}>Create user</Link>,
+          label: <Link to={"/createuser"}>Create user</Link>,
         },
         isLoggedIn && {
           key: "user3",
+          icon: <LogoutOutlined />,
           label: <Link onClick={logout}>LogOut</Link>,
         },
       ],
@@ -78,6 +86,7 @@ export const Navbar = () => {
           defaultSelectedKeys={[1]}
           mode="inline"
           items={Items}
+          style={{ color: "white" }}
         ></Menu>
       </Sider>
     </>

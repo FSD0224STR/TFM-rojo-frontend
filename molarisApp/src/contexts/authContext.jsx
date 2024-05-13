@@ -63,17 +63,16 @@ export const AuthProvider = ({ children }) => {
           GetUsers(userRole);
         }, 500);
       }
+    } else {
+      navigate("/");
     }
-    // else {
-    //   setError("No se ha podido acceder vuelva a intentarlo");
-    // }
   };
 
   const GetUsers = async (role) => {
     const token = localStorage.getItem("access_token");
     // console.log(token);
     const response = await getAllUsers(token);
-
+    // console.log(response);
     if (response.error === 400) {
       localStorage.removeItem("access_token");
       navigate("/");
@@ -84,21 +83,24 @@ export const AuthProvider = ({ children }) => {
         // console.log(response);
         if (role === "admin") {
           setData(response);
+          navigate("/userdata");
         } else if (role === "doctor") {
           const users = await response.filter((user) => {
             if (user.roles === "paciente") return user;
           });
           setData(users);
+          navigate("/userdata");
         } else if (role === "paciente") {
           // console.log(response);
           const users = await response.filter((user) => {
             if (user.email === response.email) return user;
           });
           setData(users);
+          navigate("/userdata");
         }
         setDataRole(role);
         setIsLoggedIn(true);
-        navigate("/dashboard");
+        setLoading(false);
       }
     }
   };
@@ -187,7 +189,10 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     setError("");
     setSuccess("");
+    setLoading(true);
     getMyProfile();
+
+    // console.log("getMyProfile");
   }, []);
 
   return (

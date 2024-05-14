@@ -6,6 +6,7 @@ import {
   getMyUser,
   createUser,
   updateUserPassword,
+  searchUserUpdate,
 } from "../apiService/userApi";
 
 export const AuthContext = React.createContext();
@@ -18,6 +19,7 @@ export const AuthProvider = ({ children }) => {
   const [data, setData] = useState([]);
   const [roleData, setDataRole] = useState("");
   const [userName, setUserName] = useState("");
+  const [searchUser, setSearchUser] = useState();
 
   const navigate = useNavigate();
 
@@ -215,6 +217,12 @@ export const AuthProvider = ({ children }) => {
     setLoading(false);
   };
 
+  const searchUpdateUserInfo = async (idUser) => {
+    const response = await searchUserUpdate(idUser);
+    console.log(response.data.name);
+    return await response.data;
+  };
+
   const authContextValue = {
     isLoggedIn,
     success,
@@ -228,6 +236,8 @@ export const AuthProvider = ({ children }) => {
     setData,
     createNewUser,
     updatePasswordApi,
+    searchUpdateUserInfo,
+    searchUser,
   };
 
   useEffect(() => {

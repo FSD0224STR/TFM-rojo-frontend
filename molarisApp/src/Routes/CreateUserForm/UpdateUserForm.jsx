@@ -24,32 +24,29 @@ import {
   Space,
 } from "antd";
 
-// Notifications
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-
 // BD for countries
 import { countries } from "./Countries.js";
 import { provinces } from "./Provinces.js";
 import { AuthContext } from "../../contexts/authContext.jsx";
-// import Search from "antd/lib/transfer/search.js";
-// import Search from "antd/lib/input/Search.js";
 
 export const UpdateUserForm = () => {
+  const { roleData, isLoggedIn, searchUpdateUserInfo, searchUser } =
+    useContext(AuthContext);
   const { id } = useParams();
 
   useEffect(() => {
-    console.log("id", id);
+    // console.log("id", id);
+    const response = searchUpdateUserInfo(id);
+    console.log(response);
   }, []);
   // const [passwordVisible, setPasswordVisible] = useState(false);
-  const { createNewUser, roleData, isLoggedIn, updateUserData } =
-    useContext(AuthContext);
+
   // const [selectCountry, setSelectCountry] = useState([]);
   const [selectProvinces, setSelectProvinces] = useState([]);
 
   // User Data
-  const [dni, setDni] = useState(updateUserData?.dni);
-  const [name, setName] = useState("");
+  const [dni, setDni] = useState(searchUser ? searchUser?.dni : "");
+  const [name, setName] = useState(searchUser ? searchUser?.name : "");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [country, setCountry] = useState("");

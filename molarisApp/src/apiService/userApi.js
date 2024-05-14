@@ -78,3 +78,36 @@ export const updateUserPassword = async (user) => {
   // }
   return response.status;
 };
+
+export const searchUserUpdate = async (idUser) => {
+  const response = await fetch(`${baseUrl}/user/searchUser`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ id: idUser }),
+  });
+  // console.log(response);
+  if (!response.ok) {
+    const error = await response.json();
+    return { error: error.message };
+  }
+
+  return { data: await response.json() };
+};
+
+export const updateUserApi = async (idUser) => {
+  const response = await fetch(`${baseUrl}/user/updateUser`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ idUser }),
+  });
+  // console.log(response);
+  if (!response.ok) {
+    const error = await response;
+    return error.status;
+  }
+  return response.status;
+};

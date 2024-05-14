@@ -22,15 +22,17 @@ export const onSearch = (value, data) => {
       }
     });
     // console.log(value);
-    if (newDataName.length) {
-      return newDataName;
-    } else if (newDataEmail.length) {
-      return newDataEmail;
-    } else if (newDataDni.length) {
-      return newDataDni;
-    } else {
-      return [];
-    }
+    // if (newDataName.length) {
+    //   return newDataName;
+    // } else if (newDataEmail.length) {
+    //   return newDataEmail;
+    // } else if (newDataDni.length) {
+    //   return newDataDni;
+    // } else {
+    //   return [];
+    // }
+    const concatArray = newDataDni.concat(newDataEmail, newDataName);
+    return concatArray;
   } else {
     return data;
   }

@@ -8,8 +8,10 @@ import "./index.css";
 import { App } from "./App.jsx";
 import { Login } from "./Routes/Login/Login.jsx";
 import { CreateUserForm } from "./Routes/CreateUserForm/CreateUserForm.jsx";
-import { DashBoard } from "./Routes/dashboard/DashBoard.jsx";
-import { CreateNewDate } from "./Components/CreateNewDate/CreateNewDate.jsx";
+import { UserData } from "./Routes/UserData/UsersData.jsx";
+import { CreateNewDate } from "./components/CreateNewDate/CreateNewDate.jsx";
+import { ForgotPassword } from "./Routes/Login/ForgotPassword.jsx";
+import { Agenda } from "./Routes/Agenda/Agenda.jsx";
 
 const router = createBrowserRouter([
   {
@@ -20,9 +22,12 @@ const router = createBrowserRouter([
         path: "/",
         element: <Login />,
       },
-
       {
-        path: "/createUser",
+        path: "/forgotpassword",
+        element: <ForgotPassword />,
+      },
+      {
+        path: "/createuser",
         element: <CreateUserForm />,
       },
       {
@@ -30,12 +35,16 @@ const router = createBrowserRouter([
         element: <App />,
       },
       {
-        path: "/dashboard",
-        element: <DashBoard />,
+        path: "/userdata",
+        element: <UserData />,
       },
       {
         path: "/createnewdate",
         element: <CreateNewDate />,
+      },
+      {
+        path: "/agenda",
+        element: <Agenda />,
       },
     ],
   },

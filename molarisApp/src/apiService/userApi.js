@@ -62,3 +62,19 @@ export const createUser = async (newUser) => {
 
   return response.status;
 };
+
+export const updateUserPassword = async (user) => {
+  const response = await fetch(`${baseUrl}/user/updatePassword`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ user }),
+  });
+  // console.log(response);
+  // if (!response.ok) {
+  //   const error = await response;
+  //   return error.status;
+  // }
+  return response.status;
+};

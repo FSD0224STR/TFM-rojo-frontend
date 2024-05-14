@@ -5,6 +5,7 @@ import {
   getAllUsers,
   getMyUser,
   createUser,
+  updateUserPassword,
 } from "../apiService/userApi";
 
 export const AuthContext = React.createContext();
@@ -46,7 +47,7 @@ export const AuthProvider = ({ children }) => {
         getMyProfile();
       }
     } else {
-      setError("El email es obligatorio");
+      setError("Write your email address");
       setLoading(false);
     }
   };
@@ -60,20 +61,19 @@ export const AuthProvider = ({ children }) => {
         setUserName(response.data.name);
         setTimeout(() => {
           // console.log("Role getMyProfile", userRole);
-          GetUsers(userRole);
+          GetUsers(userRole, response.data.email);
         }, 500);
       }
+    } else {
+      navigate("/");
     }
-    // else {
-    //   setError("No se ha podido acceder vuelva a intentarlo");
-    // }
   };
 
-  const GetUsers = async (role) => {
+  const GetUsers = async (role, email) => {
     const token = localStorage.getItem("access_token");
     // console.log(token);
     const response = await getAllUsers(token);
-
+    // console.log(response);
     if (response.error === 400) {
       localStorage.removeItem("access_token");
       navigate("/");
@@ -84,21 +84,24 @@ export const AuthProvider = ({ children }) => {
         // console.log(response);
         if (role === "admin") {
           setData(response);
+          navigate("/userdata");
         } else if (role === "doctor") {
           const users = await response.filter((user) => {
             if (user.roles === "paciente") return user;
           });
           setData(users);
+          navigate("/userdata");
         } else if (role === "paciente") {
           // console.log(response);
           const users = await response.filter((user) => {
-            if (user.email === response.email) return user;
+            if (user.email === email) return user;
           });
           setData(users);
+          navigate("/userdata");
         }
         setDataRole(role);
         setIsLoggedIn(true);
-        navigate("/dashboard");
+        setLoading(false);
       }
     }
   };
@@ -131,43 +134,83 @@ export const AuthProvider = ({ children }) => {
   ) => {
     setError("");
     setSuccess("");
+    setLoading(true);
     if (password === confirmPassword) {
-      if (politicsAccepted) {
-        const newUser = {
-          dni: dni,
-          name: name,
-          lastName: lastName,
-          email: email,
-          password: password,
-          country: country,
-          province: province,
-          birthDay: new Date(String(birthDay)).toISOString(),
-          roles: role,
-        };
-        // console.log(newUser);
+      if (password.length >= 6) {
+        if (politicsAccepted) {
+          const newUser = {
+            dni: dni,
+            name: name,
+            lastName: lastName,
+            email: email,
+            password: password,
+            country: country,
+            province: province,
+            birthDay: new Date(String(birthDay)).toISOString(),
+            roles: role,
+          };
+          // console.log(newUser);
 
-        const response = await createUser(newUser);
+          const response = await createUser(newUser);
 
-        // console.log(response.error);
-        // .then((response) => {
-        console.log(response);
-        if (response === 200) {
-          setSuccess("Usuario creado correctamente");
-          setTimeout(() => {
-            navigate("/");
-          }, 1000);
-        } else if (response === 409) {
-          setError("Este usuario ya existe");
+          // console.log(response.error);
+          // .then((response) => {
+          console.log(response);
+          if (response === 200) {
+            setSuccess("User created successfully");
+            setTimeout(() => {
+              navigate("/");
+            }, 1000);
+          } else if (response === 409) {
+            setError("This user already exists");
+          } else {
+            setError("Problem creating user");
+          }
+          // });
         } else {
-          setError("Error al crear el usuario");
+          setError("You should accept privacy policies");
         }
-        // });
       } else {
-        setError("Debes aceptar las politicas de privacidad");
+        setError("The password must be at least 6 characters");
       }
     } else {
-      setError("Las contraseñas no coinciden");
+      setError("The password does not match");
     }
+    setLoading(false);
+  };
+
+  // Update user password
+  const updatePasswordApi = async (email, oldPassword, newPassword) => {
+    setError("");
+    setSuccess("");
+    setLoading(true);
+    if (oldPassword !== newPassword) {
+      if (newPassword.length >= 6) {
+        const user = {
+          email: email,
+          oldPassword: oldPassword,
+          newPassword: newPassword,
+        };
+        const response = await updateUserPassword(user);
+        if (response === 200) {
+          setSuccess("Password updated successfully");
+          setTimeout(() => {
+            navigate("/");
+          }, 2000);
+        } else if (response === 403) {
+          setError("The old password is incorrect");
+        } else if (response === 404) {
+          setError("The user does not exist");
+        } else {
+          setError("Problem updating password");
+        }
+      } else {
+        setError("The new password must be at least 6 characters");
+      }
+    } else {
+      setError("The new password is the same as the old password");
+    }
+    setLoading(false);
   };
 
   const authContextValue = {
@@ -182,12 +225,16 @@ export const AuthProvider = ({ children }) => {
     userName,
     setData,
     createNewUser,
+    updatePasswordApi,
   };
 
   useEffect(() => {
     setError("");
     setSuccess("");
+    setLoading(false);
     getMyProfile();
+
+    // console.log("getMyProfile");
   }, []);
 
   return (

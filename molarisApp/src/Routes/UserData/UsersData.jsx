@@ -1,7 +1,7 @@
 import React from "react";
-import { Users } from "../users/users";
+import { Users } from "../../components/users/users";
 
-export const DashBoard = () => {
+export const UserData = () => {
   return (
     <div>
       <Users></Users>

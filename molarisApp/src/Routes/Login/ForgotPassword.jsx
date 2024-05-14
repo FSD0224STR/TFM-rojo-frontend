@@ -17,14 +17,15 @@ import "react-toastify/dist/ReactToastify.css";
 // UserApi
 import { AuthContext } from "../../contexts/authContext.jsx";
 
-export const Login = () => {
+export const ForgotPassword = () => {
   // const [passwordVisible, setPasswordVisible] = React.useState(false);
 
   // User data
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [oldPassword, setOldPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
 
-  const { login } = useContext(AuthContext);
+  const { updatePasswordApi } = useContext(AuthContext);
 
   return (
     <>
@@ -41,16 +42,17 @@ export const Login = () => {
             justifyContent: "center",
           }}
         >
-          <h1 style={{ textAlign: "center" }}>Login</h1>
+          <h1 style={{ textAlign: "center" }}>
+            I can not remember my password
+          </h1>
           <Form.Item
             name="email"
             label="Email"
             labelCol={{ span: 6 }}
-            type="email"
             rules={[
               {
                 required: true,
-                message: "Write your email",
+                message: "Write your email address",
               },
             ]}
             // {...tailFormItemLayout}
@@ -65,13 +67,13 @@ export const Login = () => {
             />
           </Form.Item>
           <Form.Item
-            name="password"
-            label="Password"
+            name="oldPassword"
+            label="Old Password"
             labelCol={{ span: 6 }}
             rules={[
               {
                 required: true,
-                message: "Write password",
+                message: "Write your password",
               },
             ]}
             // {...tailFormItemLayout}
@@ -79,12 +81,43 @@ export const Login = () => {
           >
             <Input.Password
               size="large"
-              placeholder="Contraseña"
+              placeholder="Old Password"
               iconRender={(visible) =>
                 visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
               }
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              value={oldPassword}
+              onChange={(e) => setOldPassword(e.target.value)}
+            />
+          </Form.Item>
+          <Form.Item
+            name="newPassword"
+            label="New Password"
+            labelCol={{ span: 6 }}
+            rules={[
+              {
+                validator: (_, value) =>
+                  value.split("").length >= 6
+                    ? Promise.resolve()
+                    : Promise.reject(
+                        new Error("The password must be at least 6 characters")
+                      ),
+              },
+              {
+                required: true,
+                message: "Write your new password",
+              },
+            ]}
+            style={{ textAlign: "center" }}
+            hasFeedback
+          >
+            <Input.Password
+              size="large"
+              placeholder="New Password"
+              iconRender={(visible) =>
+                visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
+              }
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
             />
           </Form.Item>
           <br />
@@ -102,16 +135,16 @@ export const Login = () => {
               size="large"
               style={{ width: "300px" }}
               onClick={() => {
-                login(email, password);
+                updatePasswordApi(email, oldPassword, newPassword);
               }}
             >
-              Login
+              Recover Password
             </Button>
             {/* <Button type="link" size="large">
               <Link to="/CreateUser">Nuevo usuario</Link>
             </Button> */}
             <Button type="link" size="large">
-              <Link to="/forgotpassword">Forgot password</Link>
+              <Link to="/">Login</Link>
             </Button>
           </div>
         </Form>

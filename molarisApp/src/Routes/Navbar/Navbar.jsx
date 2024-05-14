@@ -1,6 +1,7 @@
 import {
   FileOutlined,
   LoginOutlined,
+  UserOutlined,
   LogoutOutlined,
   UserAddOutlined,
   HomeOutlined,
@@ -16,20 +17,21 @@ export const Navbar = () => {
   const { logout, isLoggedIn, roleData, userName } = useContext(AuthContext);
 
   const Items = [
+    isLoggedIn &&
+      roleData !== "paciente" && {
+        key: "Agenda",
+        icon: <HomeOutlined />,
+        label: <Link to={"/agenda"}>Agenda</Link>,
+      },
     isLoggedIn && {
-      key: "1",
-      icon: <HomeOutlined />,
-      label: <Link to={"/app"}>Home</Link>,
-    },
-    {
-      key: "1",
+      key: "CreateDate",
       icon: <DiffOutlined />,
       label: <Link to={"/createnewdate"}>Create Date</Link>,
     },
     isLoggedIn && {
-      key: "2",
-      icon: <LogoutOutlined />,
-      label: <Link to={"/dashboard"}>DashBoard</Link>,
+      key: "UserData",
+      icon: <UserOutlined />,
+      label: <Link to={"/userdata"}>Users Data</Link>,
     },
     {
       type: "divider",
@@ -37,22 +39,30 @@ export const Navbar = () => {
     {
       key: "Login",
       icon: <FileOutlined />,
-      label: isLoggedIn ? `${userName.split("")[0]} - ${roleData}` : "",
+      label: isLoggedIn && (
+        <>
+          <p style={{ color: "white" }}>
+            {userName.split(" ")[0]} - {roleData}
+          </p>
+        </>
+      ),
       type: "group",
       children: [
         !isLoggedIn && {
-          key: "user1",
+          key: "Login",
           icon: <LoginOutlined />,
           label: <Link to={"/"}>Login</Link>,
           id: "loggedin",
         },
-        !isLoggedIn && {
-          key: "user2",
-          icon: <UserAddOutlined />,
-          label: <Link to={"/CreateUser"}>Create user</Link>,
-        },
+        isLoggedIn &&
+          roleData !== "paciente" && {
+            key: "CreateUser",
+            icon: <UserAddOutlined />,
+            label: <Link to={"/createuser"}>Create user</Link>,
+          },
         isLoggedIn && {
-          key: "user3",
+          key: "Logout",
+          icon: <LogoutOutlined />,
           label: <Link onClick={logout}>LogOut</Link>,
         },
       ],
@@ -78,6 +88,7 @@ export const Navbar = () => {
           defaultSelectedKeys={[1]}
           mode="inline"
           items={Items}
+          style={{ color: "white" }}
         ></Menu>
       </Sider>
     </>

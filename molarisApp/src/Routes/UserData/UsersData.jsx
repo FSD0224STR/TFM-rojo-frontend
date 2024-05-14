@@ -1,5 +1,5 @@
 import React from "react";
-import { Users } from "../../components/users/users";
+import { Users } from "../../Components/users/users";
 
 export const UserData = () => {
   return (

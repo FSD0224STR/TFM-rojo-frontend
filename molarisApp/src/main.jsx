@@ -12,6 +12,7 @@ import { UserData } from "./Routes/UserData/UsersData.jsx";
 import { CreateNewDate } from "./components/CreateNewDate/CreateNewDate.jsx";
 import { ForgotPassword } from "./Routes/Login/ForgotPassword.jsx";
 import { Agenda } from "./Routes/Agenda/Agenda.jsx";
+import { UpdateUserForm } from "./Routes/CreateUserForm/UpdateUserForm.jsx";
 
 const router = createBrowserRouter([
   {
@@ -29,6 +30,10 @@ const router = createBrowserRouter([
       {
         path: "/createuser",
         element: <CreateUserForm />,
+      },
+      {
+        path: "/updateuser/:id",
+        element: <UpdateUserForm />,
       },
       {
         path: "/app",

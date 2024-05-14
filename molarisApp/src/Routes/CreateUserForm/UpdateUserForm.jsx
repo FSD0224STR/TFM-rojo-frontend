@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import {
   PlusOutlined,
   EyeInvisibleOutlined,
@@ -35,19 +35,23 @@ import { AuthContext } from "../../contexts/authContext.jsx";
 // import Search from "antd/lib/transfer/search.js";
 // import Search from "antd/lib/input/Search.js";
 
-export const CreateUserForm = () => {
+export const UpdateUserForm = () => {
+  const { id } = useParams();
+
+  useEffect(() => {
+    console.log("id", id);
+  }, []);
   // const [passwordVisible, setPasswordVisible] = useState(false);
-  const { createNewUser, roleData, isLoggedIn } = useContext(AuthContext);
+  const { createNewUser, roleData, isLoggedIn, updateUserData } =
+    useContext(AuthContext);
   // const [selectCountry, setSelectCountry] = useState([]);
   const [selectProvinces, setSelectProvinces] = useState([]);
 
   // User Data
-  const [dni, setDni] = useState();
+  const [dni, setDni] = useState(updateUserData?.dni);
   const [name, setName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
   const [country, setCountry] = useState("");
   const [province, setProvince] = useState("");
   const [birthDay, setBirthDay] = useState("");
@@ -177,66 +181,6 @@ export const CreateUserForm = () => {
                 onChange={(e) => {
                   setEmail(e.target.value);
                 }}
-              />
-            </Form.Item>
-            <Form.Item
-              name="password"
-              label="Password"
-              rules={[
-                {
-                  validator: (_, value) =>
-                    value.split("").length >= 6
-                      ? Promise.resolve()
-                      : Promise.reject(
-                          new Error(
-                            "The password must be at least 6 characters"
-                          )
-                        ),
-                },
-                {
-                  required: true,
-                  message: "Write the password",
-                },
-              ]}
-              hasFeedback
-            >
-              <Input.Password
-                value={password}
-                onChange={(e) => {
-                  setPassword(e.target.value);
-                }}
-                placeholder="Password"
-              />
-            </Form.Item>
-            <Form.Item
-              name="confirmPassword"
-              label="Confirm password"
-              dependencies={["password"]}
-              hasFeedback
-              rules={[
-                {
-                  required: true,
-                  message: "Por favor confirmar la contraseña",
-                },
-                ({ getFieldValue }) => ({
-                  validator(_, value) {
-                    if (!value || getFieldValue("contraseña") === value) {
-                      return Promise.resolve();
-                    }
-                    return Promise.reject(
-                      new Error("Las contraseñas no coinciden")
-                    );
-                  },
-                }),
-              ]}
-            >
-              <Input.Password
-                value={confirmPassword}
-                onChange={(e) => {
-                  // console.log("Confirm password", e.target.value);
-                  setConfirmPassword(e.target.value);
-                }}
-                placeholder="Confirm password"
               />
             </Form.Item>
             <Form.Item

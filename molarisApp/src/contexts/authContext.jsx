@@ -34,9 +34,9 @@ export const AuthProvider = ({ children }) => {
         setLoading(false);
       } else if (response.error === 404) {
         setError("El usuario no existe");
-        setTimeout(() => {
-          navigate("/CreateUser");
-        }, 1000);
+        // setTimeout(() => {
+        //   navigate("/CreateUser");
+        // }, 1000);
         setLoading(false);
       } else {
         setError("");
@@ -115,7 +115,9 @@ export const AuthProvider = ({ children }) => {
     setIsLoggedIn(false);
     setUserName("");
     navigate("/");
-    console.log(data);
+    setTimeout(() => {
+      setSuccess("You have logged out successfully");
+    }, 1000);
   };
 
   // Crear usuario
@@ -158,9 +160,9 @@ export const AuthProvider = ({ children }) => {
           console.log(response);
           if (response === 200) {
             setSuccess("User created successfully");
-            setTimeout(() => {
-              navigate("/");
-            }, 1000);
+            // setTimeout(() => {
+            //   navigate("/");
+            // }, 1000);
           } else if (response === 409) {
             setError("This user already exists");
           } else {

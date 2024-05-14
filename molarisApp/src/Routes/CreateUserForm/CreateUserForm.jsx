@@ -104,7 +104,7 @@ export const CreateUserForm = () => {
               rules={[
                 {
                   required: false,
-                  message: "Entre un DNI valido",
+                  message: "Write your DNI",
                 },
               ]}
             >
@@ -195,7 +195,7 @@ export const CreateUserForm = () => {
                 },
                 {
                   required: true,
-                  message: "Entre una contraseña valida",
+                  message: "Write the password",
                 },
               ]}
               hasFeedback

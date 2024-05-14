@@ -176,10 +176,9 @@ export const Users = () => {
                             <DiffOutlined />
                           </Link>
                         ),
-                        <Link key="editUser">
+                        <Link key="editUser" to={`/updateuser/${item._id}`}>
                           <EditOutlined />
                         </Link>,
-
                         roleData !== "paciente" && (
                           <Popconfirm
                             title="Are you sure to delete this user?"

@@ -36,16 +36,18 @@ export const onSearch = (value, data) => {
   }
 };
 
-export const sortBy = async (value, listData) => {
+export const sortBy = async (value, listData, order) => {
   //   console.log(listData);
   //   console.log(value);
+  console.log(order);
   if (value === "dni") {
     const dniSortData = listData.sort((a, b) => {
       const valA = a.dni !== undefined ? a.dni : 0;
       const valB = b.dni !== undefined ? b.dni : 0;
       // console.log("a", valA);
       // console.log("b", valB);
-      return valB - valA;
+
+      return order === "ascending" ? valB - valA : valA - valB;
     });
 
     // setTimeout(() => {
@@ -58,10 +60,11 @@ export const sortBy = async (value, listData) => {
       // console.log("a", valA);
       // console.log("b", valB);
       if (valA < valB) {
-        return -1;
+        return order === "ascending" ? 1 : -1;
+        // return -1;
       }
       if (valA > valB) {
-        return 1;
+        return order === "ascending" ? -1 : 1;
       }
 
       // names must be equal
@@ -78,10 +81,11 @@ export const sortBy = async (value, listData) => {
       // console.log("a", valA);
       // console.log("b", valB);
       if (valA < valB) {
-        return -1;
+        return order === "ascending" ? 1 : -1;
+        // return -1;
       }
       if (valA > valB) {
-        return 1;
+        return order === "ascending" ? -1 : 1;
       }
 
       // names must be equal
@@ -98,10 +102,11 @@ export const sortBy = async (value, listData) => {
       // console.log("a", valA);
       // console.log("b", valB);
       if (valA < valB) {
-        return -1;
+        return order === "ascending" ? 1 : -1;
+        // return -1;
       }
       if (valA > valB) {
-        return 1;
+        return order === "ascending" ? -1 : 1;
       }
 
       // names must be equal

@@ -1,5 +1,5 @@
 import { Outlet } from "react-router-dom";
-import { Layout, Spin } from "antd";
+import { Layout, Modal, Spin } from "antd";
 import { AuthContext, AuthProvider } from "../contexts/authContext";
 import { Navbar } from "./Navbar/Navbar";
 import { useContext, useEffect } from "react";
@@ -28,6 +28,15 @@ export const LayoutPage = () => {
           <Content className="OutletContent">
             <Outlet className="Outlet" />
           </Content>
+
+          <Spin
+            spinning={loading}
+            style={{
+              position: "absolute",
+              margin: "auto",
+              // background: "red",
+            }}
+          />
         </Layout>
       </Layout>
       <Footer>
@@ -35,7 +44,6 @@ export const LayoutPage = () => {
           <p>Molaris Copyright © 2024</p>
         </div>
       </Footer>
-      <Spin spinning={loading} fullscreen="true" size="large" />
       <ToastContainer />
     </>
   );

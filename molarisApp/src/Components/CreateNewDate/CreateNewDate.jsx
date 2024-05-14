@@ -10,7 +10,9 @@ import {
   Select,
   TreeSelect,
 } from "antd";
-import Search from "antd/es/transfer/search";
+
+// import { Input } from "antd";
+const { Search } = Input;
 
 const formItemLayout = {
   labelCol: {

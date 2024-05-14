@@ -17,18 +17,19 @@ export const Navbar = () => {
   const { logout, isLoggedIn, roleData, userName } = useContext(AuthContext);
 
   const Items = [
+    isLoggedIn &&
+      roleData !== "paciente" && {
+        key: "Agenda",
+        icon: <HomeOutlined />,
+        label: <Link to={"/agenda"}>Agenda</Link>,
+      },
     isLoggedIn && {
-      key: "1",
-      icon: <HomeOutlined />,
-      label: <Link to={"/app"}>Home</Link>,
-    },
-    {
-      key: "2",
+      key: "CreateDate",
       icon: <DiffOutlined />,
       label: <Link to={"/createnewdate"}>Create Date</Link>,
     },
     isLoggedIn && {
-      key: "3",
+      key: "UserData",
       icon: <UserOutlined />,
       label: <Link to={"/userdata"}>Users Data</Link>,
     },
@@ -48,18 +49,19 @@ export const Navbar = () => {
       type: "group",
       children: [
         !isLoggedIn && {
-          key: "user1",
+          key: "Login",
           icon: <LoginOutlined />,
           label: <Link to={"/"}>Login</Link>,
           id: "loggedin",
         },
+        isLoggedIn &&
+          roleData !== "paciente" && {
+            key: "CreateUser",
+            icon: <UserAddOutlined />,
+            label: <Link to={"/createuser"}>Create user</Link>,
+          },
         isLoggedIn && {
-          key: "user2",
-          icon: <UserAddOutlined />,
-          label: <Link to={"/createuser"}>Create user</Link>,
-        },
-        isLoggedIn && {
-          key: "user3",
+          key: "Logout",
           icon: <LogoutOutlined />,
           label: <Link onClick={logout}>LogOut</Link>,
         },

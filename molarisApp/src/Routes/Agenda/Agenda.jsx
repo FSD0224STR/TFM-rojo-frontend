@@ -1,26 +1,13 @@
-import React, { useState } from "react";
-import { Alert, Calendar } from "antd";
-import dayjs from "dayjs";
+import React from "react";
+import { AgendaComponent } from "../../components/AgendaComponents/AgendaComponent";
+import { AgendaList } from "../../components/AgendaComponents/AgendaList";
+import { Flex } from "antd";
+
 export const Agenda = () => {
-  const [value, setValue] = useState(() => dayjs("2017-01-25"));
-  const [selectedValue, setSelectedValue] = useState(() => dayjs("2017-01-25"));
-  const onSelect = (newValue) => {
-    setValue(newValue);
-    setSelectedValue(newValue);
-  };
-  const onPanelChange = (newValue) => {
-    setValue(newValue);
-  };
   return (
-    <>
-      <Alert
-        message={`You selected date: ${selectedValue?.format("YYYY-MM-DD")}`}
-      />
-      <Calendar
-        value={value}
-        onSelect={onSelect}
-        onPanelChange={onPanelChange}
-      />
-    </>
+    <div style={{ display: "Flex", gap: "1em" }}>
+      <AgendaComponent />
+      <AgendaList />
+    </div>
   );
 };

@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
+import dayjs from "dayjs";
 import {
   PlusOutlined,
   EyeInvisibleOutlined,
@@ -30,23 +31,16 @@ import { provinces } from "./Provinces.js";
 import { AuthContext } from "../../contexts/authContext.jsx";
 
 export const UpdateUserForm = () => {
-  const { roleData, isLoggedIn, searchUpdateUserInfo, searchUser } =
-    useContext(AuthContext);
-  const { id } = useParams();
+  // Import authcontext
+  const { roleData, isLoggedIn, searchUser } = useContext(AuthContext);
 
-  useEffect(() => {
-    // console.log("id", id);
-    const response = searchUpdateUserInfo(id);
-    console.log(response);
-  }, []);
-  // const [passwordVisible, setPasswordVisible] = useState(false);
+  // const { id } = useParams();
 
-  // const [selectCountry, setSelectCountry] = useState([]);
   const [selectProvinces, setSelectProvinces] = useState([]);
 
   // User Data
-  const [dni, setDni] = useState(searchUser ? searchUser?.dni : "");
-  const [name, setName] = useState(searchUser ? searchUser?.name : "");
+  var [dni, setDni] = useState(`${searchUser?.dni}`);
+  const [name, setName] = useState(`${searchUser?.name}`);
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [country, setCountry] = useState("");
@@ -80,27 +74,35 @@ export const UpdateUserForm = () => {
     { value: "doctor" },
   ];
 
+  const dateFormat = "DD-MM-YYYY";
+
   return (
     <>
       {isLoggedIn && (
         <div>
           <Form
             labelCol={{ span: 6 }}
-            // wrapperCol={{ span: 14 }}
-            // layout="horizontal"
             style={{
-              // maxWidth: "1000px",
               margin: "10em 0 2em 0",
               width: "600px",
-              // display: "flex",
-              // flexDirection: "column",
-              // justifyContent: "center",
+            }}
+            initialValues={{
+              dni: searchUser?.dni,
+              name: searchUser?.name,
+              lastName: searchUser?.lastName,
+              email: searchUser?.email,
+              country: searchUser?.country,
+              province: searchUser?.province,
+              birthDay: dayjs(searchUser?.birthDay),
+              role: searchUser?.roles,
             }}
           >
-            <h1 style={{ textAlign: "center" }}>Create a new user</h1>
+            <h1 style={{ textAlign: "center" }}>
+              Update user: {searchUser.name} {searchUser.lastName}
+            </h1>
 
             <Form.Item
-              name="DNI"
+              name="dni"
               label="DNI"
               rules={[
                 {
@@ -121,7 +123,7 @@ export const UpdateUserForm = () => {
               />
             </Form.Item>
             <Form.Item
-              name="Name"
+              name="name"
               label="Name"
               rules={[
                 {
@@ -202,7 +204,7 @@ export const UpdateUserForm = () => {
               ></Select>
             </Form.Item>
             <Form.Item
-              name="Province"
+              name="province"
               label="Province"
               dependencies={["pais"]}
               rules={[
@@ -221,8 +223,8 @@ export const UpdateUserForm = () => {
             </Form.Item>
             {roleData === "admin" && (
               <Form.Item
-                name="Rol"
-                label="Rol"
+                name="role"
+                label="Role"
                 rules={[
                   {
                     required: true,
@@ -259,7 +261,7 @@ export const UpdateUserForm = () => {
               </Form.Item>
             )}
             <Form.Item
-              name="Birthday"
+              name="birthDay"
               label="Birthday"
               rules={[
                 {
@@ -271,6 +273,7 @@ export const UpdateUserForm = () => {
               <DatePicker
                 size="large"
                 placeholder="Birthday"
+                format={dateFormat}
                 onChange={(e) => setBirthDay(e)}
               />
             </Form.Item>
@@ -291,29 +294,6 @@ export const UpdateUserForm = () => {
                 </button>
               </Upload>
             </Form.Item>
-            <Form.Item
-              name="agreement"
-              valuePropName="checked"
-              rules={[
-                {
-                  validator: (_, value) =>
-                    value
-                      ? Promise.resolve()
-                      : Promise.reject(new Error("Should accept agreement")),
-                },
-              ]}
-              // {...tailFormItemLayout}
-              style={{ textAlign: "center" }}
-            >
-              <Checkbox
-                onChange={() => {
-                  setPoliticsAccepted(!politicsAccepted);
-                  // console.log("onchange", politicsAccepted);
-                }}
-              >
-                I have read and accept <a href="">privacy policies</a>
-              </Checkbox>
-            </Form.Item>
             <br />
             <div
               style={{ display: "flex", gap: "1em", justifyContent: "center" }}
@@ -327,8 +307,6 @@ export const UpdateUserForm = () => {
                     name,
                     lastName,
                     email,
-                    password,
-                    confirmPassword,
                     country,
                     province,
                     birthDay,
@@ -337,7 +315,7 @@ export const UpdateUserForm = () => {
                   );
                 }}
               >
-                Create
+                Update
               </Button>
               <Button size="large">
                 <Link to={"/userdata"}>Cancel</Link>

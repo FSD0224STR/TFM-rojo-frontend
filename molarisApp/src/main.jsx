@@ -9,10 +9,10 @@ import { App } from "./App.jsx";
 import { Login } from "./Routes/Login/Login.jsx";
 import { CreateUserForm } from "./Routes/CreateUserForm/CreateUserForm.jsx";
 import { UserData } from "./Routes/UserData/UsersData.jsx";
-import { CreateNewDate } from "./Components/CreateNewDate/CreateNewDate.jsx";
+import { CreateNewDate } from "./components/CreateNewDate/CreateNewDate.jsx";
 import { ForgotPassword } from "./Routes/Login/ForgotPassword.jsx";
-import { Agenda } from "./Routes/Agenda/Agenda.jsx";
 import { UpdateUserForm } from "./Routes/CreateUserForm/UpdateUserForm.jsx";
+import { Agenda } from "./Routes/Agenda/Agenda.jsx";
 
 const router = createBrowserRouter([
   {

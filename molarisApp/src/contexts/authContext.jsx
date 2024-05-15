@@ -219,8 +219,12 @@ export const AuthProvider = ({ children }) => {
 
   const searchUpdateUserInfo = async (idUser) => {
     const response = await searchUserUpdate(idUser);
-    console.log(response.data.name);
-    return await response.data;
+
+    return (
+      setSearchUser(response.data),
+      console.log(searchUser),
+      navigate(`/updateuser/${idUser}`)
+    );
   };
 
   const authContextValue = {

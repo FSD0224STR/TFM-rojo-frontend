@@ -24,7 +24,7 @@ import { filterBy, onSearch, sortBy } from "./SortAndFilterUsers.jsx";
 const { Search } = Input;
 
 export const Users = () => {
-  const { data, roleData } = useContext(AuthContext);
+  const { data, roleData, searchUpdateUserInfo } = useContext(AuthContext);
   const [listData, setListData] = useState(data);
   const [orderItem, setOrderItem] = useState("dni");
   const [orderSort, setOrderSort] = useState("ascending");
@@ -167,6 +167,7 @@ export const Users = () => {
                   pagination={{
                     total: listData.length,
                     pageSize: 4,
+                    showLessItems: true,
                   }}
                   renderItem={(item, index) => (
                     <List.Item
@@ -176,7 +177,11 @@ export const Users = () => {
                             <DiffOutlined />
                           </Link>
                         ),
-                        <Link key="editUser" to={`/updateuser/${item._id}`}>
+                        <Link
+                          key="editUser"
+                          // to={`/updateuser/${item._id}`}
+                          onClick={() => searchUpdateUserInfo(item._id)}
+                        >
                           <EditOutlined />
                         </Link>,
                         roleData !== "paciente" && (

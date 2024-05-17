@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
+import { AuthContext } from "../../contexts/authContext";
 import {
   Button,
   Cascader,
@@ -34,17 +35,36 @@ const formItemLayout = {
 };
 
 export const CreateNewDate = () => {
+  const { data } = useContext(AuthContext);
+  const [userPacientes, setUserPacientes] = useState([]);
+  const findPacientes = async () => {
+    const response = await data.map((user) => {
+      if (user.roles === "paciente")
+        return { label: user.name, value: user._id };
+    });
+    const pacientes = await response.filter((user) => user!==undefined)
+    return setUserPacientes(pacientes);
+  };
+  
+  useEffect(() => {
+    findPacientes();
+  }, []);
+
   const onSearch = (value, _e, info) => console.log(info?.source, value);
+  const onChange = (value) => {
+    console.log(value);
+  };
   return (
     <Form
       // {...formItemLayout}
       variant="filled"
       style={{
         maxWidth: 1500,
+        height: "100%"
       }}
     >
       <Form.Item
-        label="Input"
+        label="Patient"
         name="Input"
         rules={[
           {
@@ -53,18 +73,20 @@ export const CreateNewDate = () => {
           },
         ]}
       >
-        <Search
-          placeholder="Ingrese el usuario"
-          onSearch={onSearch}
-          style={{
-            width: 200,
-          }}
+        <Cascader
+          options={userPacientes}
+          onChange={onChange}
+          placeholder="Please select"
+          // showSearch={{
+          //   filter,
+          // }}
+          onSearch={(value) => console.log(value)}
         />
       </Form.Item>
 
       <Form.Item
-        label="InputNumber"
-        name="InputNumber"
+        label="Patient Code"
+        name="Select"
         rules={[
           {
             required: true,
@@ -72,15 +94,11 @@ export const CreateNewDate = () => {
           },
         ]}
       >
-        <InputNumber
-          style={{
-            width: "100%",
-          }}
-        />
+        <Select />
       </Form.Item>
 
       <Form.Item
-        label="TextArea"
+        label="Treatment"
         name="TextArea"
         rules={[
           {
@@ -106,7 +124,7 @@ export const CreateNewDate = () => {
       </Form.Item>
 
       <Form.Item
-        label="Select"
+        label="Doctor Code"
         name="Select"
         rules={[
           {
@@ -119,7 +137,7 @@ export const CreateNewDate = () => {
       </Form.Item>
 
       <Form.Item
-        label="Cascader"
+        label="Box"
         name="Cascader"
         rules={[
           {
@@ -132,7 +150,7 @@ export const CreateNewDate = () => {
       </Form.Item>
 
       <Form.Item
-        label="TreeSelect"
+        label="Telephone Number"
         name="TreeSelect"
         rules={[
           {
@@ -154,7 +172,7 @@ export const CreateNewDate = () => {
           },
         ]}
       >
-        <DatePicker />
+        <DatePicker onChange={e=> console.log(e)} />
       </Form.Item>
 
       <Form.Item

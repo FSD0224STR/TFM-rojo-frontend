@@ -82,19 +82,21 @@ export const CreateUserForm = () => {
   return (
     <>
       {isLoggedIn && (
-        <div>
+        <div style={{ height: "100%" }}>
           <Form
             labelCol={{ span: 6 }}
             // wrapperCol={{ span: 14 }}
             // layout="horizontal"
-            style={{
-              // maxWidth: "1000px",
-              margin: "10em 0 2em 0",
-              width: "600px",
-              // display: "flex",
-              // flexDirection: "column",
-              // justifyContent: "center",
-            }}
+            style={
+              {
+                // maxWidth: "1000px",
+                // margin: "10em 0 2em 0",
+                // width: "600px",
+                // display: "flex",
+                // flexDirection: "column",
+                // justifyContent: "center",
+              }
+            }
           >
             <h1 style={{ textAlign: "center" }}>Create a new user</h1>
 

@@ -46,7 +46,7 @@ export const getMyUser = async (token) => {
 };
 
 export const createUser = async (newUser) => {
-  console.log("new user Api", newUser);
+  // console.log("new user Api", newUser);
   const response = await fetch(`${baseUrl}/user/newUser`, {
     method: "POST",
     headers: {
@@ -96,15 +96,15 @@ export const searchUserUpdate = async (idUser) => {
   return { data: await response.json() };
 };
 
-export const updateUserApi = async (idUser) => {
+export const updateUserApi = async (userData) => {
   const response = await fetch(`${baseUrl}/user/updateUser`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ idUser }),
+    body: JSON.stringify(userData),
   });
-  // console.log(response);
+  // console.log(response.status);
   if (!response.ok) {
     const error = await response;
     return error.status;

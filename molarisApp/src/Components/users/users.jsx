@@ -179,7 +179,6 @@ export const Users = () => {
                         ),
                         <Link
                           key="editUser"
-                          // to={`/updateuser/${item._id}`}
                           onClick={() => searchUpdateUserInfo(item._id)}
                         >
                           <EditOutlined />

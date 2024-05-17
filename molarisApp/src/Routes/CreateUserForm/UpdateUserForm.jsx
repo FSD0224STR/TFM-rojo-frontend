@@ -32,22 +32,23 @@ import { AuthContext } from "../../contexts/authContext.jsx";
 
 export const UpdateUserForm = () => {
   // Import authcontext
-  const { roleData, isLoggedIn, searchUser } = useContext(AuthContext);
-
-  // const { id } = useParams();
+  const { roleData, isLoggedIn, searchUser, udpdateUser } =
+    useContext(AuthContext);
 
   const [selectProvinces, setSelectProvinces] = useState([]);
 
   // User Data
+  const [userId, setUserId] = useState(`${searchUser?._id}`);
   var [dni, setDni] = useState(`${searchUser?.dni}`);
   const [name, setName] = useState(`${searchUser?.name}`);
-  const [lastName, setLastName] = useState("");
-  const [email, setEmail] = useState("");
-  const [country, setCountry] = useState("");
-  const [province, setProvince] = useState("");
-  const [birthDay, setBirthDay] = useState("");
-  const [role, setRole] = useState(roleData === "admin" ? "" : "paciente");
-  const [politicsAccepted, setPoliticsAccepted] = useState(false);
+  const [lastName, setLastName] = useState(`${searchUser?.lastName}`);
+  const [email, setEmail] = useState(`${searchUser?.email}`);
+  const [country, setCountry] = useState(`${searchUser?.country}`);
+  const [province, setProvince] = useState(`${searchUser?.province}`);
+  const [birthDay, setBirthDay] = useState(`${searchUser?.birthDay}`);
+  const [role, setRole] = useState(`${searchUser?.roles}`);
+  const [userDataChange, setUserDataChange] = useState(false);
+  // const [politicsAccepted, setPoliticsAccepted] = useState(false);
 
   const findProvince = async (e) => {
     // console.log(typeof e);
@@ -87,6 +88,7 @@ export const UpdateUserForm = () => {
               width: "600px",
             }}
             initialValues={{
+              userId: searchUser?._id,
               dni: searchUser?.dni,
               name: searchUser?.name,
               lastName: searchUser?.lastName,
@@ -101,6 +103,14 @@ export const UpdateUserForm = () => {
               Update user: {searchUser.name} {searchUser.lastName}
             </h1>
 
+            <Form.Item name="userId" label="User Id">
+              <Input
+                size="large"
+                placeholder="userId"
+                value={dni}
+                disabled={true}
+              />
+            </Form.Item>
             <Form.Item
               name="dni"
               label="DNI"
@@ -119,6 +129,7 @@ export const UpdateUserForm = () => {
                 onChange={(e) => {
                   // console.log("name", e.target.value);
                   setDni(e.target.value);
+                  setUserDataChange(true);
                 }}
               />
             </Form.Item>
@@ -139,6 +150,7 @@ export const UpdateUserForm = () => {
                 onChange={(e) => {
                   // console.log("name", e.target.value);
                   setName(e.target.value);
+                  setUserDataChange(true);
                 }}
               />
             </Form.Item>
@@ -159,6 +171,7 @@ export const UpdateUserForm = () => {
                 onChange={(e) => {
                   // console.log("lastName", e.target.value);
                   setLastName(e.target.value);
+                  setUserDataChange(true);
                 }}
               />
             </Form.Item>
@@ -179,6 +192,7 @@ export const UpdateUserForm = () => {
                 value={email}
                 onChange={(e) => {
                   setEmail(e.target.value);
+                  setUserDataChange(true);
                 }}
               />
             </Form.Item>
@@ -200,6 +214,7 @@ export const UpdateUserForm = () => {
                   setProvince();
                   findProvince(e);
                   setCountry(e);
+                  setUserDataChange(true);
                 }}
               ></Select>
             </Form.Item>
@@ -218,7 +233,10 @@ export const UpdateUserForm = () => {
                 size="large"
                 placeholder="Province"
                 options={selectProvinces}
-                onChange={(e) => setProvince(e)}
+                onChange={(e) => {
+                  setProvince(e);
+                  setUserDataChange(true);
+                }}
               ></Select>
             </Form.Item>
             {roleData === "admin" && (
@@ -236,7 +254,10 @@ export const UpdateUserForm = () => {
                   size="large"
                   options={roleOptions}
                   value={role}
-                  onChange={(e) => setRole(e)}
+                  onChange={(e) => {
+                    setRole(e);
+                    setUserDataChange(true);
+                  }}
                   placeholder="Rol"
                 ></Select>
               </Form.Item>
@@ -274,7 +295,10 @@ export const UpdateUserForm = () => {
                 size="large"
                 placeholder="Birthday"
                 format={dateFormat}
-                onChange={(e) => setBirthDay(e)}
+                onChange={(e) => {
+                  setBirthDay(e);
+                  setUserDataChange(true);
+                }}
               />
             </Form.Item>
             <Form.Item
@@ -302,7 +326,8 @@ export const UpdateUserForm = () => {
                 htmlType="submit"
                 size="large"
                 onClick={() => {
-                  createNewUser(
+                  udpdateUser(
+                    userId,
                     dni,
                     name,
                     lastName,
@@ -311,7 +336,7 @@ export const UpdateUserForm = () => {
                     province,
                     birthDay,
                     role,
-                    politicsAccepted
+                    userDataChange
                   );
                 }}
               >
@@ -319,6 +344,9 @@ export const UpdateUserForm = () => {
               </Button>
               <Button size="large">
                 <Link to={"/userdata"}>Cancel</Link>
+              </Button>
+              <Button size="large" onClick={() => console.log("email", email)}>
+                Prueba
               </Button>
             </div>
           </Form>

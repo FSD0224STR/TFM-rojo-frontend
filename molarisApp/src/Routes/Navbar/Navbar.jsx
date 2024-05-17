@@ -4,6 +4,7 @@ import {
   UserOutlined,
   LogoutOutlined,
   UserAddOutlined,
+  CalendarOutlined,
   HomeOutlined,
   DiffOutlined,
 } from "@ant-design/icons";
@@ -20,7 +21,7 @@ export const Navbar = () => {
     isLoggedIn &&
       roleData !== "paciente" && {
         key: "Agenda",
-        icon: <HomeOutlined />,
+        icon: <CalendarOutlined />,
         label: <Link to={"/agenda"}>Agenda</Link>,
       },
     isLoggedIn && {
@@ -40,11 +41,13 @@ export const Navbar = () => {
       key: "Login",
       icon: <FileOutlined />,
       label: isLoggedIn && (
-        <>
-          <p style={{ color: "white" }}>
-            {userName.split(" ")[0]} - {roleData}
-          </p>
-        </>
+        <Link to={"/myuser"}>
+          <>
+            <p style={{ color: "white" }}>
+              {userName.split(" ")[0]} - {roleData}
+            </p>
+          </>
+        </Link>
       ),
       type: "group",
       children: [

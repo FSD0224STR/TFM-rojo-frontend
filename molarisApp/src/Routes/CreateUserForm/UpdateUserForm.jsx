@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
+import dayjs from "dayjs";
 import {
   PlusOutlined,
   EyeInvisibleOutlined,
@@ -24,39 +25,30 @@ import {
   Space,
 } from "antd";
 
-// Notifications
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-
 // BD for countries
 import { countries } from "./Countries.js";
 import { provinces } from "./Provinces.js";
 import { AuthContext } from "../../contexts/authContext.jsx";
-// import Search from "antd/lib/transfer/search.js";
-// import Search from "antd/lib/input/Search.js";
 
 export const UpdateUserForm = () => {
-  const { id } = useParams();
-
-  useEffect(() => {
-    console.log("id", id);
-  }, []);
-  // const [passwordVisible, setPasswordVisible] = useState(false);
-  const { createNewUser, roleData, isLoggedIn, updateUserData } =
+  // Import authcontext
+  const { roleData, isLoggedIn, searchUser, udpdateUser } =
     useContext(AuthContext);
-  // const [selectCountry, setSelectCountry] = useState([]);
+
   const [selectProvinces, setSelectProvinces] = useState([]);
 
   // User Data
-  const [dni, setDni] = useState(updateUserData?.dni);
-  const [name, setName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [email, setEmail] = useState("");
-  const [country, setCountry] = useState("");
-  const [province, setProvince] = useState("");
-  const [birthDay, setBirthDay] = useState("");
-  const [role, setRole] = useState(roleData === "admin" ? "" : "paciente");
-  const [politicsAccepted, setPoliticsAccepted] = useState(false);
+  const [userId, setUserId] = useState(`${searchUser?._id}`);
+  var [dni, setDni] = useState(`${searchUser?.dni}`);
+  const [name, setName] = useState(`${searchUser?.name}`);
+  const [lastName, setLastName] = useState(`${searchUser?.lastName}`);
+  const [email, setEmail] = useState(`${searchUser?.email}`);
+  const [country, setCountry] = useState(`${searchUser?.country}`);
+  const [province, setProvince] = useState(`${searchUser?.province}`);
+  const [birthDay, setBirthDay] = useState(`${searchUser?.birthDay}`);
+  const [role, setRole] = useState(`${searchUser?.roles}`);
+  const [userDataChange, setUserDataChange] = useState(false);
+  // const [politicsAccepted, setPoliticsAccepted] = useState(false);
 
   const findProvince = async (e) => {
     // console.log(typeof e);
@@ -83,27 +75,44 @@ export const UpdateUserForm = () => {
     { value: "doctor" },
   ];
 
+  const dateFormat = "DD-MM-YYYY";
+
   return (
     <>
       {isLoggedIn && (
         <div>
           <Form
             labelCol={{ span: 6 }}
-            // wrapperCol={{ span: 14 }}
-            // layout="horizontal"
             style={{
-              // maxWidth: "1000px",
               margin: "10em 0 2em 0",
               width: "600px",
-              // display: "flex",
-              // flexDirection: "column",
-              // justifyContent: "center",
+            }}
+            initialValues={{
+              userId: searchUser?._id,
+              dni: searchUser?.dni,
+              name: searchUser?.name,
+              lastName: searchUser?.lastName,
+              email: searchUser?.email,
+              country: searchUser?.country,
+              province: searchUser?.province,
+              birthDay: dayjs(searchUser?.birthDay),
+              role: searchUser?.roles,
             }}
           >
-            <h1 style={{ textAlign: "center" }}>Create a new user</h1>
+            <h1 style={{ textAlign: "center" }}>
+              Update user: {searchUser.name} {searchUser.lastName}
+            </h1>
 
+            <Form.Item name="userId" label="User Id">
+              <Input
+                size="large"
+                placeholder="userId"
+                value={dni}
+                disabled={true}
+              />
+            </Form.Item>
             <Form.Item
-              name="DNI"
+              name="dni"
               label="DNI"
               rules={[
                 {
@@ -120,11 +129,12 @@ export const UpdateUserForm = () => {
                 onChange={(e) => {
                   // console.log("name", e.target.value);
                   setDni(e.target.value);
+                  setUserDataChange(true);
                 }}
               />
             </Form.Item>
             <Form.Item
-              name="Name"
+              name="name"
               label="Name"
               rules={[
                 {
@@ -140,6 +150,7 @@ export const UpdateUserForm = () => {
                 onChange={(e) => {
                   // console.log("name", e.target.value);
                   setName(e.target.value);
+                  setUserDataChange(true);
                 }}
               />
             </Form.Item>
@@ -160,6 +171,7 @@ export const UpdateUserForm = () => {
                 onChange={(e) => {
                   // console.log("lastName", e.target.value);
                   setLastName(e.target.value);
+                  setUserDataChange(true);
                 }}
               />
             </Form.Item>
@@ -180,6 +192,7 @@ export const UpdateUserForm = () => {
                 value={email}
                 onChange={(e) => {
                   setEmail(e.target.value);
+                  setUserDataChange(true);
                 }}
               />
             </Form.Item>
@@ -201,11 +214,12 @@ export const UpdateUserForm = () => {
                   setProvince();
                   findProvince(e);
                   setCountry(e);
+                  setUserDataChange(true);
                 }}
               ></Select>
             </Form.Item>
             <Form.Item
-              name="Province"
+              name="province"
               label="Province"
               dependencies={["pais"]}
               rules={[
@@ -219,13 +233,16 @@ export const UpdateUserForm = () => {
                 size="large"
                 placeholder="Province"
                 options={selectProvinces}
-                onChange={(e) => setProvince(e)}
+                onChange={(e) => {
+                  setProvince(e);
+                  setUserDataChange(true);
+                }}
               ></Select>
             </Form.Item>
             {roleData === "admin" && (
               <Form.Item
-                name="Rol"
-                label="Rol"
+                name="role"
+                label="Role"
                 rules={[
                   {
                     required: true,
@@ -237,7 +254,10 @@ export const UpdateUserForm = () => {
                   size="large"
                   options={roleOptions}
                   value={role}
-                  onChange={(e) => setRole(e)}
+                  onChange={(e) => {
+                    setRole(e);
+                    setUserDataChange(true);
+                  }}
                   placeholder="Rol"
                 ></Select>
               </Form.Item>
@@ -262,7 +282,7 @@ export const UpdateUserForm = () => {
               </Form.Item>
             )}
             <Form.Item
-              name="Birthday"
+              name="birthDay"
               label="Birthday"
               rules={[
                 {
@@ -274,7 +294,11 @@ export const UpdateUserForm = () => {
               <DatePicker
                 size="large"
                 placeholder="Birthday"
-                onChange={(e) => setBirthDay(e)}
+                format={dateFormat}
+                onChange={(e) => {
+                  setBirthDay(e);
+                  setUserDataChange(true);
+                }}
               />
             </Form.Item>
             <Form.Item
@@ -294,29 +318,6 @@ export const UpdateUserForm = () => {
                 </button>
               </Upload>
             </Form.Item>
-            <Form.Item
-              name="agreement"
-              valuePropName="checked"
-              rules={[
-                {
-                  validator: (_, value) =>
-                    value
-                      ? Promise.resolve()
-                      : Promise.reject(new Error("Should accept agreement")),
-                },
-              ]}
-              // {...tailFormItemLayout}
-              style={{ textAlign: "center" }}
-            >
-              <Checkbox
-                onChange={() => {
-                  setPoliticsAccepted(!politicsAccepted);
-                  // console.log("onchange", politicsAccepted);
-                }}
-              >
-                I have read and accept <a href="">privacy policies</a>
-              </Checkbox>
-            </Form.Item>
             <br />
             <div
               style={{ display: "flex", gap: "1em", justifyContent: "center" }}
@@ -325,25 +326,27 @@ export const UpdateUserForm = () => {
                 htmlType="submit"
                 size="large"
                 onClick={() => {
-                  createNewUser(
+                  udpdateUser(
+                    userId,
                     dni,
                     name,
                     lastName,
                     email,
-                    password,
-                    confirmPassword,
                     country,
                     province,
                     birthDay,
                     role,
-                    politicsAccepted
+                    userDataChange
                   );
                 }}
               >
-                Create
+                Update
               </Button>
               <Button size="large">
                 <Link to={"/userdata"}>Cancel</Link>
+              </Button>
+              <Button size="large" onClick={() => console.log("email", email)}>
+                Prueba
               </Button>
             </div>
           </Form>

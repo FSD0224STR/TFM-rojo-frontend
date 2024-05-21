@@ -5,18 +5,20 @@ export const DatesContext = createContext();
 
 import { dates } from "./Dates";
 import dayjs from "dayjs";
+import { DatesHours } from "../components/AgendaComponents/DatesHours";
 
 export const DatesProvider = ({ children }) => {
   const { data, userData } = useContext(AuthContext);
 
   const [patientsDates, setPatientsDates] = useState();
   const [doctors, setDoctors] = useState();
-  const [doctor, setDoctor] = useState();
+  const [doctor, setDoctor] = useState(userData?.role === "admin" ? "all" : "");
   const [dayDates, setDayDates] = useState(dates);
 
   const searchDoctorDates = async (doctor) => {
     // If the user role is admin, should show all the doctors and all the dates
     if (userData?.role === "admin") {
+      // console.log(doctor);
       if (doctor === "" || doctor === undefined || doctor === "all") {
         // If Doctor is undefined, should show all the dates
         const doctorsResponse = await data.filter(
@@ -58,8 +60,8 @@ export const DatesProvider = ({ children }) => {
   };
 
   const searchDayDates = async (date, doctor) => {
-    console.log(date);
-    console.log(doctor);
+    // console.log(date);
+    // console.log(doctor);
     const day = date !== "" ? date : dayjs().format("YYYY-MM-DD");
     const response = await dates.filter((userDate) => {
       if (
@@ -69,8 +71,29 @@ export const DatesProvider = ({ children }) => {
         return userDate;
       }
     });
+    console.log("response", response);
 
-    return setDayDates(response);
+    // Concat the dates with the schedule
+    // console.log("response length", response.length);
+    const datesList = DatesHours.map((hour) => {
+      if (response.length > 0) {
+        for (var i = 0; i < 2; i++) {
+          // console.log(i, response[i].time);
+          if (response[i]?.time === hour) {
+            // alert(hour);
+            // console.log(response[i]);
+            return response[i];
+          }
+        }
+        return { date: date, time: hour };
+      } else {
+        return { date: date, time: hour };
+      }
+    });
+
+    console.log("dates list", datesList);
+
+    return setDayDates(datesList);
     // console.log(response);
   };
 

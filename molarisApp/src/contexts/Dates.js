@@ -2,7 +2,7 @@ export const dates = [
   {
     date: "2024-05-03",
     user: "Juan Perez",
-    time: "10:00 AM",
+    time: "10:00",
     duration: "1 hora",
     reason: "Consulta médica de rutina",
     state: "confirmed",
@@ -12,7 +12,7 @@ export const dates = [
   {
     date: "2024-05-15",
     user: "María López",
-    time: "3:30 PM",
+    time: "15:30",
     duration: "45 minutos",
     reason: "Seguimiento de tratamiento",
     state: "pending",
@@ -22,7 +22,7 @@ export const dates = [
   {
     date: "2024-06-07",
     user: "Carlos Ramírez",
-    time: "11:15 AM",
+    time: "11:30",
     duration: "30 minutos",
     reason: "Examen de laboratorio",
     state: "confirmed",
@@ -32,7 +32,7 @@ export const dates = [
   {
     date: "2024-06-20",
     user: "Ana García",
-    time: "9:45 AM",
+    time: "09:30",
     duration: "1 hora",
     reason: "Consulta de especialidad",
     state: "confirmed",
@@ -42,7 +42,7 @@ export const dates = [
   {
     date: "2024-07-05",
     user: "Luisa Martínez",
-    time: "2:00 PM",
+    time: "14:00",
     duration: "1 hora",
     reason: "Consulta de seguimiento",
     state: "pending",
@@ -52,7 +52,7 @@ export const dates = [
   {
     date: "2024-07-18",
     user: "Pedro Sánchez",
-    time: "4:30 PM",
+    time: "16:30",
     duration: "45 minutos",
     reason: "Revisión de resultados",
     state: "canceled",
@@ -62,7 +62,7 @@ export const dates = [
   {
     date: "2024-05-07",
     user: "Roberto Gómez",
-    time: "8:00 AM",
+    time: "08:00",
     duration: "30 minutos",
     reason: "Consulta inicial",
     state: "confirmed",
@@ -72,7 +72,7 @@ export const dates = [
   {
     date: "2024-06-10",
     user: "Elena Diaz",
-    time: "1:45 PM",
+    time: "13:30",
     duration: "1 hora",
     reason: "Consulta de control",
     state: "pending",
@@ -82,7 +82,7 @@ export const dates = [
   {
     date: "2024-06-25",
     user: "Sofía Castro",
-    time: "10:30 AM",
+    time: "10:30",
     duration: "45 minutos",
     reason: "Revisión médica",
     state: "confirmed",
@@ -92,7 +92,7 @@ export const dates = [
   {
     date: "2024-07-12",
     user: "Mario Ortiz",
-    time: "11:00 AM",
+    time: "11:00",
     duration: "30 minutos",
     reason: "Consulta de seguimiento",
     state: "canceled",
@@ -102,7 +102,7 @@ export const dates = [
   {
     date: "2024-05-10",
     user: "Laura Gonzalez",
-    time: "9:00 AM",
+    time: "09:00",
     duration: "30 minutos",
     reason: "Consulta de rutina",
     state: "confirmed",
@@ -112,7 +112,7 @@ export const dates = [
   {
     date: "2024-05-12",
     user: "Ricardo Flores",
-    time: "11:00 AM",
+    time: "11:00",
     duration: "1 hora",
     reason: "Consulta por dolor de espalda",
     state: "pending",
@@ -122,7 +122,7 @@ export const dates = [
   {
     date: "2024-05-12",
     user: "Marta Blanco",
-    time: "2:00 PM",
+    time: "14:00",
     duration: "45 minutos",
     reason: "Revisión de exámenes",
     state: "canceled",
@@ -132,7 +132,7 @@ export const dates = [
   {
     date: "2024-05-20",
     user: "Ignacio Ortega",
-    time: "10:00 AM",
+    time: "10:00",
     duration: "1 hora",
     reason: "Consulta de especialidad",
     state: "confirmed",
@@ -142,7 +142,7 @@ export const dates = [
   {
     date: "2024-05-25",
     user: "Sara Luna",
-    time: "3:00 PM",
+    time: "15:00",
     duration: "30 minutos",
     reason: "Consulta de control",
     state: "pending",
@@ -152,7 +152,7 @@ export const dates = [
   {
     date: "2024-05-30",
     user: "Victor Moreno",
-    time: "4:00 PM",
+    time: "16:00",
     duration: "45 minutos",
     reason: "Consulta por alergias",
     state: "confirmed",
@@ -162,7 +162,7 @@ export const dates = [
   {
     date: "2024-06-02",
     user: "Paula Perez",
-    time: "9:30 AM",
+    time: "09:30",
     duration: "1 hora",
     reason: "Revisión general",
     state: "canceled",
@@ -172,7 +172,7 @@ export const dates = [
   {
     date: "2024-06-05",
     user: "Fernando Ruiz",
-    time: "11:00 AM",
+    time: "11:00",
     duration: "30 minutos",
     reason: "Consulta de seguimiento",
     state: "pending",
@@ -182,7 +182,7 @@ export const dates = [
   {
     date: "2024-06-10",
     user: "Julia Torres",
-    time: "1:00 PM",
+    time: "13:00",
     duration: "45 minutos",
     reason: "Examen de rutina",
     state: "confirmed",
@@ -192,7 +192,7 @@ export const dates = [
   {
     date: "2024-06-15",
     user: "Hector Diaz",
-    time: "10:30 AM",
+    time: "10:30",
     duration: "1 hora",
     reason: "Consulta de especialidad",
     state: "confirmed",
@@ -202,7 +202,7 @@ export const dates = [
   {
     date: "2024-06-20",
     user: "Isabel Fernandez",
-    time: "3:00 PM",
+    time: "15:00",
     duration: "30 minutos",
     reason: "Consulta por hipertensión",
     state: "canceled",
@@ -212,7 +212,7 @@ export const dates = [
   {
     date: "2024-06-22",
     user: "Diego Vega",
-    time: "9:00 AM",
+    time: "09:00",
     duration: "45 minutos",
     reason: "Consulta por diabetes",
     state: "pending",
@@ -222,7 +222,7 @@ export const dates = [
   {
     date: "2024-06-27",
     user: "Carmen Silva",
-    time: "11:30 AM",
+    time: "11:30",
     duration: "1 hora",
     reason: "Revisión de tratamiento",
     state: "confirmed",
@@ -232,7 +232,7 @@ export const dates = [
   {
     date: "2024-07-01",
     user: "Luis Sanchez",
-    time: "2:30 PM",
+    time: "14:30",
     duration: "30 minutos",
     reason: "Consulta de control",
     state: "confirmed",
@@ -242,7 +242,7 @@ export const dates = [
   {
     date: "2024-07-05",
     user: "Veronica Castro",
-    time: "10:00 AM",
+    time: "10:00",
     duration: "45 minutos",
     reason: "Consulta por migrañas",
     state: "canceled",
@@ -252,7 +252,7 @@ export const dates = [
   {
     date: "2024-07-10",
     user: "Andres Marin",
-    time: "1:45 PM",
+    time: "13:30",
     duration: "1 hora",
     reason: "Consulta de rutina",
     state: "pending",
@@ -262,7 +262,7 @@ export const dates = [
   {
     date: "2024-07-12",
     user: "Angela Morales",
-    time: "3:30 PM",
+    time: "15:30",
     duration: "30 minutos",
     reason: "Consulta por insomnio",
     state: "confirmed",
@@ -272,7 +272,7 @@ export const dates = [
   {
     date: "2024-07-18",
     user: "Samuel Paredes",
-    time: "9:15 AM",
+    time: "09:00",
     duration: "45 minutos",
     reason: "Revisión de exámenes",
     state: "canceled",
@@ -280,9 +280,9 @@ export const dates = [
     color: "red",
   },
   {
-    date: "2024-07-20",
+    date: "2024-07-25",
     user: "Monica Reyes",
-    time: "11:45 AM",
+    time: "14:00",
     duration: "1 hora",
     reason: "Consulta por ansiedad",
     state: "pending",
@@ -292,11 +292,11 @@ export const dates = [
   {
     date: "2024-07-25",
     user: "Raul Salazar",
-    time: "2:00 PM",
+    time: "14:00",
     duration: "30 minutos",
     reason: "Consulta de seguimiento",
     state: "confirmed",
-    doctor: "Dr. Doctor Prueba",
+    doctor: "Dr. David Garcia",
     color: "green",
   },
 ];

@@ -84,19 +84,11 @@ export const CreateUserForm = () => {
       {isLoggedIn && (
         <div style={{ height: "100%" }}>
           <Form
-            labelCol={{ span: 6 }}
-            // wrapperCol={{ span: 14 }}
-            // layout="horizontal"
-            style={
-              {
-                // maxWidth: "1000px",
-                // margin: "10em 0 2em 0",
-                // width: "600px",
-                // display: "flex",
-                // flexDirection: "column",
-                // justifyContent: "center",
-              }
-            }
+            labelCol={{ span: 20 }}
+            wrapperCol={{ span: 25 }}
+            labelAlign="left"
+            scrollToFirstError
+            layout="vertical"
           >
             <h1 style={{ textAlign: "center" }}>Create a new user</h1>
 
@@ -214,6 +206,7 @@ export const CreateUserForm = () => {
               name="confirmPassword"
               label="Confirm password"
               dependencies={["password"]}
+              labe
               hasFeedback
               rules={[
                 {

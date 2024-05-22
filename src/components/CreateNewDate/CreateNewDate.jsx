@@ -11,8 +11,8 @@ import {
   Select,
   TreeSelect,
 } from "antd";
+import { DatesContext } from "../../contexts/DatesContext";
 
-// import { Input } from "antd";
 const { Search } = Input;
 
 const formItemLayout = {
@@ -36,24 +36,22 @@ const formItemLayout = {
 
 export const CreateNewDate = () => {
   const { data } = useContext(AuthContext);
-  const [userPacientes, setUserPacientes] = useState([]);
-  const findPacientes = async () => {
-    const response = await data.map((user) => {
-      if (user.roles === "paciente")
-        return { label: user.name, value: user._id };
-    });
-    const pacientes = await response.filter((user) => user!==undefined)
-    return setUserPacientes(pacientes);
-  };
+  const {searchDoctorDates, doctors,userPacientes,
+    findPacientes}= useContext(DatesContext);
+
   
   useEffect(() => {
     findPacientes();
+    searchDoctorDates("all");
   }, []);
 
   const onSearch = (value, _e, info) => console.log(info?.source, value);
   const onChange = (value) => {
     console.log(value);
   };
+  function filter(inputValue, path) {
+    return (path.some(option => (option.label).toLowerCase().indexOf(inputValue.toLowerCase()) > -1));
+  }
   return (
     <Form
       // {...formItemLayout}
@@ -73,19 +71,13 @@ export const CreateNewDate = () => {
           },
         ]}
       >
-        <Cascader
-          options={userPacientes}
-          onChange={onChange}
-          placeholder="Please select"
-          // showSearch={{
-          //   filter,
-          // }}
-          onSearch={(value) => console.log(value)}
-        />
+        <Select 
+        showSearch
+        options={userPacientes} />
       </Form.Item>
 
       <Form.Item
-        label="Patient Code"
+        label="Doctor Name"
         name="Select"
         rules={[
           {
@@ -94,8 +86,24 @@ export const CreateNewDate = () => {
           },
         ]}
       >
-        <Select />
+        <Select 
+        showSearch
+        options={doctors} />
       </Form.Item>
+
+      <Form.Item
+        label="DatePicker"
+        name="DatePicker"
+        rules={[
+          {
+            required: true,
+            message: "Please input!",
+          },
+        ]}
+      >
+        <DatePicker onChange={e=> console.log(dayjs(e))} />
+      </Form.Item>
+
 
       <Form.Item
         label="Treatment"
@@ -111,33 +119,7 @@ export const CreateNewDate = () => {
       </Form.Item>
 
       <Form.Item
-        label="Mentions"
-        name="Mentions"
-        rules={[
-          {
-            required: true,
-            message: "Please input!",
-          },
-        ]}
-      >
-        <Mentions />
-      </Form.Item>
-
-      <Form.Item
-        label="Doctor Code"
-        name="Select"
-        rules={[
-          {
-            required: true,
-            message: "Please input!",
-          },
-        ]}
-      >
-        <Select />
-      </Form.Item>
-
-      <Form.Item
-        label="Box"
+        label="State"
         name="Cascader"
         rules={[
           {
@@ -148,39 +130,13 @@ export const CreateNewDate = () => {
       >
         <Cascader />
       </Form.Item>
-
       <Form.Item
-        label="Telephone Number"
-        name="TreeSelect"
-        rules={[
-          {
-            required: true,
-            message: "Please input!",
-          },
-        ]}
-      >
-        <TreeSelect />
-      </Form.Item>
-
-      <Form.Item
-        label="DatePicker"
-        name="DatePicker"
-        rules={[
-          {
-            required: true,
-            message: "Please input!",
-          },
-        ]}
-      >
-        <DatePicker onChange={e=> console.log(e)} />
-      </Form.Item>
-
-      <Form.Item
-        wrapperCol={{
-          offset: 6,
-          span: 16,
-        }}
-      >
+          wrapperCol={{
+            offset: 6,
+            span: 16,
+          }}
+        >
+ 
         <Button type="primary" htmlType="submit">
           Submit
         </Button>

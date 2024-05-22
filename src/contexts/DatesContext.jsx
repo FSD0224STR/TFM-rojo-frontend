@@ -13,6 +13,7 @@ export const DatesProvider = ({ children }) => {
   const [doctors, setDoctors] = useState();
   const [doctor, setDoctor] = useState();
   const [dayDates, setDayDates] = useState(dates);
+  const [userPacientes, setUserPacientes] = useState([]);
 
   const searchDoctorDates = async (doctor) => {
     // If the user role is admin, should show all the doctors and all the dates
@@ -73,6 +74,15 @@ export const DatesProvider = ({ children }) => {
     return setDayDates(response);
     // console.log(response);
   };
+  
+  const findPacientes = async () => {
+    const response = await data.map((user) => {
+      if (user.roles === "paciente")
+        return { label: `${user.dni} ${user.name} ${user.lastName}`, value: user._id };
+    });
+    const pacientes = await response.filter((user) => user!==undefined)
+    return setUserPacientes(pacientes);
+  };
 
   const dateContextValue = {
     dayDates,
@@ -82,6 +92,8 @@ export const DatesProvider = ({ children }) => {
     setDoctor,
     patientsDates,
     searchDoctorDates,
+    userPacientes,
+    findPacientes
   };
 
   return (

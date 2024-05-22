@@ -46,7 +46,7 @@ export const getMyUser = async (token) => {
 };
 
 export const createUser = async (newUser) => {
-  console.log("new user Api", newUser);
+  // console.log("new user Api", newUser);
   const response = await fetch(`${baseUrl}/user/newUser`, {
     method: "POST",
     headers: {
@@ -76,5 +76,38 @@ export const updateUserPassword = async (user) => {
   //   const error = await response;
   //   return error.status;
   // }
+  return response.status;
+};
+
+export const searchUserUpdate = async (idUser) => {
+  const response = await fetch(`${baseUrl}/user/searchUser`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ id: idUser }),
+  });
+  // console.log(response);
+  if (!response.ok) {
+    const error = await response.json();
+    return { error: error.message };
+  }
+
+  return { data: await response.json() };
+};
+
+export const updateUserApi = async (userData) => {
+  const response = await fetch(`${baseUrl}/user/updateUser`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(userData),
+  });
+  // console.log(response.status);
+  if (!response.ok) {
+    const error = await response;
+    return error.status;
+  }
   return response.status;
 };

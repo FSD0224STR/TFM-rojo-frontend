@@ -6,6 +6,8 @@ import {
   getMyUser,
   createUser,
   updateUserPassword,
+  searchUserUpdate,
+  updateUserApi,
 } from "../apiService/userApi";
 
 export const AuthContext = React.createContext();
@@ -17,7 +19,9 @@ export const AuthProvider = ({ children }) => {
   const [error, setError] = useState(null);
   const [data, setData] = useState([]);
   const [roleData, setDataRole] = useState("");
+  const [userData, setUserData] = useState();
   const [userName, setUserName] = useState("");
+  const [searchUser, setSearchUser] = useState();
 
   const navigate = useNavigate();
 
@@ -59,8 +63,8 @@ export const AuthProvider = ({ children }) => {
       if (response.data) {
         const userRole = await response.data.role;
         setUserName(response.data.name);
+        setUserData(response.data);
         setTimeout(() => {
-          // console.log("Role getMyProfile", userRole);
           GetUsers(userRole, response.data.email);
         }, 500);
       }
@@ -215,6 +219,50 @@ export const AuthProvider = ({ children }) => {
     setLoading(false);
   };
 
+  const searchUpdateUserInfo = async (idUser) => {
+    const response = await searchUserUpdate(idUser);
+
+    return (
+      setSearchUser(response.data),
+      // console.log(searchUser),
+      navigate(`/updateuser/`)
+    );
+  };
+
+  const udpdateUser = async (
+    userId,
+    dni,
+    name,
+    lastName,
+    email,
+    country,
+    province,
+    birthDay,
+    role,
+    userDataChange
+  ) => {
+    setError("");
+    setSuccess("");
+    if (userDataChange) {
+      const data = {
+        id: userId,
+        dni: dni,
+        name: name,
+        lastName: lastName,
+        email: email,
+        country: country,
+        province: province,
+        birthDay: birthDay,
+        role: role,
+      };
+      const response = await updateUserApi(data);
+      if (response === 200) return setSuccess("Successfully updated");
+      return setError("The update was not successful");
+    } else {
+      return setError("No changes were made");
+    }
+  };
+
   const authContextValue = {
     isLoggedIn,
     success,
@@ -223,11 +271,15 @@ export const AuthProvider = ({ children }) => {
     login,
     logout,
     data,
+    userData,
     roleData,
     userName,
     setData,
     createNewUser,
     updatePasswordApi,
+    searchUpdateUserInfo,
+    searchUser,
+    udpdateUser,
   };
 
   useEffect(() => {

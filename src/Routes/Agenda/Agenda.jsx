@@ -11,13 +11,13 @@ export const Agenda = () => {
     useContext(DatesContext);
 
   useEffect(() => {
-    // console.log("Doctor", doctors[0].label);
     if (userData.role === "doctor") {
-      const doctorLoaded = userData.name;
-      // console.log(doctorLoaded);
+      const doctorLoaded = `Dr. ${userData.name}`;
+
       searchDoctorDates(doctorLoaded);
     }
   }, [userData]);
+
   return (
     <div
       style={{
@@ -43,11 +43,17 @@ export const Agenda = () => {
             name="doctors"
             options={doctors}
             showSearch={{ doctor }}
-            onSearch={(e) => setDoctor(e[0])}
+            onSearch={(e) => {
+              setDoctor(e[0]);
+              searchDoctorDates(e[0]);
+            }}
             // value={doctor}
-            onChange={(e) => setDoctor(e[0])}
-            defaultValue={userData.role == "doctor" ? doctors[0].label : "all"}
-            disabled={userData.role == "doctor" ? true : false}
+            onChange={(e) => {
+              setDoctor(e[0]);
+              searchDoctorDates(e[0]);
+            }}
+            defaultValue={userData?.role == "doctor" ? doctors[0].label : "all"}
+            disabled={userData?.role == "doctor" ? true : false}
             placeholder="Select a doctor"
             style={{ width: "20vw" }}
           />

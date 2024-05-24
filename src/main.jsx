@@ -13,7 +13,9 @@ import { CreateNewDate } from "./components/CreateNewDate/CreateNewDate.jsx";
 import { ForgotPassword } from "./Routes/Login/ForgotPassword.jsx";
 import { UpdateUserForm } from "./Routes/CreateUserForm/UpdateUserForm.jsx";
 import { Agenda } from "./Routes/Agenda/Agenda.jsx";
+
 import { MyUser } from "./Routes/MyUser/MyUser.jsx";
+
 
 const router = createBrowserRouter([
   {
@@ -33,7 +35,9 @@ const router = createBrowserRouter([
         element: <CreateUserForm />,
       },
       {
+
         path: "/updateuser/",
+
         element: <UpdateUserForm />,
       },
       {

@@ -32,23 +32,14 @@ import { AuthContext } from "../../contexts/authContext.jsx";
 
 export const UpdateUserForm = () => {
   // Import authcontext
-  const { roleData, isLoggedIn, searchUser, udpdateUser } =
+  const { roleData, isLoggedIn, searchUser, updateUser, setError } =
     useContext(AuthContext);
 
   const [selectProvinces, setSelectProvinces] = useState([]);
 
   // User Data
-  const [userId, setUserId] = useState(`${searchUser?._id}`);
-  var [dni, setDni] = useState(`${searchUser?.dni}`);
-  const [name, setName] = useState(`${searchUser?.name}`);
-  const [lastName, setLastName] = useState(`${searchUser?.lastName}`);
-  const [email, setEmail] = useState(`${searchUser?.email}`);
-  const [country, setCountry] = useState(`${searchUser?.country}`);
-  const [province, setProvince] = useState(`${searchUser?.province}`);
-  const [birthDay, setBirthDay] = useState(`${searchUser?.birthDay}`);
-  const [role, setRole] = useState(`${searchUser?.roles}`);
+  const [province, setProvince] = useState();
   const [userDataChange, setUserDataChange] = useState(false);
-  // const [politicsAccepted, setPoliticsAccepted] = useState(false);
 
   const findProvince = async (e) => {
     // console.log(typeof e);
@@ -96,8 +87,9 @@ export const UpdateUserForm = () => {
               country: searchUser?.country,
               province: searchUser?.province,
               birthDay: dayjs(searchUser?.birthDay),
-              role: searchUser?.roles,
+              roles: searchUser?.roles,
             }}
+            onFinish={userDataChange && updateUser}
             onValuesChange={() => setUserDataChange(true)}
           >
             <h1 style={{ textAlign: "center" }}>
@@ -105,12 +97,7 @@ export const UpdateUserForm = () => {
             </h1>
             {roleData === "admin" && (
               <Form.Item name="userId" label="User Id">
-                <Input
-                  size="large"
-                  placeholder="userId"
-                  value={dni}
-                  disabled={true}
-                />
+                <Input size="large" placeholder="userId" disabled={true} />
               </Form.Item>
             )}
             <Form.Item
@@ -118,21 +105,12 @@ export const UpdateUserForm = () => {
               label="DNI"
               rules={[
                 {
-                  required: false,
+                  required: true,
                   message: "Write your DNI",
                 },
               ]}
             >
-              <Input
-                type="number"
-                size="large"
-                placeholder="DNI"
-                value={dni}
-                onChange={(e) => {
-                  // console.log("name", e.target.value);
-                  setDni(e.target.value);
-                }}
-              />
+              <Input type="number" size="large" placeholder="DNI" />
             </Form.Item>
             <Form.Item
               name="name"
@@ -144,15 +122,7 @@ export const UpdateUserForm = () => {
                 },
               ]}
             >
-              <Input
-                size="large"
-                placeholder="Name"
-                value={name}
-                onChange={(e) => {
-                  // console.log("name", e.target.value);
-                  setName(e.target.value);
-                }}
-              />
+              <Input size="large" placeholder="Name" />
             </Form.Item>
             <Form.Item
               name="lastName"
@@ -164,15 +134,7 @@ export const UpdateUserForm = () => {
                 },
               ]}
             >
-              <Input
-                size="large"
-                placeholder="Last Name"
-                value={lastName}
-                onChange={(e) => {
-                  // console.log("lastName", e.target.value);
-                  setLastName(e.target.value);
-                }}
-              />
+              <Input size="large" placeholder="Last Name" />
             </Form.Item>
             <Form.Item
               name="email"
@@ -184,15 +146,7 @@ export const UpdateUserForm = () => {
                 },
               ]}
             >
-              <Input
-                type="email"
-                size="large"
-                placeholder="E-mail"
-                value={email}
-                onChange={(e) => {
-                  setEmail(e.target.value);
-                }}
-              />
+              <Input type="email" size="large" placeholder="E-mail" />
             </Form.Item>
             <Form.Item
               name="country"
@@ -211,14 +165,13 @@ export const UpdateUserForm = () => {
                 onChange={(e) => {
                   setProvince();
                   findProvince(e);
-                  setCountry(e);
                 }}
               ></Select>
             </Form.Item>
             <Form.Item
               name="province"
               label="Province"
-              dependencies={["pais"]}
+              dependencies={["country"]}
               rules={[
                 {
                   required: false,
@@ -237,7 +190,7 @@ export const UpdateUserForm = () => {
             </Form.Item>
             {roleData === "admin" && (
               <Form.Item
-                name="role"
+                name="roles"
                 label="Role"
                 rules={[
                   {
@@ -249,17 +202,13 @@ export const UpdateUserForm = () => {
                 <Select
                   size="large"
                   options={roleOptions}
-                  value={role}
-                  onChange={(e) => {
-                    setRole(e);
-                  }}
                   placeholder="Rol"
                 ></Select>
               </Form.Item>
             )}
             {roleData !== "admin" && (
               <Form.Item
-                name="Rol"
+                name="roles"
                 label="Rol"
                 rules={[
                   {
@@ -268,12 +217,7 @@ export const UpdateUserForm = () => {
                   },
                 ]}
               >
-                <Input
-                  size="large"
-                  // value="paciente"
-                  placeholder="paciente"
-                  disabled
-                ></Input>
+                <Input size="large" placeholder="paciente" disabled></Input>
               </Form.Item>
             )}
             <Form.Item
@@ -290,9 +234,6 @@ export const UpdateUserForm = () => {
                 size="large"
                 placeholder="Birthday"
                 format={dateFormat}
-                onChange={(e) => {
-                  setBirthDay(e);
-                }}
               />
             </Form.Item>
             <Form.Item
@@ -301,7 +242,7 @@ export const UpdateUserForm = () => {
               rules={[
                 {
                   required: false,
-                  message: "Entre una contraseña valida",
+                  message: "Select a photo",
                 },
               ]}
             >
@@ -319,20 +260,11 @@ export const UpdateUserForm = () => {
               <Button
                 htmlType="submit"
                 size="large"
-                onClick={() => {
-                  udpdateUser(
-                    userId,
-                    dni,
-                    name,
-                    lastName,
-                    email,
-                    country,
-                    province,
-                    birthDay,
-                    role,
-                    userDataChange
-                  );
-                }}
+                onClick={() =>
+                  userDataChange
+                    ? setError("")
+                    : setError("No changes were made")
+                }
               >
                 Update
               </Button>

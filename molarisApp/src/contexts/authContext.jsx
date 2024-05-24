@@ -25,6 +25,11 @@ export const AuthProvider = ({ children }) => {
 
   const navigate = useNavigate();
 
+  const ResetMessages = () => {
+    setError("");
+    setSuccess("");
+  };
+
   const login = async (email, password) => {
     setLoading(true);
     // console.log("data when login", data);
@@ -43,8 +48,7 @@ export const AuthProvider = ({ children }) => {
         // }, 1000);
         setLoading(false);
       } else {
-        setError("");
-        setSuccess("");
+        ResetMessages();
         setLoading(false);
 
         localStorage.setItem("access_token", `Bearer ${response}`);
@@ -88,25 +92,26 @@ export const AuthProvider = ({ children }) => {
         // console.log(response);
         if (role === "admin") {
           setData(response);
-          navigate("/userdata");
+          // navigate("/userdata");
         } else if (role === "doctor") {
           const users = await response.filter((user) => {
             if (user.roles === "paciente") return user;
           });
           setData(users);
-          navigate("/userdata");
+          // navigate("/userdata");
         } else if (role === "paciente") {
           // console.log(response);
           const users = await response.filter((user) => {
             if (user.email === email) return user;
           });
           setData(users);
-          navigate("/userdata");
+          // navigate("/userdata");
         }
-        setDataRole(role);
-        setIsLoggedIn(true);
-        setLoading(false);
       }
+      navigate("/userdata");
+      setDataRole(role);
+      setIsLoggedIn(true);
+      setLoading(false);
     }
   };
 
@@ -124,64 +129,27 @@ export const AuthProvider = ({ children }) => {
     }, 1000);
   };
 
-  // Crear usuario
-  const createNewUser = async (
-    dni,
-    name,
-    lastName,
-    email,
-    password,
-    confirmPassword,
-    country,
-    province,
-    birthDay,
-    role,
-    politicsAccepted
-  ) => {
+  // Crate new user
+  const createNewUser = async (newUser) => {
     setError("");
     setSuccess("");
     setLoading(true);
-    if (password === confirmPassword) {
-      if (password.length >= 6) {
-        if (politicsAccepted) {
-          const newUser = {
-            dni: dni,
-            name: name,
-            lastName: lastName,
-            email: email,
-            password: password,
-            country: country,
-            province: province,
-            birthDay: new Date(String(birthDay)).toISOString(),
-            roles: role,
-          };
-          // console.log(newUser);
+    delete newUser.confirmPassword;
+    console.log("Data Auth Context", newUser);
 
-          const response = await createUser(newUser);
+    const response = await createUser(newUser);
 
-          // console.log(response.error);
-          // .then((response) => {
-          console.log(response);
-          if (response === 200) {
-            setSuccess("User created successfully");
-            // setTimeout(() => {
-            //   navigate("/");
-            // }, 1000);
-          } else if (response === 409) {
-            setError("This user already exists");
-          } else {
-            setError("Problem creating user");
-          }
-          // });
-        } else {
-          setError("You should accept privacy policies");
-        }
-      } else {
-        setError("The password must be at least 6 characters");
-      }
+    if (response === 200) {
+      setSuccess("User created successfully");
+      setTimeout(() => {
+        getMyProfile();
+      }, 1000);
+    } else if (response === 409) {
+      setError("This user already exists");
     } else {
-      setError("The password does not match");
+      setError("Problem creating user");
     }
+
     setLoading(false);
   };
 
@@ -229,38 +197,21 @@ export const AuthProvider = ({ children }) => {
     );
   };
 
-  const udpdateUser = async (
-    userId,
-    dni,
-    name,
-    lastName,
-    email,
-    country,
-    province,
-    birthDay,
-    role,
-    userDataChange
-  ) => {
-    setError("");
-    setSuccess("");
-    if (userDataChange) {
-      const data = {
-        id: userId,
-        dni: dni,
-        name: name,
-        lastName: lastName,
-        email: email,
-        country: country,
-        province: province,
-        birthDay: birthDay,
-        role: role,
-      };
-      const response = await updateUserApi(data);
-      if (response === 200) return setSuccess("Successfully updated");
-      return setError("The update was not successful");
-    } else {
-      return setError("No changes were made");
-    }
+  const updateUser = async (dataUser) => {
+    // ResetMessages();
+    setLoading(true);
+    console.log(dataUser);
+
+    const response = await updateUserApi(dataUser);
+    if (response === 200)
+      return (
+        setSuccess("Successfully updated"),
+        getMyProfile(),
+        setLoading(false),
+        ResetMessages()
+      );
+
+    return setError("The update was not successful"), ResetMessages();
   };
 
   const authContextValue = {
@@ -279,12 +230,12 @@ export const AuthProvider = ({ children }) => {
     updatePasswordApi,
     searchUpdateUserInfo,
     searchUser,
-    udpdateUser,
+    updateUser,
+    setError,
   };
 
   useEffect(() => {
-    setError("");
-    setSuccess("");
+    ResetMessages();
     setLoading(false);
     getMyProfile();
 

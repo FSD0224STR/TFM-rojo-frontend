@@ -29,7 +29,7 @@ export const DatesProvider = ({ children }) => {
         const response = await doctorsResponse.map((doc) => {
           return {
             label: `Dr. ${doc.name} ${doc.lastName}`,
-            value: `${doc._id}`,
+            value: `Dr. ${doc.name} ${doc.lastName}`,
           };
         });
         // console.log(response);
@@ -78,7 +78,7 @@ export const DatesProvider = ({ children }) => {
     // console.log("response length", response.length);
     const datesList = DatesHours.map((hour) => {
       if (response.length > 0) {
-        for (var i = 0; i < 2; i++) {
+        for (var i = 0; i < 19; i++) {
           // console.log(i, response[i].time);
           if (response[i]?.time === hour) {
             // alert(hour);
@@ -92,9 +92,9 @@ export const DatesProvider = ({ children }) => {
       }
     });
 
-    console.log("dates list", datesList);
+    // console.log("dates list", datesList);
 
-    return setDayDates(datesList);
+    return setDayDates(datesList),datesList;
     // console.log(response);
   };
   
@@ -107,6 +107,22 @@ export const DatesProvider = ({ children }) => {
     return setUserPacientes(pacientes);
   };
 
+  const [availableHoursData, getAvailableHoursData ]= useState([])
+  const getAvailableHours = async (day, doctorSelected) => {
+    // console.log(doctorSelected)
+    const response = await searchDayDates(day,doctorSelected)
+    const hours = response.filter((date)=>{
+      if (date.user === undefined){
+        return date
+      }
+    })
+    const hoursA = hours.map((hour)=>{
+      return ({label: hour.time ,value: hour.time})
+    })
+    // console.log(hoursA)
+    getAvailableHoursData(hoursA)
+  }
+
   const dateContextValue = {
     dayDates,
     searchDayDates,
@@ -116,7 +132,9 @@ export const DatesProvider = ({ children }) => {
     patientsDates,
     searchDoctorDates,
     userPacientes,
-    findPacientes
+    findPacientes,
+    getAvailableHours,
+    availableHoursData
   };
 
   return (

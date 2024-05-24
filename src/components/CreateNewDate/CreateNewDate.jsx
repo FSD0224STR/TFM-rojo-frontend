@@ -12,6 +12,8 @@ import {
   TreeSelect,
 } from "antd";
 import { DatesContext } from "../../contexts/DatesContext";
+import dayjs from "dayjs";
+
 
 const { Search } = Input;
 
@@ -36,7 +38,8 @@ const formItemLayout = {
 
 export const CreateNewDate = () => {
   const { data } = useContext(AuthContext);
-  const {searchDoctorDates, doctors, userPacientes, findPacientes}= useContext(DatesContext);
+  const {searchDoctorDates, doctors, userPacientes, findPacientes, getAvailableHours, availableHoursData}= useContext(DatesContext);
+  const [doctorSelected, setDoctorSelected] = useState("")
 
   useEffect(() => {
     console.log(doctors);
@@ -62,7 +65,7 @@ export const CreateNewDate = () => {
     >
       <Form.Item
         label="Patient"
-        name="Input"
+        name="patient"
         rules={[
           {
             required: true,
@@ -89,6 +92,8 @@ export const CreateNewDate = () => {
         <Select 
         showSearch
         filterOption={filterOption}
+        value={doctorSelected}
+        onChange={(e)=>setDoctorSelected(e)}
         options={doctors} />
       </Form.Item>
 
@@ -102,7 +107,22 @@ export const CreateNewDate = () => {
           },
         ]}
       >
-        <DatePicker onChange={e=> console.log(dayjs(e))} />
+        <DatePicker onChange={e=>getAvailableHours(dayjs(e).format("YYYY-MM-DD"), doctorSelected)} />
+      </Form.Item>
+
+      <Form.Item
+        label="Select hour"
+        name="hour"
+        rules={[
+          {
+            required: true,
+            message: "Please input!",
+          },
+        ]}
+      >
+        <Select 
+        options={availableHoursData}
+         />
       </Form.Item>
 
 

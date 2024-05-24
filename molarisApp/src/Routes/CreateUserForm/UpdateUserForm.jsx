@@ -1,6 +1,8 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
+
 import dayjs from "dayjs";
+
 import {
   PlusOutlined,
   EyeInvisibleOutlined,
@@ -40,6 +42,7 @@ export const UpdateUserForm = () => {
   // User Data
   const [province, setProvince] = useState();
   const [userDataChange, setUserDataChange] = useState(false);
+  // const [politicsAccepted, setPoliticsAccepted] = useState(false);
 
   const findProvince = async (e) => {
     // console.log(typeof e);
@@ -190,7 +193,7 @@ export const UpdateUserForm = () => {
             </Form.Item>
             {roleData === "admin" && (
               <Form.Item
-                name="roles"
+                name="role"
                 label="Role"
                 rules={[
                   {
@@ -202,6 +205,10 @@ export const UpdateUserForm = () => {
                 <Select
                   size="large"
                   options={roleOptions}
+                  value={role}
+                  onChange={(e) => {
+                    setRole(e);
+                  }}
                   placeholder="Rol"
                 ></Select>
               </Form.Item>
@@ -234,6 +241,9 @@ export const UpdateUserForm = () => {
                 size="large"
                 placeholder="Birthday"
                 format={dateFormat}
+                onChange={(e) => {
+                  setBirthDay(e);
+                }}
               />
             </Form.Item>
             <Form.Item
@@ -253,6 +263,7 @@ export const UpdateUserForm = () => {
                 </button>
               </Upload>
             </Form.Item>
+
             <br />
             <div
               style={{ display: "flex", gap: "1em", justifyContent: "center" }}
@@ -260,11 +271,20 @@ export const UpdateUserForm = () => {
               <Button
                 htmlType="submit"
                 size="large"
-                onClick={() =>
-                  userDataChange
-                    ? setError("")
-                    : setError("No changes were made")
-                }
+                onClick={() => {
+                  udpdateUser(
+                    userId,
+                    dni,
+                    name,
+                    lastName,
+                    email,
+                    country,
+                    province,
+                    birthDay,
+                    role,
+                    userDataChange
+                  );
+                }}
               >
                 Update
               </Button>

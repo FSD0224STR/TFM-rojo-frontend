@@ -177,10 +177,12 @@ export const Users = () => {
                             <DiffOutlined />
                           </Link>
                         ),
+
                         <Link
                           key="editUser"
                           onClick={() => searchUpdateUserInfo(item._id)}
                         >
+
                           <EditOutlined />
                         </Link>,
                         roleData !== "paciente" && (

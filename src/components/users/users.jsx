@@ -33,7 +33,7 @@ export const Users = () => {
 
   useEffect(() => {
     setListData(data);
-  }, [data]);
+  }, []);
 
   return (
     <>

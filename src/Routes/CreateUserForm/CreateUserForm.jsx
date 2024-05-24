@@ -37,22 +37,13 @@ import { AuthContext } from "../../contexts/authContext.jsx";
 
 export const CreateUserForm = () => {
   // const [passwordVisible, setPasswordVisible] = useState(false);
-  const { createNewUser, roleData, isLoggedIn } = useContext(AuthContext);
+  const { createNewUser, roleData, isLoggedIn, setError } =
+    useContext(AuthContext);
   // const [selectCountry, setSelectCountry] = useState([]);
   const [selectProvinces, setSelectProvinces] = useState([]);
 
   // User Data
-  const [dni, setDni] = useState();
-  const [name, setName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [country, setCountry] = useState("");
   const [province, setProvince] = useState("");
-  const [birthDay, setBirthDay] = useState("");
-  const [role, setRole] = useState(roleData === "admin" ? "" : "paciente");
-  const [politicsAccepted, setPoliticsAccepted] = useState(false);
 
   const findProvince = async (e) => {
     // console.log(typeof e);
@@ -86,35 +77,29 @@ export const CreateUserForm = () => {
           <Form
             labelCol={{ span: 20 }}
             wrapperCol={{ span: 25 }}
+            labelWrap={{ wrap: "wrap" }}
             labelAlign="left"
             scrollToFirstError
             layout="vertical"
+            onFinish={createNewUser}
+            onFinishFailed={() => setError("You must fill the form")}
           >
             <h1 style={{ textAlign: "center" }}>Create a new user</h1>
 
             <Form.Item
-              name="DNI"
+              name="dni"
               label="DNI"
               rules={[
                 {
-                  required: false,
+                  required: true,
                   message: "Write your DNI",
                 },
               ]}
             >
-              <Input
-                type="number"
-                size="large"
-                placeholder="DNI"
-                value={dni}
-                onChange={(e) => {
-                  // console.log("name", e.target.value);
-                  setDni(e.target.value);
-                }}
-              />
+              <Input type="number" size="large" placeholder="DNI" />
             </Form.Item>
             <Form.Item
-              name="Name"
+              name="name"
               label="Name"
               rules={[
                 {
@@ -123,15 +108,7 @@ export const CreateUserForm = () => {
                 },
               ]}
             >
-              <Input
-                size="large"
-                placeholder="Name"
-                value={name}
-                onChange={(e) => {
-                  // console.log("name", e.target.value);
-                  setName(e.target.value);
-                }}
-              />
+              <Input size="large" placeholder="Name" />
             </Form.Item>
             <Form.Item
               name="lastName"
@@ -143,15 +120,7 @@ export const CreateUserForm = () => {
                 },
               ]}
             >
-              <Input
-                size="large"
-                placeholder="Last Name"
-                value={lastName}
-                onChange={(e) => {
-                  // console.log("lastName", e.target.value);
-                  setLastName(e.target.value);
-                }}
-              />
+              <Input size="large" placeholder="Last Name" />
             </Form.Item>
             <Form.Item
               name="email"
@@ -159,19 +128,11 @@ export const CreateUserForm = () => {
               rules={[
                 {
                   required: true,
-                  message: "Ingrese un email valido",
+                  message: "Write a valid email address",
                 },
               ]}
             >
-              <Input
-                type="email"
-                size="large"
-                placeholder="E-mail"
-                value={email}
-                onChange={(e) => {
-                  setEmail(e.target.value);
-                }}
-              />
+              <Input type="email" size="large" placeholder="E-mail" />
             </Form.Item>
             <Form.Item
               name="password"
@@ -179,7 +140,7 @@ export const CreateUserForm = () => {
               rules={[
                 {
                   validator: (_, value) =>
-                    value.split("").length >= 6
+                    value.length >= 6
                       ? Promise.resolve()
                       : Promise.reject(
                           new Error(
@@ -194,13 +155,7 @@ export const CreateUserForm = () => {
               ]}
               hasFeedback
             >
-              <Input.Password
-                value={password}
-                onChange={(e) => {
-                  setPassword(e.target.value);
-                }}
-                placeholder="Password"
-              />
+              <Input.Password placeholder="Password" />
             </Form.Item>
             <Form.Item
               name="confirmPassword"
@@ -211,28 +166,21 @@ export const CreateUserForm = () => {
               rules={[
                 {
                   required: true,
-                  message: "Por favor confirmar la contraseña",
+                  message: "Confirm password is required",
                 },
                 ({ getFieldValue }) => ({
                   validator(_, value) {
-                    if (!value || getFieldValue("contraseña") === value) {
+                    if (!value || getFieldValue("password") === value) {
                       return Promise.resolve();
                     }
                     return Promise.reject(
-                      new Error("Las contraseñas no coinciden")
+                      new Error("The password do not match")
                     );
                   },
                 }),
               ]}
             >
-              <Input.Password
-                value={confirmPassword}
-                onChange={(e) => {
-                  // console.log("Confirm password", e.target.value);
-                  setConfirmPassword(e.target.value);
-                }}
-                placeholder="Confirm password"
-              />
+              <Input.Password placeholder="Confirm password" />
             </Form.Item>
             <Form.Item
               name="country"
@@ -245,20 +193,20 @@ export const CreateUserForm = () => {
               ]}
             >
               <Select
+                showSearch
                 size="large"
                 placeholder="Country"
                 options={countries}
                 onChange={(e) => {
                   setProvince();
                   findProvince(e);
-                  setCountry(e);
                 }}
               ></Select>
             </Form.Item>
             <Form.Item
-              name="Province"
+              name="province"
               label="Province"
-              dependencies={["pais"]}
+              dependencies={["country"]}
               rules={[
                 {
                   required: false,
@@ -267,15 +215,16 @@ export const CreateUserForm = () => {
               ]}
             >
               <Select
+                showSearch
                 size="large"
                 placeholder="Province"
                 options={selectProvinces}
-                onChange={(e) => setProvince(e)}
+                // onChange={(e) => setProvince(e)}
               ></Select>
             </Form.Item>
             {roleData === "admin" && (
               <Form.Item
-                name="Rol"
+                name="roles"
                 label="Rol"
                 rules={[
                   {
@@ -287,15 +236,13 @@ export const CreateUserForm = () => {
                 <Select
                   size="large"
                   options={roleOptions}
-                  value={role}
-                  onChange={(e) => setRole(e)}
                   placeholder="Rol"
                 ></Select>
               </Form.Item>
             )}
             {roleData !== "admin" && (
               <Form.Item
-                name="Rol"
+                name="roles"
                 label="Rol"
                 rules={[
                   {
@@ -304,16 +251,11 @@ export const CreateUserForm = () => {
                   },
                 ]}
               >
-                <Input
-                  size="large"
-                  // value="paciente"
-                  placeholder="paciente"
-                  disabled
-                ></Input>
+                <Input size="large" placeholder="paciente" disabled></Input>
               </Form.Item>
             )}
             <Form.Item
-              name="Birthday"
+              name="birthDay"
               label="Birthday"
               rules={[
                 {
@@ -322,11 +264,7 @@ export const CreateUserForm = () => {
                 },
               ]}
             >
-              <DatePicker
-                size="large"
-                placeholder="Birthday"
-                onChange={(e) => setBirthDay(e)}
-              />
+              <DatePicker size="large" placeholder="Birthday" />
             </Form.Item>
             <Form.Item
               name="profilePhoto"
@@ -345,52 +283,10 @@ export const CreateUserForm = () => {
                 </button>
               </Upload>
             </Form.Item>
-            <Form.Item
-              name="agreement"
-              valuePropName="checked"
-              rules={[
-                {
-                  validator: (_, value) =>
-                    value
-                      ? Promise.resolve()
-                      : Promise.reject(new Error("Should accept agreement")),
-                },
-              ]}
-              // {...tailFormItemLayout}
-              style={{ textAlign: "center" }}
-            >
-              <Checkbox
-                onChange={() => {
-                  setPoliticsAccepted(!politicsAccepted);
-                  // console.log("onchange", politicsAccepted);
-                }}
-              >
-                I have read and accept <a href="">privacy policies</a>
-              </Checkbox>
-            </Form.Item>
-            <br />
             <div
               style={{ display: "flex", gap: "1em", justifyContent: "center" }}
             >
-              <Button
-                htmlType="submit"
-                size="large"
-                onClick={() => {
-                  createNewUser(
-                    dni,
-                    name,
-                    lastName,
-                    email,
-                    password,
-                    confirmPassword,
-                    country,
-                    province,
-                    birthDay,
-                    role,
-                    politicsAccepted
-                  );
-                }}
-              >
+              <Button htmlType="submit" size="large">
                 Create
               </Button>
               <Button size="large">
@@ -398,7 +294,6 @@ export const CreateUserForm = () => {
               </Button>
             </div>
           </Form>
-          {/* <ToastContainer /> */}
         </div>
       )}
     </>

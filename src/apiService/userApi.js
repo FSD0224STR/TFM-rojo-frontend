@@ -104,10 +104,9 @@ export const updateUserApi = async (userData) => {
     },
     body: JSON.stringify(userData),
   });
-  // console.log(response.status);
+  console.log(response.status);
   if (!response.ok) {
-    const error = await response;
-    return error.status;
+    return response.status;
   }
   return response.status;
 };

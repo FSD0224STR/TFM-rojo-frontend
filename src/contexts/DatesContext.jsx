@@ -27,7 +27,7 @@ export const DatesProvider = ({ children }) => {
         const response = await doctorsResponse.map((doc) => {
           return {
             label: `Dr. ${doc.name} ${doc.lastName}`,
-            value: `Dr. ${doc.name} ${doc.lastName}`,
+            value: `${doc._id}`,
           };
         });
         // console.log(response);
@@ -78,7 +78,7 @@ export const DatesProvider = ({ children }) => {
   const findPacientes = async () => {
     const response = await data.map((user) => {
       if (user.roles === "paciente")
-        return { label: `${user.dni} ${user.name} ${user.lastName}`, value: user._id };
+        return { label: `${user.name} ${user.lastName}`, value: user._id };
     });
     const pacientes = await response.filter((user) => user!==undefined)
     return setUserPacientes(pacientes);

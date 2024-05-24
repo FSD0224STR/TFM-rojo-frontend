@@ -36,11 +36,11 @@ const formItemLayout = {
 
 export const CreateNewDate = () => {
   const { data } = useContext(AuthContext);
-  const {searchDoctorDates, doctors,userPacientes,
-    findPacientes}= useContext(DatesContext);
+  const {searchDoctorDates, doctors, userPacientes, findPacientes}= useContext(DatesContext);
 
-  
   useEffect(() => {
+    console.log(doctors);
+    console.log(userPacientes);
     findPacientes();
     searchDoctorDates("all");
   }, []);
@@ -49,9 +49,8 @@ export const CreateNewDate = () => {
   const onChange = (value) => {
     console.log(value);
   };
-  function filter(inputValue, path) {
-    return (path.some(option => (option.label).toLowerCase().indexOf(inputValue.toLowerCase()) > -1));
-  }
+  const filterOption = (input, option) =>
+    (option?.label ?? '').toLowerCase().includes(input.toLowerCase());
   return (
     <Form
       // {...formItemLayout}
@@ -73,6 +72,7 @@ export const CreateNewDate = () => {
       >
         <Select 
         showSearch
+        filterOption={filterOption}
         options={userPacientes} />
       </Form.Item>
 
@@ -88,6 +88,7 @@ export const CreateNewDate = () => {
       >
         <Select 
         showSearch
+        filterOption={filterOption}
         options={doctors} />
       </Form.Item>
 

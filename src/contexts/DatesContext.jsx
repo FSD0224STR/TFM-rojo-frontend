@@ -16,7 +16,7 @@ export const DatesProvider = ({ children }) => {
   const [dayDates, setDayDates] = useState(dates);
   const [enableDayHours, setEnableDayHours] = useState();
   const [enableDayHoursList, setEnableDayHoursList] = useState();
-  // const [enableDayHoursBoolean, setEnableDayHoursBoolean] = useState();
+  const [userPacientes, setUserPacientes] = useState();
 
   const searchEnabledHours = (datesAssigned) => {
     const response = DatesHours.map((hour) => {
@@ -33,7 +33,9 @@ export const DatesProvider = ({ children }) => {
       }
     });
     setEnableDayHours(response);
-    setEnableDayHoursList(response.map((hour) => hour.enable === true));
+    setEnableDayHoursList(response.map((hour) => {if (hour.enable === true){
+      return {label: hour.label, value: hour.value}
+    }}).filter((hour)=> hour !==undefined));
   };
 
   const searchDoctors = async () => {
@@ -71,7 +73,7 @@ export const DatesProvider = ({ children }) => {
     });
     // console.log("response", response);
     searchEnabledHours(response);
-    return setDayDates(response);
+    setDayDates(response);
   };
   
   const findPacientes = async () => {
@@ -83,21 +85,6 @@ export const DatesProvider = ({ children }) => {
     return setUserPacientes(pacientes);
   };
 
-  const [availableHoursData, getAvailableHoursData ]= useState([])
-  const getAvailableHours = async (day, doctorSelected) => {
-    // console.log(doctorSelected)
-    const response = await searchDayDates(day,doctorSelected)
-    const hours = response.filter((date)=>{
-      if (date.user === undefined){
-        return date
-      }
-    })
-    const hoursA = hours.map((hour)=>{
-      return ({label: hour.time ,value: hour.time})
-    })
-    // console.log(hoursA)
-    getAvailableHoursData(hoursA)
-  }
 
   const dateContextValue = {
     searchDoctors,
@@ -109,6 +96,9 @@ export const DatesProvider = ({ children }) => {
     patientsDates,
     searchDoctorDates,
     enableDayHours,
+    findPacientes,
+    userPacientes,
+    enableDayHoursList
   };
 
   return (

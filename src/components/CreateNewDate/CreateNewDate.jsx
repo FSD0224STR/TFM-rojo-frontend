@@ -13,7 +13,7 @@ import {
 } from "antd";
 import { DatesContext } from "../../contexts/DatesContext";
 import dayjs from "dayjs";
-
+import { durationDate } from "./durationDate";
 
 const { Search } = Input;
 
@@ -38,12 +38,21 @@ const formItemLayout = {
 
 export const CreateNewDate = () => {
   const { data } = useContext(AuthContext);
-  const {searchDoctorDates, doctors, userPacientes, findPacientes, getAvailableHours, availableHoursData}= useContext(DatesContext);
-  const [doctorSelected, setDoctorSelected] = useState("")
+  const {
+    searchDoctorDates,
+    doctors,
+    userPacientes,
+    findPacientes,
+    searchDayDates,
+    searchDoctors,
+    enableDayHoursList,
+  } = useContext(DatesContext);
+  const [doctorSelected, setDoctorSelected] = useState("");
 
   useEffect(() => {
     console.log(doctors);
     console.log(userPacientes);
+    searchDoctors();
     findPacientes();
     searchDoctorDates("all");
   }, []);
@@ -53,14 +62,14 @@ export const CreateNewDate = () => {
     console.log(value);
   };
   const filterOption = (input, option) =>
-    (option?.label ?? '').toLowerCase().includes(input.toLowerCase());
+    (option?.label ?? "").toLowerCase().includes(input.toLowerCase());
   return (
     <Form
       // {...formItemLayout}
       variant="filled"
       style={{
         maxWidth: 1500,
-        height: "100%"
+        height: "100%",
       }}
     >
       <Form.Item
@@ -73,10 +82,11 @@ export const CreateNewDate = () => {
           },
         ]}
       >
-        <Select 
-        showSearch
-        filterOption={filterOption}
-        options={userPacientes} />
+        <Select
+          showSearch
+          filterOption={filterOption}
+          options={userPacientes}
+        />
       </Form.Item>
 
       <Form.Item
@@ -89,12 +99,13 @@ export const CreateNewDate = () => {
           },
         ]}
       >
-        <Select 
-        showSearch
-        filterOption={filterOption}
-        value={doctorSelected}
-        onChange={(e)=>setDoctorSelected(e)}
-        options={doctors} />
+        <Select
+          showSearch
+          filterOption={filterOption}
+          value={doctorSelected}
+          onChange={(e) => setDoctorSelected(e)}
+          options={doctors}
+        />
       </Form.Item>
 
       <Form.Item
@@ -107,7 +118,11 @@ export const CreateNewDate = () => {
           },
         ]}
       >
-        <DatePicker onChange={e=>getAvailableHours(dayjs(e).format("YYYY-MM-DD"), doctorSelected)} />
+        <DatePicker
+          onChange={(e) =>
+            searchDayDates(dayjs(e).format("YYYY-MM-DD"), doctorSelected)
+          }
+        />
       </Form.Item>
 
       <Form.Item
@@ -120,15 +135,25 @@ export const CreateNewDate = () => {
           },
         ]}
       >
-        <Select 
-        options={availableHoursData}
-         />
+        <Select options={enableDayHoursList} />
       </Form.Item>
 
+      <Form.Item
+        label="Duration"
+        name="duration"
+        rules={[
+          {
+            required: true,
+            message: "Please input!",
+          },
+        ]}
+      >
+        <Select options={durationDate} />
+      </Form.Item>
 
       <Form.Item
         label="Treatment"
-        name="TextArea"
+        name="reason"
         rules={[
           {
             required: true,
@@ -141,7 +166,7 @@ export const CreateNewDate = () => {
 
       <Form.Item
         label="State"
-        name="Cascader"
+        name="state"
         rules={[
           {
             required: true,
@@ -149,15 +174,34 @@ export const CreateNewDate = () => {
           },
         ]}
       >
-        <Cascader />
+        <Select
+          options={[
+            { label: "confirmed", value: "confirmed" },
+            { label: "pending", value: "pending" },
+            { label: "canceled", value: "canceled" },
+          ]}
+        />
       </Form.Item>
+
+      {/* <Form.Item
+        label="State"
+        name="color"
+        rules={[
+          {
+            required: true,
+            message: "Please input!",
+          },
+        ]}
+      >
+        <Select options={durationDate} />
+      </Form.Item> */}
+
       <Form.Item
-          wrapperCol={{
-            offset: 6,
-            span: 16,
-          }}
-        >
- 
+        wrapperCol={{
+          offset: 6,
+          span: 16,
+        }}
+      >
         <Button type="primary" htmlType="submit">
           Submit
         </Button>

@@ -1,36 +1,18 @@
-import React, { useContext, useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { useContext, useState } from "react";
+import { Link } from "react-router-dom";
 
 import dayjs from "dayjs";
 
-import {
-  PlusOutlined,
-  EyeInvisibleOutlined,
-  EyeTwoTone,
-} from "@ant-design/icons";
+import { PlusOutlined } from "@ant-design/icons";
 
-import {
-  Button,
-  Cascader,
-  Checkbox,
-  DatePicker,
-  Form,
-  Input,
-  InputNumber,
-  Radio,
-  Select,
-  Slider,
-  Switch,
-  TreeSelect,
-  Upload,
-  notification,
-  Space,
-} from "antd";
+import { Button, DatePicker, Form, Input, Select, Upload } from "antd";
+const { Option } = Select;
 
 // BD for countries
 import { countries } from "./Countries.js";
 import { provinces } from "./Provinces.js";
 import { AuthContext } from "../../contexts/authContext.jsx";
+import { CountryCodes } from "./ContryCodes.js";
 
 export const UpdateUserForm = () => {
   // Import authcontext
@@ -69,6 +51,30 @@ export const UpdateUserForm = () => {
     { value: "doctor" },
   ];
 
+  const prefixSelector = (
+    <Form.Item name="prefix" noStyle>
+      <Select
+        style={{
+          width: 70,
+        }}
+      >
+        {CountryCodes.map((country) => {
+          return (
+            <>
+              <Option value={country.code}>
+                <img
+                  src={country.flag}
+                  alt=""
+                  style={{ width: "100%", height: "100%" }}
+                />
+              </Option>
+            </>
+          );
+        })}
+      </Select>
+    </Form.Item>
+  );
+
   const dateFormat = "DD-MM-YYYY";
 
   return (
@@ -91,6 +97,10 @@ export const UpdateUserForm = () => {
               province: searchUser?.province,
               birthDay: dayjs(searchUser?.birthDay),
               roles: searchUser?.roles,
+              phone: searchUser?.phone,
+              prefix: searchUser?.prefix,
+              address: searchUser?.address,
+              photo: searchUser?.photo,
             }}
             onFinish={userDataChange && updateUser}
             onValuesChange={() => setUserDataChange(true)}
@@ -103,6 +113,8 @@ export const UpdateUserForm = () => {
                 <Input size="large" placeholder="userId" disabled={true} />
               </Form.Item>
             )}
+
+            {/* DNI */}
             <Form.Item
               name="dni"
               label="DNI"
@@ -115,6 +127,8 @@ export const UpdateUserForm = () => {
             >
               <Input type="number" size="large" placeholder="DNI" />
             </Form.Item>
+
+            {/* Name */}
             <Form.Item
               name="name"
               label="Name"
@@ -127,6 +141,8 @@ export const UpdateUserForm = () => {
             >
               <Input size="large" placeholder="Name" />
             </Form.Item>
+
+            {/* Last Name */}
             <Form.Item
               name="lastName"
               label="Last Name"
@@ -139,18 +155,54 @@ export const UpdateUserForm = () => {
             >
               <Input size="large" placeholder="Last Name" />
             </Form.Item>
+
+            {/* Email */}
             <Form.Item
               name="email"
               label="E-mail"
               rules={[
                 {
                   required: true,
-                  message: "Ingrese un email valido",
+                  message: "Write a valid email address",
                 },
               ]}
             >
               <Input type="email" size="large" placeholder="E-mail" />
             </Form.Item>
+
+            {/* Phone */}
+            <Form.Item
+              name="phone"
+              label="Phone Number"
+              rules={[
+                {
+                  required: true,
+                  message: "Write your phone number",
+                },
+              ]}
+            >
+              <Input
+                size="large"
+                placeholder="Phone number"
+                addonBefore={prefixSelector}
+              />
+            </Form.Item>
+
+            {/* Adress */}
+            <Form.Item
+              name="address"
+              label="Address"
+              rules={[
+                {
+                  required: true,
+                  message: "Write your address",
+                },
+              ]}
+            >
+              <Input size="large" placeholder="Adress" />
+            </Form.Item>
+
+            {/* Country */}
             <Form.Item
               name="country"
               label="Country"
@@ -171,6 +223,8 @@ export const UpdateUserForm = () => {
                 }}
               ></Select>
             </Form.Item>
+
+            {/* Province */}
             <Form.Item
               name="province"
               label="Province"
@@ -191,9 +245,11 @@ export const UpdateUserForm = () => {
                 }}
               ></Select>
             </Form.Item>
+
+            {/* Roles */}
             {roleData === "admin" && (
               <Form.Item
-                name="role"
+                name="roles"
                 label="Role"
                 rules={[
                   {
@@ -205,10 +261,6 @@ export const UpdateUserForm = () => {
                 <Select
                   size="large"
                   options={roleOptions}
-                  value={role}
-                  onChange={(e) => {
-                    setRole(e);
-                  }}
                   placeholder="Rol"
                 ></Select>
               </Form.Item>
@@ -227,6 +279,8 @@ export const UpdateUserForm = () => {
                 <Input size="large" placeholder="paciente" disabled></Input>
               </Form.Item>
             )}
+
+            {/* BirthDay */}
             <Form.Item
               name="birthDay"
               label="Birthday"
@@ -241,11 +295,10 @@ export const UpdateUserForm = () => {
                 size="large"
                 placeholder="Birthday"
                 format={dateFormat}
-                onChange={(e) => {
-                  setBirthDay(e);
-                }}
               />
             </Form.Item>
+
+            {/* ProfilePhoto */}
             <Form.Item
               name="profilePhoto"
               label="Profile photo"
@@ -268,24 +321,7 @@ export const UpdateUserForm = () => {
             <div
               style={{ display: "flex", gap: "1em", justifyContent: "center" }}
             >
-              <Button
-                htmlType="submit"
-                size="large"
-                onClick={() => {
-                  udpdateUser(
-                    userId,
-                    dni,
-                    name,
-                    lastName,
-                    email,
-                    country,
-                    province,
-                    birthDay,
-                    role,
-                    userDataChange
-                  );
-                }}
-              >
+              <Button htmlType="submit" size="large">
                 Update
               </Button>
               <Button size="large">

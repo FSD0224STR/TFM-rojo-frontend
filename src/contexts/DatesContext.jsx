@@ -14,88 +14,64 @@ export const DatesProvider = ({ children }) => {
   const [doctors, setDoctors] = useState();
   const [doctor, setDoctor] = useState(userData?.role === "admin" ? "all" : "");
   const [dayDates, setDayDates] = useState(dates);
-  const [userPacientes, setUserPacientes] = useState([]);
+  const [enableDayHours, setEnableDayHours] = useState();
+  const [enableDayHoursList, setEnableDayHoursList] = useState();
+  // const [enableDayHoursBoolean, setEnableDayHoursBoolean] = useState();
 
-  const searchDoctorDates = async (doctor) => {
-    // If the user role is admin, should show all the doctors and all the dates
-    if (userData?.role === "admin") {
-      // console.log(doctor);
-      if (doctor === "" || doctor === undefined || doctor === "all") {
-        // If Doctor is undefined, should show all the dates
-        const doctorsResponse = await data.filter(
-          (user) => user.roles === "doctor"
-        );
-        // console.log(doctorsResponse);
-        const response = await doctorsResponse.map((doc) => {
-          return {
-            label: `Dr. ${doc.name} ${doc.lastName}`,
-            value: `Dr. ${doc.name} ${doc.lastName}`,
-          };
-        });
-        // console.log(response);
-        return (
-          setPatientsDates(dates),
-          setDoctors([...response, { label: "All", value: "all" }]),
-          setDayDates([])
-        );
-      } else {
-        // If Doctor is defined, should show only the dates of that doctor
-        return (
-          setPatientsDates(dates.filter((date) => doctor === date.doctor)),
-          setDayDates([])
-        );
+  const searchEnabledHours = (datesAssigned) => {
+    const response = DatesHours.map((hour) => {
+      for (let i = 0; i < datesAssigned.length; i++) {
+        if (
+          (hour >= datesAssigned[i].time &&
+            hour < datesAssigned[i]?.timeFinish) ||
+          hour === datesAssigned[i].time
+        ) {
+          return { label: hour, value: hour, enable: false };
+        } else {
+          return { label: hour, value: hour, enable: true };
+        }
       }
-    } else {
-      // if the user is a doctor he can only see his dates
-      const doctorLogin = [
-        {
-          label: `Dr. ${userData.name}`,
-          value: `Dr. ${userData.name}`,
-        },
-      ];
-      return (
-        setDoctors(doctorLogin),
-        setPatientsDates(dates.filter((date) => doctor === date.doctor))
+    });
+    setEnableDayHours(response);
+    setEnableDayHoursList(response.map((hour) => hour.enable === true));
+  };
+
+  const searchDoctors = async () => {
+    if (userData.role === "admin") {
+      const response = await data.filter((user) => user.roles === "doctor");
+      setDoctors(
+        response.map((user) => {
+          return {
+            label: `Dr. ${user.name} ${user.lastName}`,
+            value: `Dr. ${user.name} ${user.lastName}`,
+          };
+        })
       );
+    } else if (userData.role === "doctor") {
+      setDoctors({
+        label: `Dr. ${userData.name}`,
+        value: `Dr. ${userData.name}`,
+      });
     }
   };
 
+  const searchDoctorDates = async (doctorSelected) => {
+    const response = await dates.filter((date) => {
+      if (date.doctor === doctorSelected) return date;
+    });
+    setPatientsDates(response);
+  };
+
   const searchDayDates = async (date, doctor) => {
-    // console.log(date);
-    // console.log(doctor);
     const day = date !== "" ? date : dayjs().format("YYYY-MM-DD");
     const response = await dates.filter((userDate) => {
-      if (
-        (userDate.doctor === doctor || doctor === "all") &&
-        userDate.date === day
-      ) {
+      if (userDate.doctor === doctor && userDate.date === day) {
         return userDate;
       }
     });
-    console.log("response", response);
-
-    // Concat the dates with the schedule
-    // console.log("response length", response.length);
-    const datesList = DatesHours.map((hour) => {
-      if (response.length > 0) {
-        for (var i = 0; i < 19; i++) {
-          // console.log(i, response[i].time);
-          if (response[i]?.time === hour) {
-            // alert(hour);
-            // console.log(response[i]);
-            return response[i];
-          }
-        }
-        return { date: date, time: hour };
-      } else {
-        return { date: date, time: hour };
-      }
-    });
-
-    // console.log("dates list", datesList);
-
-    return setDayDates(datesList),datesList;
-    // console.log(response);
+    // console.log("response", response);
+    searchEnabledHours(response);
+    return setDayDates(response);
   };
   
   const findPacientes = async () => {
@@ -124,6 +100,7 @@ export const DatesProvider = ({ children }) => {
   }
 
   const dateContextValue = {
+    searchDoctors,
     dayDates,
     searchDayDates,
     doctors,
@@ -131,10 +108,7 @@ export const DatesProvider = ({ children }) => {
     setDoctor,
     patientsDates,
     searchDoctorDates,
-    userPacientes,
-    findPacientes,
-    getAvailableHours,
-    availableHoursData
+    enableDayHours,
   };
 
   return (

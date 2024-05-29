@@ -200,7 +200,7 @@ export const AuthProvider = ({ children }) => {
   const updateUser = async (dataUser) => {
     // ResetMessages();
     setLoading(true);
-    console.log(dataUser);
+    // console.log(dataUser);
 
     const response = await updateUserApi(dataUser);
     if (response === 200)

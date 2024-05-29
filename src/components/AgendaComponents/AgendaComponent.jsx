@@ -36,9 +36,12 @@ export const AgendaComponent = () => {
       onSelect={(date) => {
         const selectedDate = date.format("YYYY-MM-DD");
         // searchDoctorDates();
+        // console.log(selectedDate);
         searchDayDates(selectedDate, doctor);
       }}
-      cellRender={cellRender}
+      cellRender={doctor !== undefined && cellRender}
+      // onPanelChange={console.log("HOLA")}
+      // mode={"day"}
     />
   );
 };

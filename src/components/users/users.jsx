@@ -10,6 +10,7 @@ import {
   Table,
   Radio,
   Popconfirm,
+  Empty,
 } from "antd";
 
 import {
@@ -182,7 +183,6 @@ export const Users = () => {
                           key="editUser"
                           onClick={() => searchUpdateUserInfo(item._id)}
                         >
-
                           <EditOutlined />
                         </Link>,
                         roleData !== "paciente" && (
@@ -232,19 +232,8 @@ export const Users = () => {
             </>
           ) : (
             <>
-              <div
-                style={{
-                  margin: "2em 0",
-                  width: "80vw",
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  gap: "1em",
-                }}
-              >
-                <InboxOutlined style={{ fontSize: "8em" }} />
-                <h1 style={{ fontSize: "4em" }}>No users to show</h1>
+              <div>
+                <Empty />
               </div>
             </>
           )}

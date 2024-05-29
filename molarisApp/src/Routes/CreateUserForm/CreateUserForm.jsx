@@ -24,6 +24,8 @@ import {
   Space,
 } from "antd";
 
+const { Option } = Select;
+
 // Notifications
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -32,6 +34,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { countries } from "./Countries.js";
 import { provinces } from "./Provinces.js";
 import { AuthContext } from "../../contexts/authContext.jsx";
+import { CountryCodes } from "./ContryCodes.js";
 // import Search from "antd/lib/transfer/search.js";
 // import Search from "antd/lib/input/Search.js";
 
@@ -70,6 +73,36 @@ export const CreateUserForm = () => {
     { value: "doctor" },
   ];
 
+  const onFinish = (values) => {
+    console.log(values);
+  };
+
+  const prefixSelector = (
+    <Form.Item name="prefix" noStyle>
+      <Select
+        style={{
+          width: 70,
+        }}
+      >
+        {CountryCodes.map((country) => {
+          var flag = country.flag;
+          return (
+            <>
+              <Option value={country.code}>
+                <img
+                  src={country.flag}
+                  alt=""
+                  style={{ width: "100%", height: "100%" }}
+                />
+              </Option>
+              {console.log(flag)}
+            </>
+          );
+        })}
+      </Select>
+    </Form.Item>
+  );
+
   return (
     <>
       {isLoggedIn && (
@@ -81,7 +114,8 @@ export const CreateUserForm = () => {
             labelAlign="left"
             scrollToFirstError
             layout="vertical"
-            onFinish={createNewUser}
+            onFinish={onFinish}
+            // onFinish={createNewUser}
             onFinishFailed={() => setError("You must fill the form")}
           >
             <h1 style={{ textAlign: "center" }}>Create a new user</h1>
@@ -134,6 +168,39 @@ export const CreateUserForm = () => {
             >
               <Input type="email" size="large" placeholder="E-mail" />
             </Form.Item>
+
+            {/* Phone */}
+            <Form.Item
+              name="phone"
+              label="Phone Number"
+              rules={[
+                {
+                  required: true,
+                  message: "Write your phone number",
+                },
+              ]}
+            >
+              <Input
+                size="large"
+                placeholder="Phone number"
+                addonBefore={prefixSelector}
+              />
+            </Form.Item>
+
+            {/* Adress */}
+            <Form.Item
+              name="address"
+              label="Adress"
+              rules={[
+                {
+                  required: true,
+                  message: "Write your address",
+                },
+              ]}
+            >
+              <Input size="large" placeholder="Adress" />
+            </Form.Item>
+
             <Form.Item
               name="password"
               label="Password"

@@ -7,6 +7,7 @@ import {
   CalendarOutlined,
   HomeOutlined,
   DiffOutlined,
+  ProfileOutlined,
 } from "@ant-design/icons";
 import { Menu } from "antd";
 import { useContext, useEffect } from "react";
@@ -38,8 +39,8 @@ export const Navbar = () => {
       type: "divider",
     },
     {
-      key: "Login",
-      icon: <FileOutlined />,
+      key: "user",
+      icon: <ProfileOutlined />,
       label: isLoggedIn && (
         <Link to={"/myuser"}>
           <>
@@ -49,7 +50,7 @@ export const Navbar = () => {
           </>
         </Link>
       ),
-      type: "group",
+      // type: "group",
       children: [
         !isLoggedIn && {
           key: "Login",

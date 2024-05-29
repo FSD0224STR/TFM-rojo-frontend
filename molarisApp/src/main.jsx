@@ -16,7 +16,6 @@ import { Agenda } from "./Routes/Agenda/Agenda.jsx";
 
 import { MyUser } from "./Routes/MyUser/MyUser.jsx";
 
-
 const router = createBrowserRouter([
   {
     element: <Root />,
@@ -35,7 +34,6 @@ const router = createBrowserRouter([
         element: <CreateUserForm />,
       },
       {
-
         path: "/updateuser/",
 
         element: <UpdateUserForm />,

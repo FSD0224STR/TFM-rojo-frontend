@@ -205,9 +205,11 @@ export const Users = () => {
                     >
                       <List.Item.Meta
                         avatar={
-                          <Avatar
-                            src={`https://api.dicebear.com/7.x/miniavs/svg?seed=${index}`}
-                          />
+                          <Link to = {`/user/${item._id}`}>
+                            <Avatar
+                              src={`https://api.dicebear.com/7.x/miniavs/svg?seed=${index}`}
+                            />
+                          </Link>
                         }
                         title={`${item.name} ${item.lastName}`}
                         description={

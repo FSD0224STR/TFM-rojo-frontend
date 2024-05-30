@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 import dayjs from "dayjs";
@@ -16,7 +16,7 @@ import { CountryCodes } from "./ContryCodes.js";
 
 export const UpdateUserForm = () => {
   // Import authcontext
-  const { roleData, isLoggedIn, searchUser, updateUser, setError } =
+  const { roleData, isLoggedIn, searchedUser, updateUser, setError } =
     useContext(AuthContext);
 
   const [selectProvinces, setSelectProvinces] = useState([]);
@@ -50,6 +50,10 @@ export const UpdateUserForm = () => {
     { value: "paciente" },
     { value: "doctor" },
   ];
+
+  useEffect(() => {
+    console.log(searchedUser);
+  }, []);
 
   const prefixSelector = (
     <Form.Item name="prefix" noStyle>
@@ -88,25 +92,25 @@ export const UpdateUserForm = () => {
             scrollToFirstError
             layout="vertical"
             initialValues={{
-              userId: searchUser?._id,
-              dni: searchUser?.dni,
-              name: searchUser?.name,
-              lastName: searchUser?.lastName,
-              email: searchUser?.email,
-              country: searchUser?.country,
-              province: searchUser?.province,
-              birthDay: dayjs(searchUser?.birthDay),
-              roles: searchUser?.roles,
-              phone: searchUser?.phone,
-              prefix: searchUser?.prefix,
-              address: searchUser?.address,
-              photo: searchUser?.photo,
+              userId: searchedUser?._id,
+              dni: searchedUser?.dni,
+              name: searchedUser?.name,
+              lastName: searchedUser?.lastName,
+              email: searchedUser?.email,
+              country: searchedUser?.country,
+              province: searchedUser?.province,
+              birthDay: dayjs(searchedUser?.birthDay),
+              roles: searchedUser?.roles,
+              phone: searchedUser?.phone,
+              prefix: searchedUser?.prefix,
+              address: searchedUser?.address,
+              photo: searchedUser?.photo,
             }}
             onFinish={userDataChange && updateUser}
             onValuesChange={() => setUserDataChange(true)}
           >
             <h1 style={{ textAlign: "center" }}>
-              Update user: {searchUser.name} {searchUser.lastName}
+              Update user: {searchedUser?.name} {searchedUser?.lastName}
             </h1>
             {roleData === "admin" && (
               <Form.Item name="userId" label="User Id">

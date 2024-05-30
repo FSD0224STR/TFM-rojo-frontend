@@ -33,13 +33,19 @@ export const DatesProvider = ({ children }) => {
       }
     });
     setEnableDayHours(response);
-    setEnableDayHoursList(response.map((hour) => {if (hour.enable === true){
-      return {label: hour.label, value: hour.value}
-    }}).filter((hour)=> hour !==undefined));
+    setEnableDayHoursList(
+      response
+        .map((hour) => {
+          if (hour.enable === true) {
+            return { label: hour.label, value: hour.value };
+          }
+        })
+        .filter((hour) => hour !== undefined)
+    );
   };
 
   const searchDoctors = async () => {
-    if (userData.role === "admin") {
+    if (userData?.role === "admin") {
       const response = await data.filter((user) => user.roles === "doctor");
       setDoctors(
         response.map((user) => {
@@ -49,7 +55,7 @@ export const DatesProvider = ({ children }) => {
           };
         })
       );
-    } else if (userData.role === "doctor") {
+    } else if (userData?.role === "doctor") {
       setDoctors({
         label: `Dr. ${userData.name}`,
         value: `Dr. ${userData.name}`,
@@ -71,23 +77,23 @@ export const DatesProvider = ({ children }) => {
         return userDate;
       }
     });
-    // console.log("response", response);
+
     searchEnabledHours(response);
     setDayDates(response);
   };
-  
+
   const findPacientes = async () => {
     const response = await data.map((user) => {
       if (user.roles === "paciente")
         return { label: `${user.name} ${user.lastName}`, value: user._id };
     });
-    const pacientes = await response.filter((user) => user!==undefined)
+    const pacientes = await response.filter((user) => user !== undefined);
     return setUserPacientes(pacientes);
   };
 
-
   const dateContextValue = {
     searchDoctors,
+    setDayDates,
     dayDates,
     searchDayDates,
     doctors,
@@ -98,7 +104,7 @@ export const DatesProvider = ({ children }) => {
     enableDayHours,
     findPacientes,
     userPacientes,
-    enableDayHoursList
+    enableDayHoursList,
   };
 
   return (

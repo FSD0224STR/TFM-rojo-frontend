@@ -21,7 +21,7 @@ export const AuthProvider = ({ children }) => {
   const [roleData, setDataRole] = useState("");
   const [userData, setUserData] = useState();
   const [userName, setUserName] = useState("");
-  const [searchUser, setSearchUser] = useState();
+  const [searchedUser, setSearchedUser] = useState();
 
   const navigate = useNavigate();
 
@@ -108,7 +108,7 @@ export const AuthProvider = ({ children }) => {
           // navigate("/userdata");
         }
       }
-      navigate("/userdata");
+      // navigate("/userdata");
       setDataRole(role);
       setIsLoggedIn(true);
       setLoading(false);
@@ -187,14 +187,9 @@ export const AuthProvider = ({ children }) => {
     setLoading(false);
   };
 
-  const searchUpdateUserInfo = async (idUser) => {
+  const searchUserInfo = async (idUser) => {
     const response = await searchUserUpdate(idUser);
-
-    return (
-      setSearchUser(response.data),
-      // console.log(searchUser),
-      navigate(`/updateuser/`)
-    );
+    return setSearchedUser(response.data);
   };
 
   const updateUser = async (dataUser) => {
@@ -228,8 +223,8 @@ export const AuthProvider = ({ children }) => {
     setData,
     createNewUser,
     updatePasswordApi,
-    searchUpdateUserInfo,
-    searchUser,
+    searchUserInfo,
+    searchedUser,
     updateUser,
     setError,
   };

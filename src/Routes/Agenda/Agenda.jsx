@@ -8,8 +8,14 @@ import { AgendaTimeLine } from "../../components/AgendaComponents/AgendaTimeLine
 
 export const Agenda = () => {
   const { userData } = useContext(AuthContext);
-  const { searchDoctors, doctors, searchDoctorDates, doctor, setDoctor } =
-    useContext(DatesContext);
+  const {
+    searchDoctors,
+    doctors,
+    searchDoctorDates,
+    doctor,
+    setDoctor,
+    setDayDates,
+  } = useContext(DatesContext);
 
   useEffect(() => {
     if (userData?.role === "doctor") {
@@ -20,6 +26,7 @@ export const Agenda = () => {
       setDoctor("");
       searchDoctors();
     }
+    setDayDates([]);
   }, [userData]);
 
   return (

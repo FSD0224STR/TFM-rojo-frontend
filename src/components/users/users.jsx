@@ -25,7 +25,8 @@ import { filterBy, onSearch, sortBy } from "./SortAndFilterUsers.jsx";
 const { Search } = Input;
 
 export const Users = () => {
-  const { data, roleData, searchUpdateUserInfo } = useContext(AuthContext);
+  const { data, roleData, searchUserInfo, searchedUser } =
+    useContext(AuthContext);
   const [listData, setListData] = useState(data);
   const [orderItem, setOrderItem] = useState("dni");
   const [orderSort, setOrderSort] = useState("ascending");
@@ -181,7 +182,12 @@ export const Users = () => {
 
                         <Link
                           key="editUser"
-                          onClick={() => searchUpdateUserInfo(item._id)}
+                          onClick={() => {
+                            searchUserInfo(item._id);
+                            setTimeout(() => {
+                              navigate(`/updateuser/`);
+                            }, 500);
+                          }}
                         >
                           <EditOutlined />
                         </Link>,

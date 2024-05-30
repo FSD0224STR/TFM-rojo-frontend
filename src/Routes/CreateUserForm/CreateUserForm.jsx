@@ -27,7 +27,6 @@ import {
 const { Option } = Select;
 
 // Notifications
-import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 // BD for countries
@@ -40,8 +39,7 @@ import { CountryCodes } from "./ContryCodes.js";
 
 export const CreateUserForm = () => {
   // const [passwordVisible, setPasswordVisible] = useState(false);
-  const { createNewUser, roleData, isLoggedIn, setError } =
-    useContext(AuthContext);
+  const { roleData, isLoggedIn, setError } = useContext(AuthContext);
   // const [selectCountry, setSelectCountry] = useState([]);
   const [selectProvinces, setSelectProvinces] = useState([]);
 

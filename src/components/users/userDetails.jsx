@@ -4,40 +4,27 @@ import { useParams } from "react-router-dom";
 import { AuthContext } from "../../contexts/authContext.jsx";
 
 function UserDetails() {
-  const { id } = useParams();
-
-  const { searchUser, updateUser, setError } = useContext(AuthContext);
-
-  const [dni, setDni] = useState(`${searchUser?.dni}`);
-  const [name, setName] = useState(`${searchUser?.name}`);
-  const [lastName, setLastName] = useState(`${searchUser?.lastName}`);
-  const [email, setEmail] = useState(`${searchUser?.email}`);
-  const [country, setCountry] = useState(`${searchUser?.country}`);
-  const [province, setProvince] = useState(`${searchUser?.province}`);
-  const [birthDay, setBirthDay] = useState(`${searchUser?.birthDay}`);
-  const [role, setRole] = useState(`${searchUser?.roles}`);
-  const [userDataChange, setUserDataChange] = useState(false);
-  if (!id) {
-    return <div>User Detail not found</div>;
-  }
+ 
+  const {searchedUser} = useContext(AuthContext)
+ 
 
   return (
     <>
-      <Card title={`User Detail for user ${id}`} style={{ width: 300 }}>
+      <Card title={`User Detail for user ${searchedUser?.name}`}>
         <div>
-          <img src={`https://api.dicebear.com/7.x/miniavs/svg?seed=${id}`} alt="" />
+          <img src={`https://api.dicebear.com/7.x/miniavs/svg?seed=${searchedUser?.id}`} alt="" />
         </div>
         <div>
           <h3>User Data</h3>
           <div>
-            <p>Dni: {dni}</p>
-            <p>Name: {name}</p>
-            <p>Last Name: {lastName}</p>
-            <p>Email: {email}</p>
-            <p>Country: {country}</p>
-            <p>Province: {province}</p>
-            <p>Birth Day: {birthDay}</p>
-            <p>Role: {role}</p>
+            <p>Dni: {searchedUser?.dni}</p>
+            <p>Name: {searchedUser?.name}</p>
+            <p>Last Name: {searchedUser?.lastName}</p>
+            <p>Email: {searchedUser?.email}</p>
+            <p>Country: {searchedUser?.country}</p>
+            <p>Province: {searchedUser?.province}</p>
+            <p>Birth Day: {searchedUser?.birthDay}</p>
+            <p>Role: {searchedUser?.role}</p>
           </div>
         </div>
         <div>

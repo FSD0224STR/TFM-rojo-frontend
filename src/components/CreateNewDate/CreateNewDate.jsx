@@ -19,12 +19,13 @@ import { durationDate } from "./durationDate";
 
 export const CreateNewDate = () => {
   const { setError } = useContext(AuthContext);
+  const { createNewDate, searchDoctorName, doctor } = useContext(DatesContext);
 
   const {
     searchDoctorDates,
     doctors,
-    userPacientes,
-    findPacientes,
+    userPatients,
+    findPatients,
     searchDayDates,
     searchDoctors,
     enableDayHoursList,
@@ -34,11 +35,12 @@ export const CreateNewDate = () => {
 
   const onFinish = (value) => {
     console.log(value);
+    createNewDate(value);
   };
 
   useEffect(() => {
     searchDoctors();
-    findPacientes();
+    findPatients();
     searchDoctorDates("all");
   }, []);
 
@@ -62,10 +64,10 @@ export const CreateNewDate = () => {
       // console.log(timeAdded);
       setFinishedTimeData(timeAdded.format("HH:mm"));
       createDateForm.setFieldsValue({
-        timeFinish: finishTimeData,
+        timeFinish: timeAdded.format("HH:mm"),
       });
     }, 200);
-  }, [durationSelected]);
+  }, [dateSelected, timeSelected, durationSelected]);
 
   // Find color choices
   const [colorSelected, setColorSelected] = useState();
@@ -75,19 +77,25 @@ export const CreateNewDate = () => {
   useEffect(() => {
     switch (stateSelected) {
       case "confirmed":
-        setColorSelected("#cad5ad");
+        var color = "#cad5ad";
+        // setColorSelected("#cad5ad");
         break;
       case "cancelled":
-        setColorSelected("#e77a77");
+        var color = "#e77a77";
+        // setColorSelected("#e77a77");
         break;
       case "pending":
-        setColorSelected("#f6a570");
+        var color = "#f6a570";
+        // setColorSelected("#f6a570");
         break;
-      case "finished":
+      default:
+        var color = "#f6a570";
+        break;
     }
 
+    setColorSelected(color);
     createDateForm.setFieldsValue({
-      color: colorSelected,
+      color: color,
     });
   }, [stateSelected]);
 
@@ -109,7 +117,7 @@ export const CreateNewDate = () => {
         >
           <Form.Item
             label="Patient"
-            name="idPacient"
+            name="idPatient"
             rules={[
               {
                 required: true,
@@ -121,7 +129,7 @@ export const CreateNewDate = () => {
               size="large"
               showSearch
               filterOption={filterOption}
-              options={userPacientes}
+              options={userPatients}
             />
           </Form.Item>
 
@@ -220,13 +228,14 @@ export const CreateNewDate = () => {
                 message: "Please input!",
               },
             ]}
+            initialValue={"pending"}
           >
             <Select
               size="large"
               options={[
                 { label: "confirmed", value: "confirmed" },
                 { label: "pending", value: "pending" },
-                { label: "canceled", value: "canceled" },
+                { label: "cancelled", value: "cancelled" },
               ]}
             />
           </Form.Item>

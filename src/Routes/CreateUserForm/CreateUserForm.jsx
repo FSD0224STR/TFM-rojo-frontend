@@ -67,7 +67,7 @@ export const CreateUserForm = () => {
 
   const roleOptions = [
     { value: "admin" },
-    { value: "paciente" },
+    { value: "patient" },
     { value: "doctor" },
   ];
 
@@ -316,7 +316,7 @@ export const CreateUserForm = () => {
                   },
                 ]}
               >
-                <Input size="large" placeholder="paciente" disabled></Input>
+                <Input size="large" placeholder="patient" disabled></Input>
               </Form.Item>
             )}
             <Form.Item

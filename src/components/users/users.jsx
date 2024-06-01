@@ -25,8 +25,7 @@ import { filterBy, onSearch, sortBy } from "./SortAndFilterUsers.jsx";
 const { Search } = Input;
 
 export const Users = () => {
-  const { data, roleData, searchUserInfo, searchedUser } =
-    useContext(AuthContext);
+  const { data, roleData, searchUserInfo, GetUsers } = useContext(AuthContext);
   const [listData, setListData] = useState(data);
   const [orderItem, setOrderItem] = useState("dni");
   const [orderSort, setOrderSort] = useState("ascending");
@@ -34,6 +33,7 @@ export const Users = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    GetUsers();
     setListData(data);
   }, []);
 
@@ -51,7 +51,7 @@ export const Users = () => {
         }}
         id="listContainer"
       >
-        {roleData !== "paciente" && (
+        {roleData !== "patient" && (
           <div>
             {/* {console.log(data)} */}
             {/* <h1 style={{ textAlign: "center" }}>Users Info</h1> */}
@@ -134,7 +134,7 @@ export const Users = () => {
                     >
                       <Radio.Button value="admin">Admin</Radio.Button>
                       <Radio.Button value="doctor">Doctor</Radio.Button>
-                      <Radio.Button value="paciente">Paciente</Radio.Button>
+                      <Radio.Button value="patient">Patient</Radio.Button>
                       <Radio.Button value="all">All</Radio.Button>
 
                       {/* <Radio.Button
@@ -174,7 +174,7 @@ export const Users = () => {
                   renderItem={(item, index) => (
                     <List.Item
                       actions={[
-                        item.roles.includes("paciente") && (
+                        item.roles.includes("patient") && (
                           <Link key="createNewDate" to={"/createnewdate"}>
                             <DiffOutlined />
                           </Link>
@@ -191,7 +191,7 @@ export const Users = () => {
                         >
                           <EditOutlined />
                         </Link>,
-                        roleData !== "paciente" && (
+                        roleData !== "patient" && (
                           <Popconfirm
                             title="Are you sure to delete this user?"
                             onConfirm={() =>

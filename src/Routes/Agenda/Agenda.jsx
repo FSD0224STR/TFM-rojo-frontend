@@ -1,6 +1,5 @@
 import React, { useContext, useEffect } from "react";
 import { AgendaComponent } from "../../components/AgendaComponents/AgendaComponent";
-import { AgendaList } from "../../components/AgendaComponents/AgendaList";
 import { Cascader, Form, Select } from "antd";
 import { DatesContext } from "../../contexts/DatesContext";
 import { AuthContext } from "../../contexts/authContext";
@@ -11,10 +10,12 @@ export const Agenda = () => {
   const {
     searchDoctors,
     doctors,
+    searchDoctorInfo,
     searchDoctorDates,
     doctor,
     setDoctor,
     setDayDates,
+    findAllDoctorsDates,
   } = useContext(DatesContext);
 
   useEffect(() => {
@@ -26,6 +27,7 @@ export const Agenda = () => {
       setDoctor("");
       searchDoctors();
     }
+    findAllDoctorsDates();
     setDayDates([]);
   }, [userData]);
 
@@ -50,12 +52,18 @@ export const Agenda = () => {
               name="doctors"
               options={doctors}
               showSearch={{ doctor }}
-              onSearch={(e) => {
-                setDoctor(e);
+              onSearch={async (e) => {
+                // setDoctor(e);
+                const doctorInfo = await searchDoctorInfo(e);
+                const doctorName = `Dr. ${doctorInfo.name}`;
+                setDoctor(doctorName);
                 searchDoctorDates(e);
               }}
-              onChange={(e) => {
-                setDoctor(e);
+              onChange={async (e) => {
+                // setDoctor(e);
+                const doctorInfo = await searchDoctorInfo(e);
+                const doctorName = `Dr. ${doctorInfo.name}`;
+                setDoctor(doctorName);
                 searchDoctorDates(e);
               }}
               // defaultValue={doctors[0]?.value}

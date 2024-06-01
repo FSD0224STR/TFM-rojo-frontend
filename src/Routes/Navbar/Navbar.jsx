@@ -20,7 +20,7 @@ export const Navbar = () => {
 
   const Items = [
     isLoggedIn &&
-      roleData !== "paciente" && {
+      roleData !== "patient" && {
         key: "Agenda",
         icon: <CalendarOutlined />,
         label: <Link to={"/agenda"}>Agenda</Link>,
@@ -59,7 +59,7 @@ export const Navbar = () => {
           id: "loggedin",
         },
         isLoggedIn &&
-          roleData !== "paciente" && {
+          roleData !== "patient" && {
             key: "CreateUser",
             icon: <UserAddOutlined />,
             label: <Link to={"/createuser"}>Create user</Link>,

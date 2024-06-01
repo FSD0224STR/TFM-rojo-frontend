@@ -79,7 +79,7 @@ export const updateUserPassword = async (user) => {
   return response.status;
 };
 
-export const searchUserUpdate = async (idUser) => {
+export const searchUser = async (idUser) => {
   const response = await fetch(`${baseUrl}/user/searchUser`, {
     method: "POST",
     headers: {

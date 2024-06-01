@@ -6,7 +6,7 @@ import {
   getMyUser,
   createUser,
   updateUserPassword,
-  searchUserUpdate,
+  searchUser,
   updateUserApi,
 } from "../apiService/userApi";
 
@@ -95,11 +95,11 @@ export const AuthProvider = ({ children }) => {
           // navigate("/userdata");
         } else if (role === "doctor") {
           const users = await response.filter((user) => {
-            if (user.roles === "paciente") return user;
+            if (user.roles === "patient") return user;
           });
           setData(users);
           // navigate("/userdata");
-        } else if (role === "paciente") {
+        } else if (role === "patient") {
           // console.log(response);
           const users = await response.filter((user) => {
             if (user.email === email) return user;
@@ -108,7 +108,7 @@ export const AuthProvider = ({ children }) => {
           // navigate("/userdata");
         }
       }
-      // navigate("/userdata");
+      navigate("/userdata");
       setDataRole(role);
       setIsLoggedIn(true);
       setLoading(false);
@@ -117,10 +117,6 @@ export const AuthProvider = ({ children }) => {
 
   const logout = () => {
     localStorage.removeItem("access_token");
-    // localStorage.removeItem("accessToken");
-    // localStorage.removeItem("username");
-
-    // setData([]);
     setIsLoggedIn(false);
     setUserName("");
     navigate("/");
@@ -188,7 +184,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   const searchUserInfo = async (idUser) => {
-    const response = await searchUserUpdate(idUser);
+    const response = await searchUser(idUser);
     return setSearchedUser(response.data);
   };
 
@@ -211,7 +207,9 @@ export const AuthProvider = ({ children }) => {
 
   const authContextValue = {
     isLoggedIn,
+    setSuccess,
     success,
+    setError,
     error,
     loading,
     login,
@@ -221,12 +219,14 @@ export const AuthProvider = ({ children }) => {
     roleData,
     userName,
     setData,
+    GetUsers,
     createNewUser,
     updatePasswordApi,
     searchUserInfo,
     searchedUser,
     updateUser,
-    setError,
+    navigate,
+    ResetMessages,
   };
 
   useEffect(() => {

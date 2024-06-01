@@ -125,7 +125,7 @@ export const filterBy = (value, data) => {
   if (value !== "all") {
     const response = data.filter((user) => {
       if (user.roles == value) {
-        console.log(`roles: ${user.roles}`);
+        // console.log(`roles: ${user.roles}`);
         return user;
       }
     });

@@ -9,46 +9,49 @@ import {
 } from "antd";
 import React, { useContext, useEffect, useState } from "react";
 import { DatesContext } from "../../contexts/DatesContext";
-import { Link } from "react-router-dom";
+import { Form, Link } from "react-router-dom";
 import { DeleteOutlined, FileDoneOutlined } from "@ant-design/icons";
 const { Option } = Select;
 
 export const DateCard = (date, i) => {
-  const { searchUserInfo, minHeightCard, lookForPosition } =
-    useContext(DatesContext);
+  const {
+    searchUserInfo,
+    minHeightCard,
+    lookForPosition,
+    deleteDate,
+    changeStatusDate,
+  } = useContext(DatesContext);
 
   const [userInfo, setUserInfo] = useState();
   const [responseRef, setResponseRef] = useState();
 
   const findPosition = async () => {
-    const response = await lookForPosition(date.date);
+    const response = await lookForPosition(date?.date);
     setResponseRef(response);
   };
 
   const findInfo = async () => {
-    console.log(date.date.idPatient);
-    const user = await searchUserInfo(date.date.idPatient);
-    console.log(user);
+    const user = await searchUserInfo(date?.date.idPatient);
     setUserInfo(user);
   };
 
   useEffect(() => {
     findInfo();
     findPosition();
+    // console.log(date.date._id);
   }, []);
 
   return (
     <>
-      {/* {console.log(date.date.idPatient, responseRef)} */}
       <ConfigProvider
         theme={{
           components: {
             Card: {
-              headerBg: `${date.date.color}`,
+              headerBg: `${date?.date.color}`,
               headerHeight: { minHeightCard },
             },
             Collapse: {
-              headerBg: `${date.date.color}`,
+              headerBg: `${date?.date.color}`,
             },
           },
         }}
@@ -58,7 +61,6 @@ export const DateCard = (date, i) => {
             style={{
               position: "absolute",
               width: "60vw",
-              // top: 0,
               top: `${responseRef?.topRef}px`,
               right: "2em",
               height: `${responseRef?.heightRef}px`,
@@ -76,7 +78,7 @@ export const DateCard = (date, i) => {
                       style={{ marginRight: "1em" }}
                     />
                     <p>
-                      user: {userInfo?.name} Phone:{" "}
+                      user: {userInfo?.name} Phone:
                       <Link>{userInfo?.phone}</Link>
                     </p>
                   </div>
@@ -86,12 +88,9 @@ export const DateCard = (date, i) => {
                 <>
                   <div
                     style={{
-                      // marginRight: "3.5em",
                       display: "flex",
                       gap: "1em",
                       fontSize: "1.2em",
-                      // backgroundColor: "red",
-                      // height: "3em",
                     }}
                   >
                     <Popover
@@ -106,7 +105,7 @@ export const DateCard = (date, i) => {
                     <Popconfirm
                       title="Delete the date"
                       description="Are you sure to delete this date?"
-                      // onConfirm={confirm}
+                      onConfirm={() => deleteDate(date?.date._id)}
                       // onCancel={cancel}
                       okText="Yes"
                       cancelText="No"
@@ -133,6 +132,7 @@ export const DateCard = (date, i) => {
                 }}
               >
                 <div>{date.date.reason}</div>
+
                 <Select
                   size="large"
                   defaultValue={date.date.state}
@@ -150,7 +150,6 @@ export const DateCard = (date, i) => {
             style={{
               position: "absolute",
               width: "60vw",
-              // top: 0,
               top: `${responseRef?.topRef}px`,
               right: "2em",
               minHeight: `${minHeightCard}`,
@@ -161,7 +160,6 @@ export const DateCard = (date, i) => {
               <Collapse.Panel
                 style={{
                   height: "100%",
-                  // backgroundColor: `${date.color}`,
                 }}
                 header={
                   <>
@@ -201,13 +199,12 @@ export const DateCard = (date, i) => {
                           <Option value="pending">Pending</Option>
                           <Option value="canceled">Canceled</Option>
                         </Select>
+
                         <div
                           style={{
                             display: "flex",
                             gap: "1em",
                             fontSize: "1.2em",
-                            // backgroundColor: "red",
-                            // height: `${minHeightCard}`,
                           }}
                         >
                           <Popover
@@ -222,7 +219,7 @@ export const DateCard = (date, i) => {
                           <Popconfirm
                             title="Delete the date"
                             description="Are you sure to delete this date?"
-                            // onConfirm={confirm}
+                            onConfirm={() => deleteDate(date?.date._id)}
                             // onCancel={cancel}
                             okText="Yes"
                             cancelText="No"

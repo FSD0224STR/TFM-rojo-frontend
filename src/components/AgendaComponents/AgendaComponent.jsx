@@ -12,13 +12,15 @@ export const AgendaComponent = () => {
     doctor,
     doctorId,
     searchDayDates,
-    searchUserInfo,
+    searchDoctors,
+    dates,
+    setDateSelected,
   } = useContext(DatesContext);
 
   const cellRender = (current) => {
     const response = patientsDates?.filter(
       (date) =>
-        dayjs(date.date).format("YYYY-MM-DD") === current.format("YYYY-MM-DD")
+        dayjs(date?.date).format("YYYY-MM-DD") === current.format("YYYY-MM-DD")
     );
 
     if (response !== undefined) {
@@ -35,21 +37,21 @@ export const AgendaComponent = () => {
   };
 
   useEffect(() => {
+    searchDoctors();
     searchDoctorDates();
-    // console.log(patientsDates);
-  }, []);
+    // cellRender;
+  }, [dates]);
 
   return (
-    <Calendar
-      onSelect={(date) => {
-        const selectedDate = date.format("YYYY-MM-DD");
-        // searchDoctorDates();
-        // console.log(selectedDate);
-        searchDayDates(selectedDate, doctorId);
-      }}
-      cellRender={doctor !== undefined && cellRender}
-      // onPanelChange={console.log("HOLA")}
-      // mode={"day"}
-    />
+    <>
+      <Calendar
+        onSelect={(date) => {
+          const selectedDate = date.format("YYYY-MM-DD");
+          setDateSelected(selectedDate);
+          searchDayDates(selectedDate, doctorId, dates);
+        }}
+        cellRender={cellRender}
+      />
+    </>
   );
 };

@@ -1,24 +1,17 @@
-import { useContext, useEffect, useLayoutEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 import {
   Avatar,
   Button,
   List,
-  Pagination,
   Space,
   Input,
-  Table,
   Radio,
   Popconfirm,
   Empty,
 } from "antd";
 
-import {
-  DeleteOutlined,
-  EditOutlined,
-  DiffOutlined,
-  InboxOutlined,
-} from "@ant-design/icons";
+import { DeleteOutlined, EditOutlined, DiffOutlined } from "@ant-design/icons";
 import { AuthContext } from "../../contexts/authContext.jsx";
 import { Link, useNavigate } from "react-router-dom";
 import { filterBy, onSearch, sortBy } from "./SortAndFilterUsers.jsx";
@@ -32,8 +25,12 @@ export const Users = () => {
 
   const navigate = useNavigate();
 
+  const findUsers = async () => {
+    await GetUsers();
+  };
+
   useEffect(() => {
-    GetUsers();
+    findUsers();
     setListData(data);
   }, []);
 
@@ -43,7 +40,6 @@ export const Users = () => {
         style={{
           height: "90vh",
           width: "70vw",
-          // backgroundColor: "red",
           display: "flex",
           flexDirection: "column",
           justifyContent: "start",
@@ -53,8 +49,6 @@ export const Users = () => {
       >
         {roleData !== "patient" && (
           <div>
-            {/* {console.log(data)} */}
-            {/* <h1 style={{ textAlign: "center" }}>Users Info</h1> */}
             <Space direction="vertical">
               <div
                 style={{
@@ -81,7 +75,6 @@ export const Users = () => {
               <div
                 style={{
                   width: "70vw",
-                  // backgroundColor: "red",
                   display: "flex",
                   justifyContent: "space-between",
                 }}
@@ -127,7 +120,6 @@ export const Users = () => {
                     <Radio.Group
                       onChange={async (e) => {
                         const response = await filterBy(e.target.value, data);
-                        // console.log(response);
                         setListData(response);
                         navigate("/userdata");
                       }}
@@ -136,12 +128,6 @@ export const Users = () => {
                       <Radio.Button value="doctor">Doctor</Radio.Button>
                       <Radio.Button value="patient">Patient</Radio.Button>
                       <Radio.Button value="all">All</Radio.Button>
-
-                      {/* <Radio.Button
-              value="original"
-            >
-              Original
-            </Radio.Button> */}
                     </Radio.Group>
                   </div>
                 )}
@@ -152,17 +138,7 @@ export const Users = () => {
         <div>
           {listData?.length ? (
             <>
-              <div
-                style={
-                  {
-                    // backgroundColor: "red",
-                    // maxHeight: "70vh",
-                    // height: "100%",
-                    // overflow: "auto",
-                    // padding: "1em",
-                  }
-                }
-              >
+              <div>
                 <List
                   itemLayout="Horizontal"
                   dataSource={listData}
@@ -211,7 +187,7 @@ export const Users = () => {
                     >
                       <List.Item.Meta
                         avatar={
-                          <Link to = {`/user/${item._id}`}>
+                          <Link to={`/user/${item._id}`}>
                             <Avatar
                               src={`https://api.dicebear.com/7.x/miniavs/svg?seed=${index}`}
                             />

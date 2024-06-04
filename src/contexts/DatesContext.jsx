@@ -6,30 +6,51 @@ export const DatesContext = createContext();
 // import { dates } from "./Dates";
 import dayjs from "dayjs";
 import { DatesHours } from "../components/AgendaComponents/DatesHours";
-import { createDate, getAllDates } from "../apiService/dateApi";
+import {
+  deleteDateApi,
+  createDate,
+  getAllDates,
+  changeStatusDateApi,
+} from "../apiService/dateApi";
 import { searchUser } from "../apiService/userApi";
 
 export const DatesProvider = ({ children }) => {
-  const { data, userData, setSuccess, setError, ResetMessages, navigate } =
-    useContext(AuthContext);
+  const {
+    data,
+    userData,
+    setSuccess,
+    setError,
+    ResetMessages,
+    navigate,
+    setLoading,
+  } = useContext(AuthContext);
 
-  const [dates, setDates] = useState([]);
+  const [dates, setDates] = useState();
   const [patientsDates, setPatientsDates] = useState();
   const [doctors, setDoctors] = useState();
   const [doctor, setDoctor] = useState(userData?.role === "admin" ? "all" : "");
   const [doctorId, setDoctorId] = useState();
+  const [dateSelected, setDateSelected] = useState();
+  const [day, setDay] = useState();
   const [dayDates, setDayDates] = useState(dates);
   const [enableDayHours, setEnableDayHours] = useState();
   const [enableDayHoursList, setEnableDayHoursList] = useState();
   const [userPatients, setUserPatients] = useState();
+  const [hourAvailable, setHourAvailable] = useState();
 
   const createNewDate = async (newDate) => {
     ResetMessages();
     const response = await createDate(newDate);
-    console.log(response);
+    // console.log(response);
     if (response === 200) {
       setSuccess("Successfully created");
-      navigate("/userData");
+      // console.log(doctorId);
+      setLoading(true);
+      findAllDoctorsDates(doctorId);
+      setTimeout(() => {
+        reloadAgenda();
+      }, 1000);
+      // navigate("/agenda");
     } else {
       setError("Error creating new date");
     }
@@ -37,12 +58,23 @@ export const DatesProvider = ({ children }) => {
 
   const findAllDoctorsDates = async (idDoctor) => {
     const response = await getAllDates(idDoctor);
-    const datesInfo = await response.map((date) => {
-      // console.log(date);
-      return date;
-    });
+    const datesInfo = await response
+      ?.map((date) => {
+        // console.log(date);
+        return date;
+      })
+      .sort((a, b) => {
+        if (a.time > b.time) {
+          return 1;
+        } else if (b.time > a.time) {
+          return -1;
+        } else {
+          return 0;
+        }
+      });
     // console.log(datesInfo);
-    return setDates(datesInfo);
+    setDates(datesInfo);
+    return datesInfo;
   };
 
   const searchEnabledHours = (datesAssigned) => {
@@ -51,10 +83,13 @@ export const DatesProvider = ({ children }) => {
       hours.push({ label: hour, value: hour, enable: true });
     });
 
-    if (datesAssigned.length > 0) {
-      datesAssigned.map((date) => {
+    if (datesAssigned?.length > 0) {
+      datesAssigned?.map((date) => {
         hours.map((hour) => {
-          if (hour.label >= date.time && hour.label < date.timeFinish) {
+          if (
+            (hour.label >= date.time && hour.label < date.timeFinish) ||
+            hour.label === hours[hours.length - 1].label
+          ) {
             hour.enable = false;
           }
         });
@@ -82,14 +117,14 @@ export const DatesProvider = ({ children }) => {
       setDoctors(
         response.map((user) => {
           return {
-            label: `Dr. ${user.name} ${user.lastName}`,
+            label: `Dr. ${user?.name} ${user.lastName}`,
             value: `${user._id}`,
           };
         })
       );
     } else if (userData?.role === "doctor") {
       setDoctors({
-        label: `Dr. ${userData.name}`,
+        label: `Dr. ${userData?.name}`,
         value: `${userData.id}`,
       });
     }
@@ -113,47 +148,44 @@ export const DatesProvider = ({ children }) => {
   };
 
   const searchDoctorDates = async (doctorSelectedId) => {
-    // const doctorName = await searchDoctorName(doctorSelectedId);
-    setPatientsDates([]);
     ResetMessages();
     if (doctorSelectedId !== undefined) {
-      // findAllDoctorsDates();
       setDoctorId(doctorSelectedId);
-
-      const responseDayDates = dates?.filter((date) => {
-        // console.log(date);
-        if (date.idDoctor === doctorSelectedId) {
+      const response = await findAllDoctorsDates(doctorId);
+      // const response = await getAllDates(doctorSelectedId);
+      const responseDayDates = await response?.filter((date) => {
+        if (date?.idDoctor === doctorSelectedId) {
           return date;
         }
       });
       // console.log(responseDayDates);
-      return setPatientsDates(responseDayDates);
+      setPatientsDates(responseDayDates);
+      return responseDayDates;
     }
   };
 
-  const searchDayDates = async (date, idDoctor) => {
-    // console.log(dates);
+  const searchDayDates = async (date, idDoctor, datesInfo) => {
+    // console.log(datesInfo);
+    setDay(date);
     setDayDates([]);
     const day = date !== "" ? date : dayjs().format("YYYY-MM-DD");
-    const response = await dates?.filter((userDate) => {
+
+    const response = await datesInfo?.filter((userDate) => {
       if (
         userDate.idDoctor === idDoctor &&
         dayjs(userDate.date).format("YYYY-MM-DD") === day
       ) {
-        // console.log(userDate);
         return userDate;
       }
     });
-    // console.log(response);
 
-    // setDoctor(response[0]?.doctor);
     return setDayDates(response), searchEnabledHours(response);
   };
 
   const findPatients = async () => {
     const response = await data.map((user) => {
       if (user.roles === "patient")
-        return { label: `${user.name} ${user.lastName}`, value: user._id };
+        return { label: `${user?.name} ${user?.lastName}`, value: user._id };
     });
     const patients = await response.filter((user) => user !== undefined);
     return setUserPatients(patients);
@@ -168,14 +200,14 @@ export const DatesProvider = ({ children }) => {
     const startHourId = document.getElementById(`${date?.time}`);
     const startHourPos = startHourId?.getBoundingClientRect();
 
-    const finishHourId = document.getElementById(`${date?.timeFinish}`);
+    const finishHourId = document.getElementById(
+      date?.timeFinish <= "17:00" ? `${date?.timeFinish}` : "17:00"
+    );
     const finishHourPos = finishHourId?.getBoundingClientRect();
 
     const topReference = Math.abs(
       dayListHoursPos?.y - (startHourPos?.y + startHourPos?.height / 2)
     );
-
-    // console.log(dayListHoursPos, startHourPos);
 
     const bottomReference = Math.abs(
       dayListHoursPos?.y - finishHourPos?.y - finishHourPos?.height / 2
@@ -192,7 +224,70 @@ export const DatesProvider = ({ children }) => {
     }
   };
 
+  const deleteDate = async (id) => {
+    ResetMessages();
+    const response = await deleteDateApi(id);
+    if (response === 200) {
+      setSuccess("Successfully deleted");
+      setLoading(true);
+      setTimeout(() => {
+        reloadAgenda();
+      }, 1000);
+    } else {
+      setError("Error deleting date");
+    }
+  };
+
+  const reloadAgenda = async () => {
+    setLoading(true);
+    setDayDates([]);
+    // setPatientsDates([]);
+    // console.log("doctor id" + doctorId);
+    // console.log(day);
+    const datesInfo = await searchDoctorDates(doctorId);
+    await searchDayDates(day, doctorId, datesInfo);
+    setLoading(false);
+  };
+
+  const stateColorSelected = (stateSelected) => {
+    var color = "";
+    switch (stateSelected) {
+      case "confirmed":
+        color = "#cad5ad";
+
+        break;
+      case "cancelled":
+        color = "#e77a77";
+
+        break;
+      case "pending":
+        color = "#f6a570";
+
+        break;
+      default:
+        color = "#f6a570";
+        break;
+    }
+
+    return color;
+  };
+
+  const changeStatusDate = async (idDate, newStatus) => {
+    console.log(idDate, newStatus);
+    // const response = await changeStatusDateApi(idDate, newStatus);
+    // if (response === 200) {
+    //   setSuccess("Successfully changed");
+    //   setLoading(true);
+    //   setTimeout(() => {
+    //     reloadAgenda();
+    //   }, 1000);
+    // } else {
+    //   setError("Error changing status");
+    // }
+  };
+
   const dateContextValue = {
+    dates,
     createNewDate,
     searchDoctors,
     setDayDates,
@@ -213,6 +308,14 @@ export const DatesProvider = ({ children }) => {
     findAllDoctorsDates,
     minHeightCard,
     lookForPosition,
+    hourAvailable,
+    setHourAvailable,
+    deleteDate,
+    reloadAgenda,
+    dateSelected,
+    setDateSelected,
+    stateColorSelected,
+    changeStatusDate,
   };
 
   return (

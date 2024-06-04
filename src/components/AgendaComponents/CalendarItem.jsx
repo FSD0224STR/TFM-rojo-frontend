@@ -7,12 +7,11 @@ export const CalendarItem = (date) => {
   const [user, setUser] = useState();
 
   const findInfo = async () => {
-    const userInfo = await searchUserInfo(date.date.idPatient);
+    const userInfo = await searchUserInfo(date?.date.idPatient);
     setUser(userInfo);
   };
 
   useEffect(() => {
-    // console.log(date.date.color);
     findInfo();
   }, []);
 
@@ -20,8 +19,8 @@ export const CalendarItem = (date) => {
     <>
       <li style={{ listStyle: "none" }}>
         <Badge
-          color={date.date.color}
-          text={`${date.date.time} ${user?.name} ${user?.lastName}`}
+          color={date?.date.color}
+          text={`${date?.date.time} ${user?.name} ${user?.lastName}`}
         />
       </li>
     </>

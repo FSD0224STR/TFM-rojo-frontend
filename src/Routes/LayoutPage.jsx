@@ -20,6 +20,7 @@ export const LayoutPage = () => {
       toast.error(error);
     }
   }, [error, success]);
+
   return (
     <>
       <Layout className="LayoutContainer">

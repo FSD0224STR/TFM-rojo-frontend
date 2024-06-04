@@ -6,23 +6,7 @@ import {
   EyeTwoTone,
 } from "@ant-design/icons";
 
-import {
-  Button,
-  Cascader,
-  Checkbox,
-  DatePicker,
-  Form,
-  Input,
-  InputNumber,
-  Radio,
-  Select,
-  Slider,
-  Switch,
-  TreeSelect,
-  Upload,
-  notification,
-  Space,
-} from "antd";
+import { Button, DatePicker, Form, Input, Select, Upload } from "antd";
 
 const { Option } = Select;
 
@@ -34,20 +18,16 @@ import { countries } from "./Countries.js";
 import { provinces } from "./Provinces.js";
 import { AuthContext } from "../../contexts/authContext.jsx";
 import { CountryCodes } from "./ContryCodes.js";
-// import Search from "antd/lib/transfer/search.js";
-// import Search from "antd/lib/input/Search.js";
 
 export const CreateUserForm = () => {
-  // const [passwordVisible, setPasswordVisible] = useState(false);
-  const { roleData, isLoggedIn, setError } = useContext(AuthContext);
-  // const [selectCountry, setSelectCountry] = useState([]);
+  const { roleData, isLoggedIn, setError, createNewUser } =
+    useContext(AuthContext);
   const [selectProvinces, setSelectProvinces] = useState([]);
 
   // User Data
   const [province, setProvince] = useState("");
 
   const findProvince = async (e) => {
-    // console.log(typeof e);
     const countryFound = countries.filter((country) => {
       if (country.value === e) {
         return country;
@@ -71,8 +51,8 @@ export const CreateUserForm = () => {
     { value: "doctor" },
   ];
 
-  const onFinish = (values) => {
-    console.log(values);
+  const onFinishCreateUser = (values) => {
+    createNewUser(values);
   };
 
   const prefixSelector = (
@@ -112,8 +92,7 @@ export const CreateUserForm = () => {
             labelAlign="left"
             scrollToFirstError
             layout="vertical"
-            onFinish={onFinish}
-            // onFinish={createNewUser}
+            onFinish={onFinishCreateUser}
             onFinishFailed={() => setError("You must fill the form")}
           >
             <h1 style={{ textAlign: "center" }}>Create a new user</h1>

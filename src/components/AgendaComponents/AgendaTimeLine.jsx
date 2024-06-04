@@ -1,30 +1,12 @@
-import {
-  Avatar,
-  Badge,
-  Card,
-  Collapse,
-  ConfigProvider,
-  Divider,
-  Popconfirm,
-  Popover,
-  Radio,
-  Select,
-  Slider,
-  Timeline,
-} from "antd";
-import React, { useContext, useEffect, useState } from "react";
-import { DatesHours } from "./DatesHours";
-import { dates } from "../../contexts/Dates";
-import { Await, Link } from "react-router-dom";
-import { calc } from "antd/es/theme/internal";
+import { ConfigProvider, Divider } from "antd";
+import { useContext, useEffect } from "react";
+
+import { Link } from "react-router-dom";
+
 import { DatesContext } from "../../contexts/DatesContext";
-import {
-  DeleteOutlined,
-  FileDoneOutlined,
-  PrinterOutlined,
-} from "@ant-design/icons";
 import dayjs from "dayjs";
 import { DateCard } from "./DateCard";
+import { AgendaDayPointer } from "./AgendaDayPointer";
 
 export const AgendaTimeLine = () => {
   <ConfigProvider
@@ -37,18 +19,7 @@ export const AgendaTimeLine = () => {
     }}
   />;
 
-  const {
-    dayDates,
-    doctor,
-    enableDayHours,
-    searchUserInfo,
-    minHeightCard,
-    lookForPosition,
-  } = useContext(DatesContext);
-
-  useEffect(() => {
-    lookForPosition();
-  }, []);
+  const { dayDates, doctor, enableDayHours, dates } = useContext(DatesContext);
 
   return (
     <>
@@ -86,17 +57,10 @@ export const AgendaTimeLine = () => {
               : "No date selected"}
           </h2>
         </div>
-        {enableDayHours?.map((hour, i) => (
-          <Divider
-            orientation="left"
-            key={i}
-            id={hour?.label}
-            style={{ height: minHeightCard }}
-          >
-            {hour?.enable === true ? <Link>{hour?.label}</Link> : hour?.label}
-          </Divider>
-        ))}
-        {dayDates.map((date, i) => {
+        {enableDayHours?.map((hour, i) => {
+          return <AgendaDayPointer hour={hour} key={i} />;
+        })}
+        {dayDates?.map((date, i) => {
           return <DateCard date={date} i={i} key={i} />;
         })}
       </div>

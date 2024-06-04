@@ -12,17 +12,17 @@ export const MyUser = () => {
     {
       key: "1",
       label: "Name",
-      children: `${userData.name}`,
+      children: `${userData?.name}`,
     },
     {
       key: "2",
       label: "E-mail Address",
-      children: `${userData.email}`,
+      children: `${userData?.email}`,
     },
     {
       key: "3",
       label: "Role",
-      children: `${userData.role}`,
+      children: `${userData?.role}`,
     },
   ];
 

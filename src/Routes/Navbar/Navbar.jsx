@@ -50,7 +50,7 @@ export const Navbar = () => {
           </>
         </Link>
       ),
-      // type: "group",
+      type: "group",
       children: [
         !isLoggedIn && {
           key: "Login",

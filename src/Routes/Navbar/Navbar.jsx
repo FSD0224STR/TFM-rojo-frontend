@@ -25,6 +25,14 @@ export const Navbar = () => {
         icon: <CalendarOutlined />,
         label: <Link to={"/agenda"}>Agenda</Link>,
       },
+
+    isLoggedIn && 
+      roleData === "admin" && {
+        key: "Bills",
+        icon: <HomeOutlined />,
+        label: <Link to={"/createbills"}>Create Bills</Link>,
+      }, 
+
     isLoggedIn && {
       key: "CreateDate",
       icon: <DiffOutlined />,

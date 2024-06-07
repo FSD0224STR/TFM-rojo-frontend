@@ -4,26 +4,28 @@ import { Button, DatePicker, Drawer, Form, Input, Select } from "antd";
 
 import dayjs from "dayjs";
 import { DatesContext } from "../../contexts/DatesContext";
-import { durationDate } from "./durationDate";
+// import { durationDate } from "./durationDate";
 
-export const CreateNewDate = () => {
+export const CreateNewDate = ({ id }) => {
   const { setError } = useContext(AuthContext);
 
   const {
     createNewDate,
     searchDoctorDates,
     doctors,
-    doctorId,
     userPatients,
     findPatients,
     searchDayDates,
     searchDoctors,
     enableDayHoursList,
     dates,
-    dayDates,
+    stateColorSelected,
+    doctorId,
+    setDoctorId,
     hourAvailable,
     dateSelected,
-    stateColorSelected,
+    searchDurationDates,
+    durationDate,
   } = useContext(DatesContext);
 
   const [doctorSelected, setDoctorSelected] = useState("");
@@ -37,10 +39,19 @@ export const CreateNewDate = () => {
     createNewDate(value);
   };
 
+  const disableDateFn = (current) => {
+    return (
+      current &&
+      dayjs(current).format("YYYY-MM-DD") < dayjs().format("YYYY-MM-DD")
+    );
+  };
+
   useEffect(() => {
     searchDoctors();
     findPatients();
     searchDoctorDates();
+    // console.log(doctorId);
+    // console.log("userId", id.id);
     // console.log(hourAvailable?.hour.label);
   }, []);
 
@@ -86,7 +97,26 @@ export const CreateNewDate = () => {
     // console.log("doctor", doctorId);
     // console.log("hoursList");
     // console.log(dayjs(dateSelected));
-  }, []);
+    // setDoctorId("");
+    // console.log(id);
+    if (id !== undefined) {
+      createDateForm.setFieldsValue({
+        idPatient: id,
+        idDoctor: "",
+        time: "",
+        date: "",
+      });
+    }
+  }, [id]);
+
+  useEffect(() => {
+    createDateForm.setFieldsValue({
+      idPatient: "",
+      idDoctor: doctorId,
+      // time: hourAvailable?.hour.label,
+      date: dayjs(dateSelected),
+    });
+  }, [doctorId, hourAvailable]);
 
   return (
     <>
@@ -105,9 +135,9 @@ export const CreateNewDate = () => {
           initialValues={{
             state: "pending",
             color: "#f6a570",
-            idDoctor: doctorId,
-            time: hourAvailable?.hour.label,
-            date: dayjs(dateSelected),
+            // idDoctor: doctorId ? doctorId : "",
+            // time: hourAvailable ? hourAvailable?.hour.label : "",
+            // date: dateSelected ? dayjs(dateSelected) : "",
           }}
         >
           <Form.Item
@@ -169,6 +199,7 @@ export const CreateNewDate = () => {
           >
             <DatePicker
               size="large"
+              disabledDate={disableDateFn}
               onChange={(e) => {
                 searchDayDates(
                   dayjs(e).format("YYYY-MM-DD"),
@@ -197,11 +228,12 @@ export const CreateNewDate = () => {
             <Select
               size="large"
               options={enableDayHoursList}
-              onChange={() => {
+              onChange={(value) => {
                 createDateForm.setFieldsValue({
                   duration: "",
                   timeFinish: "",
                 });
+                searchDurationDates(value);
               }}
             />
           </Form.Item>

@@ -9,19 +9,44 @@ import {
   Radio,
   Popconfirm,
   Empty,
+  Drawer,
 } from "antd";
 
 import { DeleteOutlined, EditOutlined, DiffOutlined } from "@ant-design/icons";
 import { AuthContext } from "../../contexts/authContext.jsx";
 import { Link, useNavigate } from "react-router-dom";
 import { filterBy, onSearch, sortBy } from "./SortAndFilterUsers.jsx";
+import { DatesContext } from "../../contexts/DatesContext.jsx";
+import { CreateNewDate } from "../CreateNewDate/CreateNewDate.jsx";
 const { Search } = Input;
 
 export const Users = () => {
   const { data, roleData, searchUserInfo, GetUsers } = useContext(AuthContext);
+  const {
+    setDoctor,
+    setDateSelected,
+    setDoctorId,
+    userSelected,
+    setUserSelected,
+  } = useContext(DatesContext);
+
   const [listData, setListData] = useState(data);
   const [orderItem, setOrderItem] = useState("dni");
   const [orderSort, setOrderSort] = useState("ascending");
+  const [openCreateNewDate, setOpenCreateNewDate] = useState(false);
+
+  const onOpenCreateNewDate = (id) => {
+    setUserSelected(id);
+    setTimeout(() => {
+      setOpenCreateNewDate(true);
+    }, 500);
+  };
+
+  const onCloseCreateNewDate = () => {
+    setOpenCreateNewDate(false);
+
+    // console.log(userSelected);
+  };
 
   const navigate = useNavigate();
 
@@ -151,7 +176,14 @@ export const Users = () => {
                     <List.Item
                       actions={[
                         item.roles.includes("patient") && (
-                          <Link key="createNewDate" to={"/createnewdate"}>
+                          <Link
+                            key="createNewDate"
+                            onClick={() => {
+                              // setUserSelected(item._id);
+                              setOpenCreateNewDate(true);
+                              onOpenCreateNewDate(item._id, openCreateNewDate);
+                            }}
+                          >
                             <DiffOutlined />
                           </Link>
                         ),
@@ -223,6 +255,15 @@ export const Users = () => {
           )}
         </div>
       </div>
+      {userSelected && (
+        <Drawer
+          title="Basic Drawer"
+          onClose={onCloseCreateNewDate}
+          open={openCreateNewDate}
+        >
+          <CreateNewDate id={userSelected} />
+        </Drawer>
+      )}
     </>
   );
 };

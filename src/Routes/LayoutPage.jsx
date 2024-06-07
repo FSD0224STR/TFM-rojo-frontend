@@ -37,6 +37,7 @@ export const LayoutPage = () => {
               margin: "auto",
               // background: "red",
             }}
+            fullscreen
           />
         </Layout>
       </Layout>

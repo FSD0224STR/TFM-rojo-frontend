@@ -15,6 +15,7 @@ export const Agenda = () => {
     searchDoctorDates,
     doctor,
     setDoctor,
+    setDoctorId,
     setDayDates,
     findAllDoctorsDates,
     enableDayHours,
@@ -22,6 +23,8 @@ export const Agenda = () => {
     reloadAgenda,
     patientsDates,
     dayDates,
+    doctorId,
+    setLoading,
   } = useContext(DatesContext);
 
   useEffect(() => {
@@ -37,6 +40,17 @@ export const Agenda = () => {
     // console.log("patients dates");
     // console.log(patientsDates);
   }, [dates]);
+
+  const doctorFunc = async (e) => {
+    // setLoading(true);
+    const doctorInfo = await searchDoctorInfo(e);
+    const doctorName = `Dr. ${doctorInfo.name}`;
+    setDoctorId(e);
+    await reloadAgenda();
+    setDoctor(doctorName);
+    searchDoctorDates(e);
+    // setLoading(false);
+  };
 
   return (
     <div
@@ -55,28 +69,21 @@ export const Agenda = () => {
               name="doctors"
               options={doctors}
               showSearch={{ doctor }}
+              defaultValue={doctorId}
               onSearch={async (e) => {
-                const doctorInfo = await searchDoctorInfo(e);
-                const doctorName = `Dr. ${doctorInfo.name}`;
-                await reloadAgenda();
-                setDoctor(doctorName);
-                searchDoctorDates(e);
+                doctorFunc(e);
               }}
               onChange={async (e) => {
-                const doctorInfo = await searchDoctorInfo(e);
-                const doctorName = `Dr. ${doctorInfo.name}`;
-                await reloadAgenda();
-                setDoctor(doctorName);
-                searchDoctorDates(e);
+                doctorFunc(e);
               }}
               disabled={userData?.role == "doctor" ? true : false}
               placeholder="Select a doctor"
               style={{ width: "20vw" }}
             />
           </Form.Item>
-          <Form.Item>
+          {/* <Form.Item>
             <Button onClick={() => reloadAgenda()}>Reload</Button>
-          </Form.Item>
+          </Form.Item> */}
         </Form>
       )}
 

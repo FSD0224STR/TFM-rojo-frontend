@@ -28,6 +28,7 @@ export const DatesProvider = ({ children }) => {
   const [dates, setDates] = useState();
   const [patientsDates, setPatientsDates] = useState();
   const [doctors, setDoctors] = useState();
+  const [userSelected, setUserSelected] = useState();
   const [doctor, setDoctor] = useState(userData?.role === "admin" ? "all" : "");
   const [doctorId, setDoctorId] = useState();
   const [dateSelected, setDateSelected] = useState();
@@ -37,6 +38,7 @@ export const DatesProvider = ({ children }) => {
   const [enableDayHoursList, setEnableDayHoursList] = useState();
   const [userPatients, setUserPatients] = useState();
   const [hourAvailable, setHourAvailable] = useState();
+  const [durationDate, setDurationDate] = useState([]);
 
   const createNewDate = async (newDate) => {
     ResetMessages();
@@ -77,11 +79,17 @@ export const DatesProvider = ({ children }) => {
     return datesInfo;
   };
 
-  const searchEnabledHours = (datesAssigned) => {
+  const searchEnabledHours = (datesAssigned, date) => {
+    // console.log(date);
     let hours = [];
     DatesHours.map((hour) => {
-      hours.push({ label: hour, value: hour, enable: true });
+      if (date < dayjs().format("YYYY-MM-DD")) {
+        hours.push({ label: hour, value: hour, enable: false });
+      } else {
+        hours.push({ label: hour, value: hour, enable: true });
+      }
     });
+    // console.log(hours);
 
     if (datesAssigned?.length > 0) {
       datesAssigned?.map((date) => {
@@ -109,6 +117,29 @@ export const DatesProvider = ({ children }) => {
           .filter((hour) => hour !== undefined)
       )
     );
+  };
+
+  const searchDurationDates = (value) => {
+    // console.log(value);
+    // console.log(enableDayHours);
+    let durationEnable = [];
+    var counting = true;
+    var durationAdd = 0;
+    var maxDuration = 75;
+    enableDayHours.map((hour) => {
+      if (hour.label >= value && hour.enable === true && counting === true) {
+        durationAdd = durationAdd + 15;
+        if (durationAdd <= maxDuration)
+          return durationEnable.push({
+            label: `${durationAdd} min`,
+            value: durationAdd,
+          });
+      } else if (hour.label > value && hour.enable === false) {
+        counting = false;
+      }
+    });
+    // console.log(durationEnable);
+    return setDurationDate(durationEnable);
   };
 
   const searchDoctors = async () => {
@@ -150,7 +181,6 @@ export const DatesProvider = ({ children }) => {
   const searchDoctorDates = async (doctorSelectedId) => {
     ResetMessages();
     if (doctorSelectedId !== undefined) {
-      setDoctorId(doctorSelectedId);
       const response = await findAllDoctorsDates(doctorId);
       // const response = await getAllDates(doctorSelectedId);
       const responseDayDates = await response?.filter((date) => {
@@ -159,6 +189,7 @@ export const DatesProvider = ({ children }) => {
         }
       });
       // console.log(responseDayDates);
+      setDoctorId(doctorSelectedId);
       setPatientsDates(responseDayDates);
       return responseDayDates;
     }
@@ -167,7 +198,7 @@ export const DatesProvider = ({ children }) => {
   const searchDayDates = async (date, idDoctor, datesInfo) => {
     // console.log(datesInfo);
     setDay(date);
-    setDayDates([]);
+    // setDayDates([]);
     const day = date !== "" ? date : dayjs().format("YYYY-MM-DD");
 
     const response = await datesInfo?.filter((userDate) => {
@@ -179,7 +210,7 @@ export const DatesProvider = ({ children }) => {
       }
     });
 
-    return setDayDates(response), searchEnabledHours(response);
+    return setDayDates(response), searchEnabledHours(response, date);
   };
 
   const findPatients = async () => {
@@ -273,17 +304,18 @@ export const DatesProvider = ({ children }) => {
   };
 
   const changeStatusDate = async (idDate, newStatus) => {
-    console.log(idDate, newStatus);
-    // const response = await changeStatusDateApi(idDate, newStatus);
-    // if (response === 200) {
-    //   setSuccess("Successfully changed");
-    //   setLoading(true);
-    //   setTimeout(() => {
-    //     reloadAgenda();
-    //   }, 1000);
-    // } else {
-    //   setError("Error changing status");
-    // }
+    const color = await stateColorSelected(newStatus);
+    // console.log(idDate, newStatus);
+    const response = await changeStatusDateApi(idDate, newStatus, color);
+    if (response === 200) {
+      setSuccess("Successfully changed");
+      setLoading(true);
+      setTimeout(() => {
+        reloadAgenda();
+      }, 1000);
+    } else {
+      setError("Error changing status");
+    }
   };
 
   const dateContextValue = {
@@ -294,6 +326,7 @@ export const DatesProvider = ({ children }) => {
     dayDates,
     searchDayDates,
     doctors,
+    setDoctorId,
     doctorId,
     doctor,
     setDoctor,
@@ -316,6 +349,11 @@ export const DatesProvider = ({ children }) => {
     setDateSelected,
     stateColorSelected,
     changeStatusDate,
+    setDay,
+    userSelected,
+    setUserSelected,
+    searchDurationDates,
+    durationDate,
   };
 
   return (

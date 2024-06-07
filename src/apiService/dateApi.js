@@ -35,13 +35,13 @@ export const deleteDateApi = async (id) => {
   return response.status;
 };
 
-export const changeStatusDateApi = async (idDate, newStatus) => {
+export const changeStatusDateApi = async (idDate, newStatus, color) => {
   const response = await fetch(`${baseUrl}/date/changeStatus`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ id: idDate, status: newStatus }),
+    body: JSON.stringify({ id: idDate, status: newStatus, color: color }),
   });
   // console.log(response);
   return response.status;

@@ -17,6 +17,7 @@ import UserDetails from "./components/users/userDetails.jsx";
 
 import { MyUser } from "./Routes/MyUser/MyUser.jsx";
 import { CreateDate } from "./Routes/CreateDate/CreateDate.jsx";
+import { Bills } from "./Routes/Bills.jsx";
 
 const router = createBrowserRouter([
   {
@@ -62,6 +63,10 @@ const router = createBrowserRouter([
       {
         path: "/user/:id",
         element: <UserDetails />,
+      },
+      {
+        path: "/bills/",
+        element: <Bills />,
       },
     ],
   },

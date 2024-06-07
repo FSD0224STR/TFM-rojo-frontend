@@ -15,6 +15,7 @@ export const AgendaComponent = () => {
     searchDoctors,
     dates,
     setDateSelected,
+    setDay,
   } = useContext(DatesContext);
 
   const cellRender = (current) => {
@@ -47,6 +48,7 @@ export const AgendaComponent = () => {
       <Calendar
         onSelect={(date) => {
           const selectedDate = date.format("YYYY-MM-DD");
+
           setDateSelected(selectedDate);
           searchDayDates(selectedDate, doctorId, dates);
         }}

@@ -1,35 +1,21 @@
-import {
-  CloseOutlined,
-  MinusCircleOutlined,
-  PlusOutlined,
-} from "@ant-design/icons";
-import {
-  Button,
-  Card,
-  Form,
-  Input,
-  InputNumber,
-  Space,
-  Typography,
-} from "antd";
-import React, { useState } from "react";
+import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
+import { Button, Form, Input, Space } from "antd";
 
 export const Bills = () => {
   const [form] = Form.useForm();
-  const [qtyData, setQtyData] = useState();
   // const []
 
   const handleTotal = (_, values) => {
-    const rowsCopy = [...values.rows];
+    const treatmentsCopy = [...values.treatments];
 
-    values.rows.forEach((fieldGroup, index) => {
-      if (fieldGroup && fieldGroup.qty && fieldGroup.price) {
-        console.log(fieldGroup);
-        fieldGroup.total = fieldGroup.qty * fieldGroup.price;
-        rowsCopy.splice(index, 1, fieldGroup);
-        console.log("fieldGroup", fieldGroup);
-        console.log("rowsCopy", rowsCopy);
-        form.setFieldsValue({ rows: rowsCopy });
+    values.treatments.forEach((fieldGroup, index) => {
+      if (fieldGroup && fieldGroup.qty && fieldGroup.iva && fieldGroup.price) {
+        // console.log(fieldGroup);
+        fieldGroup.total = fieldGroup.qty * fieldGroup.price * fieldGroup.iva;
+        treatmentsCopy.splice(index, 1, fieldGroup);
+        // console.log("fieldGroup", fieldGroup);
+        // console.log("treatmentsCopy", treatmentsCopy);
+        form.setFieldsValue({ treatments: treatmentsCopy });
       }
     });
   };
@@ -49,7 +35,10 @@ export const Bills = () => {
       }}
       autoComplete="off"
     >
-      <Form.List name="rows">
+      <Form.Item label="name" name="name">
+        <Input placeholder="name" />
+      </Form.Item>
+      <Form.List name="treatments">
         {(fields, { add, remove }) => {
           return (
             <div>
@@ -59,7 +48,7 @@ export const Bills = () => {
                   style={{ display: "flex", marginBottom: 11 }}
                   align="start"
                 >
-                  {/* Longitud */}
+                  {/* qty */}
                   <Form.Item
                     noStyle
                     {...field}
@@ -69,7 +58,7 @@ export const Bills = () => {
                   >
                     <Input placeholder="quantity" />
                   </Form.Item>
-                  {/* Altura */}
+                  {/* Price */}
                   <Form.Item
                     noStyle
                     {...field}
@@ -78,6 +67,16 @@ export const Bills = () => {
                     rules={[{ required: true, message: "Missing price" }]}
                   >
                     <Input placeholder="price" />
+                  </Form.Item>
+                  {/* iva */}
+                  <Form.Item
+                    noStyle
+                    {...field}
+                    name={[field.name, "iva"]}
+                    key={[field.key, "iva"]}
+                    rules={[{ required: true, message: "Missing iva" }]}
+                  >
+                    <Input placeholder="iva" />
                   </Form.Item>
                   {/* Total */}
                   <Form.Item

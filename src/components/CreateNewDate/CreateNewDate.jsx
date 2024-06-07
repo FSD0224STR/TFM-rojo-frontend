@@ -1,45 +1,58 @@
-import React, { useContext, useEffect, useState, setError } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../contexts/authContext";
-import {
-  Button,
-  Cascader,
-  DatePicker,
-  Form,
-  Input,
-  InputNumber,
-  Mentions,
-  Select,
-  TreeSelect,
-} from "antd";
+import { Button, DatePicker, Drawer, Form, Input, Select } from "antd";
 
-const { RangePicker } = DatePicker;
 import dayjs from "dayjs";
 import { DatesContext } from "../../contexts/DatesContext";
-import { durationDate } from "./durationDate";
+// import { durationDate } from "./durationDate";
 
-export const CreateNewDate = () => {
+export const CreateNewDate = ({ id }) => {
   const { setError } = useContext(AuthContext);
 
   const {
+    createNewDate,
     searchDoctorDates,
     doctors,
-    userPacientes,
-    findPacientes,
+    userPatients,
+    findPatients,
     searchDayDates,
     searchDoctors,
     enableDayHoursList,
+    dates,
+    stateColorSelected,
+    doctorId,
+    setDoctorId,
+    hourAvailable,
+    dateSelected,
+    searchDurationDates,
+    durationDate,
   } = useContext(DatesContext);
+
   const [doctorSelected, setDoctorSelected] = useState("");
   const [finishTimeData, setFinishedTimeData] = useState();
 
-  const onFinish = (value) => {
-    console.log(value);
+  const onFinishCreateDate = (value) => {
+    createDateForm.resetFields();
+    createDateForm.setFieldsValue({
+      time: "",
+    });
+    createNewDate(value);
+  };
+
+  const disableDateFn = (current) => {
+    return (
+      current &&
+      dayjs(current).format("YYYY-MM-DD") < dayjs().format("YYYY-MM-DD")
+    );
   };
 
   useEffect(() => {
     searchDoctors();
-    findPacientes();
-    searchDoctorDates("all");
+    findPatients();
+    searchDoctorDates();
+    // console.log(doctorId);
+    // console.log("userId", id.id);
+    // console.log(hourAvailable?.hour.label);
   }, []);
 
   const filterOption = (input, option) =>
@@ -48,24 +61,22 @@ export const CreateNewDate = () => {
   const [createDateForm] = Form.useForm();
 
   // Find finish time
-  const dateSelected = Form.useWatch("date", createDateForm);
+  const dateSelectedForm = Form.useWatch("date", createDateForm);
   const timeSelected = Form.useWatch("time", createDateForm);
   const durationSelected = Form.useWatch("duration", createDateForm);
 
   useEffect(() => {
     const fullTime =
-      dayjs(dateSelected).format("YYYY-MM-DD") + " " + timeSelected;
+      dayjs(dateSelectedForm).format("YYYY-MM-DD") + " " + timeSelected;
     const date = dayjs(fullTime);
-    // console.log(date);
     setTimeout(() => {
       const timeAdded = date.add(durationSelected, "minute");
-      // console.log(timeAdded);
       setFinishedTimeData(timeAdded.format("HH:mm"));
       createDateForm.setFieldsValue({
-        timeFinish: finishTimeData,
+        timeFinish: timeAdded.format("HH:mm"),
       });
     }, 200);
-  }, [durationSelected]);
+  }, [dateSelectedForm, timeSelected, durationSelected]);
 
   // Find color choices
   const [colorSelected, setColorSelected] = useState();
@@ -73,23 +84,39 @@ export const CreateNewDate = () => {
   const stateSelected = Form.useWatch("state", createDateForm);
 
   useEffect(() => {
-    switch (stateSelected) {
-      case "confirmed":
-        setColorSelected("#cad5ad");
-        break;
-      case "cancelled":
-        setColorSelected("#e77a77");
-        break;
-      case "pending":
-        setColorSelected("#f6a570");
-        break;
-      case "finished":
-    }
+    const color = stateColorSelected(stateSelected);
 
+    setColorSelected(color);
     createDateForm.setFieldsValue({
-      color: colorSelected,
+      color: color,
     });
   }, [stateSelected]);
+
+  useEffect(() => {
+    // console.log("hour", hourAvailable);
+    // console.log("doctor", doctorId);
+    // console.log("hoursList");
+    // console.log(dayjs(dateSelected));
+    // setDoctorId("");
+    // console.log(id);
+    if (id !== undefined) {
+      createDateForm.setFieldsValue({
+        idPatient: id,
+        idDoctor: "",
+        time: "",
+        date: "",
+      });
+    }
+  }, [id]);
+
+  useEffect(() => {
+    createDateForm.setFieldsValue({
+      idPatient: "",
+      idDoctor: doctorId,
+      // time: hourAvailable?.hour.label,
+      date: dayjs(dateSelected),
+    });
+  }, [doctorId, hourAvailable]);
 
   return (
     <>
@@ -103,13 +130,19 @@ export const CreateNewDate = () => {
           labelAlign="left"
           scrollToFirstError
           layout="vertical"
-          onFinish={onFinish}
-          // onFinish={createNewUser}
+          onFinish={onFinishCreateDate}
           onFinishFailed={() => setError("You must fill the form")}
+          initialValues={{
+            state: "pending",
+            color: "#f6a570",
+            // idDoctor: doctorId ? doctorId : "",
+            // time: hourAvailable ? hourAvailable?.hour.label : "",
+            // date: dateSelected ? dayjs(dateSelected) : "",
+          }}
         >
           <Form.Item
             label="Patient"
-            name="idPacient"
+            name="idPatient"
             rules={[
               {
                 required: true,
@@ -121,7 +154,7 @@ export const CreateNewDate = () => {
               size="large"
               showSearch
               filterOption={filterOption}
-              options={userPacientes}
+              options={userPatients}
             />
           </Form.Item>
 
@@ -140,7 +173,15 @@ export const CreateNewDate = () => {
               showSearch
               filterOption={filterOption}
               value={doctorSelected}
-              onChange={(e) => setDoctorSelected(e)}
+              onChange={(e) => {
+                setDoctorSelected(e);
+                createDateForm.setFieldsValue({
+                  date: "",
+                  time: "",
+                  duration: "",
+                  timeFinish: "",
+                });
+              }}
               options={doctors}
             />
           </Form.Item>
@@ -158,9 +199,19 @@ export const CreateNewDate = () => {
           >
             <DatePicker
               size="large"
-              onChange={(e) =>
-                searchDayDates(dayjs(e).format("YYYY-MM-DD"), doctorSelected)
-              }
+              disabledDate={disableDateFn}
+              onChange={(e) => {
+                searchDayDates(
+                  dayjs(e).format("YYYY-MM-DD"),
+                  doctorSelected,
+                  dates
+                );
+                createDateForm.setFieldsValue({
+                  time: "",
+                  duration: "",
+                  timeFinish: "",
+                });
+              }}
             />
           </Form.Item>
 
@@ -174,7 +225,17 @@ export const CreateNewDate = () => {
               },
             ]}
           >
-            <Select size="large" options={enableDayHoursList} />
+            <Select
+              size="large"
+              options={enableDayHoursList}
+              onChange={(value) => {
+                createDateForm.setFieldsValue({
+                  duration: "",
+                  timeFinish: "",
+                });
+                searchDurationDates(value);
+              }}
+            />
           </Form.Item>
 
           <Form.Item
@@ -187,15 +248,15 @@ export const CreateNewDate = () => {
               },
             ]}
           >
-            <Select
-              size="large"
-              options={durationDate}
-              // onChange={findFinishTime}
-            />
+            <Select size="large" options={durationDate} />
           </Form.Item>
 
           <Form.Item label="Finish time" name="timeFinish">
-            <Input size="large" disabled placeholder={finishTimeData} />
+            <Input
+              size="large"
+              disabled
+              // placeholder={finishTimeData}
+            />
           </Form.Item>
 
           <Form.Item
@@ -220,13 +281,14 @@ export const CreateNewDate = () => {
                 message: "Please input!",
               },
             ]}
+            initialValue={"pending"}
           >
             <Select
               size="large"
               options={[
                 { label: "confirmed", value: "confirmed" },
                 { label: "pending", value: "pending" },
-                { label: "canceled", value: "canceled" },
+                { label: "cancelled", value: "cancelled" },
               ]}
             />
           </Form.Item>

@@ -47,7 +47,7 @@ export const UpdateUserForm = () => {
 
   const roleOptions = [
     { value: "admin" },
-    { value: "paciente" },
+    { value: "patient" },
     { value: "doctor" },
   ];
 
@@ -280,7 +280,7 @@ export const UpdateUserForm = () => {
                   },
                 ]}
               >
-                <Input size="large" placeholder="paciente" disabled></Input>
+                <Input size="large" placeholder="patient" disabled></Input>
               </Form.Item>
             )}
 
@@ -333,7 +333,6 @@ export const UpdateUserForm = () => {
               </Button>
             </div>
           </Form>
-          {/* <ToastContainer /> */}
         </div>
       )}
     </>

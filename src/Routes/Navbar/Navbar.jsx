@@ -20,28 +20,25 @@ export const Navbar = () => {
 
   const Items = [
     isLoggedIn &&
-      roleData !== "paciente" && {
+      roleData !== "patient" && {
         key: "Agenda",
         icon: <CalendarOutlined />,
         label: <Link to={"/agenda"}>Agenda</Link>,
       },
-
-    isLoggedIn && 
-      roleData === "admin" && {
-        key: "Bills",
-        icon: <HomeOutlined />,
-        label: <Link to={"/createbills"}>Create Bills</Link>,
-      }, 
-
-    isLoggedIn && {
-      key: "CreateDate",
-      icon: <DiffOutlined />,
-      label: <Link to={"/createnewdate"}>Create Date</Link>,
-    },
+    // isLoggedIn && {
+    //   key: "CreateDate",
+    //   icon: <DiffOutlined />,
+    //   label: <Link to={"/createnewdate"}>Create Date</Link>,
+    // },
     isLoggedIn && {
       key: "UserData",
       icon: <UserOutlined />,
       label: <Link to={"/userdata"}>Users Data</Link>,
+    },
+    isLoggedIn && {
+      key: "Bills",
+      icon: <UserOutlined />,
+      label: <Link to={"/bills"}>Bills</Link>,
     },
     {
       type: "divider",
@@ -58,7 +55,7 @@ export const Navbar = () => {
           </>
         </Link>
       ),
-      // type: "group",
+      type: "group",
       children: [
         !isLoggedIn && {
           key: "Login",
@@ -67,7 +64,7 @@ export const Navbar = () => {
           id: "loggedin",
         },
         isLoggedIn &&
-          roleData !== "paciente" && {
+          roleData !== "patient" && {
             key: "CreateUser",
             icon: <UserAddOutlined />,
             label: <Link to={"/createuser"}>Create user</Link>,

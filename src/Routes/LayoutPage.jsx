@@ -20,6 +20,7 @@ export const LayoutPage = () => {
       toast.error(error);
     }
   }, [error, success]);
+
   return (
     <>
       <Layout className="LayoutContainer">
@@ -36,6 +37,7 @@ export const LayoutPage = () => {
               margin: "auto",
               // background: "red",
             }}
+            fullscreen
           />
         </Layout>
       </Layout>

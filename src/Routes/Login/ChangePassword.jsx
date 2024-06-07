@@ -10,22 +10,17 @@ import {
 // Form
 import { Alert, Button, Form, Input, Spin } from "antd";
 
-// Notifications
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-
 // UserApi
 import { AuthContext } from "../../contexts/authContext.jsx";
 
-export const ForgotPassword = () => {
-  // const [passwordVisible, setPasswordVisible] = React.useState(false);
-
+export const ChangePassword = () => {
   // User data
-  const [email, setEmail] = useState("");
-  const [oldPassword, setOldPassword] = useState("");
-  const [newPassword, setNewPassword] = useState("");
 
   const { updatePasswordApi } = useContext(AuthContext);
+
+  const onFinishUpdatePassword = (user) => {
+    updatePasswordApi(user);
+  };
 
   return (
     <>
@@ -41,10 +36,9 @@ export const ForgotPassword = () => {
             flexDirection: "column",
             justifyContent: "center",
           }}
+          onFinish={onFinishUpdatePassword}
         >
-          <h1 style={{ textAlign: "center" }}>
-            I can not remember my password
-          </h1>
+          <h1 style={{ textAlign: "center" }}>I want to change my password</h1>
           <Form.Item
             name="email"
             label="Email"
@@ -61,8 +55,6 @@ export const ForgotPassword = () => {
             <Input
               size="large"
               placeholder="E-mail"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
               suffix={<UserOutlined />}
             />
           </Form.Item>
@@ -85,8 +77,6 @@ export const ForgotPassword = () => {
               iconRender={(visible) =>
                 visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
               }
-              value={oldPassword}
-              onChange={(e) => setOldPassword(e.target.value)}
             />
           </Form.Item>
           <Form.Item
@@ -116,8 +106,6 @@ export const ForgotPassword = () => {
               iconRender={(visible) =>
                 visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
               }
-              value={newPassword}
-              onChange={(e) => setNewPassword(e.target.value)}
             />
           </Form.Item>
           <br />
@@ -130,14 +118,7 @@ export const ForgotPassword = () => {
               alignItems: "center",
             }}
           >
-            <Button
-              htmlType="submit"
-              size="large"
-              style={{ width: "300px" }}
-              onClick={() => {
-                updatePasswordApi(email, oldPassword, newPassword);
-              }}
-            >
+            <Button htmlType="submit" size="large" style={{ width: "300px" }}>
               Recover Password
             </Button>
             {/* <Button type="link" size="large">
@@ -148,7 +129,6 @@ export const ForgotPassword = () => {
             </Button>
           </div>
         </Form>
-        <ToastContainer />
       </div>
     </>
   );

@@ -3,45 +3,57 @@ import dayjs from "dayjs";
 
 import { DatesContext } from "../../contexts/DatesContext";
 import { useContext, useEffect } from "react";
+import { CalendarItem } from "./CalendarItem";
 
 export const AgendaComponent = () => {
-  const { patientsDates, searchDoctorDates, doctor, searchDayDates } =
-    useContext(DatesContext);
+  const {
+    patientsDates,
+    searchDoctorDates,
+    doctor,
+    doctorId,
+    searchDayDates,
+    searchDoctors,
+    dates,
+    setDateSelected,
+    setDay,
+  } = useContext(DatesContext);
 
   const cellRender = (current) => {
-    // console.log("HOLA");
     const response = patientsDates?.filter(
-      (date) => date.date === current.format("YYYY-MM-DD")
+      (date) =>
+        dayjs(date?.date).format("YYYY-MM-DD") === current.format("YYYY-MM-DD")
     );
+
     if (response !== undefined) {
       return (
-        <ul style={{ margin: "-4px 0 0 -35px" }}>
-          {response?.map((date, i) => (
-            <li key={i} style={{ listStyle: "none" }}>
-              <Badge color={date.color} text={`${date.time} ${date.user}`} />
-            </li>
-          ))}
-        </ul>
+        <>
+          <ul style={{ margin: "-3px 0 0 -35px" }}>
+            {response?.map((date, i) => {
+              return <CalendarItem date={date} key={i} />;
+            })}
+          </ul>
+        </>
       );
     }
   };
 
   useEffect(() => {
+    searchDoctors();
     searchDoctorDates();
-    // console.log(patientsDates);
-  }, []);
+    // cellRender;
+  }, [dates]);
 
   return (
-    <Calendar
-      onSelect={(date) => {
-        const selectedDate = date.format("YYYY-MM-DD");
-        // searchDoctorDates();
-        // console.log(selectedDate);
-        searchDayDates(selectedDate, doctor);
-      }}
-      cellRender={doctor !== undefined && cellRender}
-      // onPanelChange={console.log("HOLA")}
-      // mode={"day"}
-    />
+    <>
+      <Calendar
+        onSelect={(date) => {
+          const selectedDate = date.format("YYYY-MM-DD");
+
+          setDateSelected(selectedDate);
+          searchDayDates(selectedDate, doctorId, dates);
+        }}
+        cellRender={cellRender}
+      />
+    </>
   );
 };

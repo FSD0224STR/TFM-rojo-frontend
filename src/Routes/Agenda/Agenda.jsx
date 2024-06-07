@@ -1,20 +1,30 @@
 import React, { useContext, useEffect } from "react";
 import { AgendaComponent } from "../../components/AgendaComponents/AgendaComponent";
-import { AgendaList } from "../../components/AgendaComponents/AgendaList";
-import { Cascader, Form, Select } from "antd";
+import { Button, Cascader, Form, Select } from "antd";
 import { DatesContext } from "../../contexts/DatesContext";
 import { AuthContext } from "../../contexts/authContext";
 import { AgendaTimeLine } from "../../components/AgendaComponents/AgendaTimeLine";
+import { AgendaDayPointer } from "../../components/AgendaComponents/AgendaDayPointer";
 
 export const Agenda = () => {
   const { userData } = useContext(AuthContext);
   const {
     searchDoctors,
     doctors,
+    searchDoctorInfo,
     searchDoctorDates,
     doctor,
     setDoctor,
+    setDoctorId,
     setDayDates,
+    findAllDoctorsDates,
+    enableDayHours,
+    dates,
+    reloadAgenda,
+    patientsDates,
+    dayDates,
+    doctorId,
+    setLoading,
   } = useContext(DatesContext);
 
   useEffect(() => {
@@ -22,12 +32,25 @@ export const Agenda = () => {
       const doctorLoaded = `Dr. ${userData.name}`;
       setDoctor(doctorLoaded);
       searchDoctorDates(doctorLoaded);
-    } else {
-      setDoctor("");
-      searchDoctors();
     }
-    setDayDates([]);
-  }, [userData]);
+    // findAllDoctorsDates();
+
+    // console.log("dates agenda ");
+    // console.log(dates);
+    // console.log("patients dates");
+    // console.log(patientsDates);
+  }, [dates]);
+
+  const doctorFunc = async (e) => {
+    // setLoading(true);
+    const doctorInfo = await searchDoctorInfo(e);
+    const doctorName = `Dr. ${doctorInfo.name}`;
+    setDoctorId(e);
+    await reloadAgenda();
+    setDoctor(doctorName);
+    searchDoctorDates(e);
+    // setLoading(false);
+  };
 
   return (
     <div
@@ -41,32 +64,29 @@ export const Agenda = () => {
       <AgendaComponent />
       {userData?.role === "admin" && (
         <Form style={{ marginTop: "1em" }}>
-          <Form.Item
-            name="doctors"
-            label="Doctors"
-            // initialValue={{ doctors: doctors[0].initialValue }}
-          >
+          <Form.Item name="doctors" label="Doctors">
             <Select
               name="doctors"
               options={doctors}
               showSearch={{ doctor }}
-              onSearch={(e) => {
-                setDoctor(e);
-                searchDoctorDates(e);
+              defaultValue={doctorId}
+              onSearch={async (e) => {
+                doctorFunc(e);
               }}
-              onChange={(e) => {
-                setDoctor(e);
-                searchDoctorDates(e);
+              onChange={async (e) => {
+                doctorFunc(e);
               }}
-              // defaultValue={doctors[0]?.value}
               disabled={userData?.role == "doctor" ? true : false}
               placeholder="Select a doctor"
               style={{ width: "20vw" }}
             />
           </Form.Item>
+          {/* <Form.Item>
+            <Button onClick={() => reloadAgenda()}>Reload</Button>
+          </Form.Item> */}
         </Form>
       )}
-      {/* <AgendaList /> */}
+
       <AgendaTimeLine />
     </div>
   );

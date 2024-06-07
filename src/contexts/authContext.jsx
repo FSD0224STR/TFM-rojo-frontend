@@ -6,7 +6,7 @@ import {
   getMyUser,
   createUser,
   updateUserPassword,
-  searchUserUpdate,
+  searchUser,
   updateUserApi,
 } from "../apiService/userApi";
 
@@ -30,22 +30,16 @@ export const AuthProvider = ({ children }) => {
     setSuccess("");
   };
 
-  const login = async (email, password) => {
+  const login = async (user) => {
     setLoading(true);
-    // console.log("data when login", data);
-    // console.log("role when login", role);
-    if (email) {
-      const user = { email: email, password: password };
-
+    if (user.email) {
       const response = await LoginApi(user);
       if (response.error === 403) {
         setError("La contraseña es incorrecta");
         setLoading(false);
       } else if (response.error === 404) {
         setError("El usuario no existe");
-        // setTimeout(() => {
-        //   navigate("/CreateUser");
-        // }, 1000);
+
         setLoading(false);
       } else {
         ResetMessages();
@@ -68,6 +62,7 @@ export const AuthProvider = ({ children }) => {
         const userRole = await response.data.role;
         setUserName(response.data.name);
         setUserData(response.data);
+        setDataRole(response.data.role);
         setTimeout(() => {
           GetUsers(userRole, response.data.email);
         }, 500);
@@ -79,9 +74,7 @@ export const AuthProvider = ({ children }) => {
 
   const GetUsers = async (role, email) => {
     const token = localStorage.getItem("access_token");
-    // console.log(token);
     const response = await getAllUsers(token);
-    // console.log(response);
     if (response.error === 400) {
       localStorage.removeItem("access_token");
       navigate("/");
@@ -89,38 +82,27 @@ export const AuthProvider = ({ children }) => {
       setData([]);
     } else {
       if (response.length && role !== "") {
-        // console.log(response);
         if (role === "admin") {
           setData(response);
-          // navigate("/userdata");
         } else if (role === "doctor") {
           const users = await response.filter((user) => {
-            if (user.roles === "paciente") return user;
+            if (user.roles === "patient") return user;
           });
           setData(users);
-          // navigate("/userdata");
-        } else if (role === "paciente") {
-          // console.log(response);
+        } else if (role === "patient") {
           const users = await response.filter((user) => {
             if (user.email === email) return user;
           });
           setData(users);
-          // navigate("/userdata");
         }
       }
-      // navigate("/userdata");
-      setDataRole(role);
-      setIsLoggedIn(true);
-      setLoading(false);
+      navigate("/userdata");
+      return setIsLoggedIn(true), setLoading(false);
     }
   };
 
   const logout = () => {
     localStorage.removeItem("access_token");
-    // localStorage.removeItem("accessToken");
-    // localStorage.removeItem("username");
-
-    // setData([]);
     setIsLoggedIn(false);
     setUserName("");
     navigate("/");
@@ -135,7 +117,7 @@ export const AuthProvider = ({ children }) => {
     setSuccess("");
     setLoading(true);
     delete newUser.confirmPassword;
-    console.log("Data Auth Context", newUser);
+    // console.log("Data Auth Context", newUser);
 
     const response = await createUser(newUser);
 
@@ -154,17 +136,12 @@ export const AuthProvider = ({ children }) => {
   };
 
   // Update user password
-  const updatePasswordApi = async (email, oldPassword, newPassword) => {
+  const updatePasswordApi = async (user) => {
     setError("");
     setSuccess("");
     setLoading(true);
-    if (oldPassword !== newPassword) {
-      if (newPassword.length >= 6) {
-        const user = {
-          email: email,
-          oldPassword: oldPassword,
-          newPassword: newPassword,
-        };
+    if (user.oldPassword !== user.newPassword) {
+      if (user.newPassword.length >= 6) {
         const response = await updateUserPassword(user);
         if (response === 200) {
           setSuccess("Password updated successfully");
@@ -188,14 +165,13 @@ export const AuthProvider = ({ children }) => {
   };
 
   const searchUserInfo = async (idUser) => {
-    const response = await searchUserUpdate(idUser);
+    const response = await searchUser(idUser);
+    // console.log(response);
     return setSearchedUser(response.data);
   };
 
   const updateUser = async (dataUser) => {
-    // ResetMessages();
     setLoading(true);
-    // console.log(dataUser);
 
     const response = await updateUserApi(dataUser);
     if (response === 200)
@@ -211,9 +187,12 @@ export const AuthProvider = ({ children }) => {
 
   const authContextValue = {
     isLoggedIn,
+    setSuccess,
     success,
+    setError,
     error,
     loading,
+    setLoading,
     login,
     logout,
     data,
@@ -221,12 +200,14 @@ export const AuthProvider = ({ children }) => {
     roleData,
     userName,
     setData,
+    GetUsers,
     createNewUser,
     updatePasswordApi,
     searchUserInfo,
     searchedUser,
     updateUser,
-    setError,
+    navigate,
+    ResetMessages,
   };
 
   useEffect(() => {

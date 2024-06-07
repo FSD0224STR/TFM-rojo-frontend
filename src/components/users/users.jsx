@@ -1,39 +1,61 @@
-import { useContext, useEffect, useLayoutEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 import {
   Avatar,
   Button,
   List,
-  Pagination,
   Space,
   Input,
-  Table,
   Radio,
   Popconfirm,
   Empty,
+  Drawer,
 } from "antd";
 
-import {
-  DeleteOutlined,
-  EditOutlined,
-  DiffOutlined,
-  InboxOutlined,
-} from "@ant-design/icons";
+import { DeleteOutlined, EditOutlined, DiffOutlined } from "@ant-design/icons";
 import { AuthContext } from "../../contexts/authContext.jsx";
 import { Link, useNavigate } from "react-router-dom";
 import { filterBy, onSearch, sortBy } from "./SortAndFilterUsers.jsx";
+import { DatesContext } from "../../contexts/DatesContext.jsx";
+import { CreateNewDate } from "../CreateNewDate/CreateNewDate.jsx";
 const { Search } = Input;
 
 export const Users = () => {
-  const { data, roleData, searchUserInfo, searchedUser } =
-    useContext(AuthContext);
+  const { data, roleData, searchUserInfo, GetUsers } = useContext(AuthContext);
+  const {
+    setDoctor,
+    setDateSelected,
+    setDoctorId,
+    userSelected,
+    setUserSelected,
+  } = useContext(DatesContext);
+
   const [listData, setListData] = useState(data);
   const [orderItem, setOrderItem] = useState("dni");
   const [orderSort, setOrderSort] = useState("ascending");
+  const [openCreateNewDate, setOpenCreateNewDate] = useState(false);
+
+  const onOpenCreateNewDate = (id) => {
+    setUserSelected(id);
+    setTimeout(() => {
+      setOpenCreateNewDate(true);
+    }, 500);
+  };
+
+  const onCloseCreateNewDate = () => {
+    setOpenCreateNewDate(false);
+
+    // console.log(userSelected);
+  };
 
   const navigate = useNavigate();
 
+  const findUsers = async () => {
+    await GetUsers();
+  };
+
   useEffect(() => {
+    findUsers();
     setListData(data);
   }, []);
 
@@ -43,7 +65,6 @@ export const Users = () => {
         style={{
           height: "90vh",
           width: "70vw",
-          // backgroundColor: "red",
           display: "flex",
           flexDirection: "column",
           justifyContent: "start",
@@ -51,10 +72,8 @@ export const Users = () => {
         }}
         id="listContainer"
       >
-        {roleData !== "paciente" && (
+        {roleData !== "patient" && (
           <div>
-            {/* {console.log(data)} */}
-            {/* <h1 style={{ textAlign: "center" }}>Users Info</h1> */}
             <Space direction="vertical">
               <div
                 style={{
@@ -81,7 +100,6 @@ export const Users = () => {
               <div
                 style={{
                   width: "70vw",
-                  // backgroundColor: "red",
                   display: "flex",
                   justifyContent: "space-between",
                 }}
@@ -127,21 +145,14 @@ export const Users = () => {
                     <Radio.Group
                       onChange={async (e) => {
                         const response = await filterBy(e.target.value, data);
-                        // console.log(response);
                         setListData(response);
                         navigate("/userdata");
                       }}
                     >
                       <Radio.Button value="admin">Admin</Radio.Button>
                       <Radio.Button value="doctor">Doctor</Radio.Button>
-                      <Radio.Button value="paciente">Paciente</Radio.Button>
+                      <Radio.Button value="patient">Patient</Radio.Button>
                       <Radio.Button value="all">All</Radio.Button>
-
-                      {/* <Radio.Button
-              value="original"
-            >
-              Original
-            </Radio.Button> */}
                     </Radio.Group>
                   </div>
                 )}
@@ -152,17 +163,7 @@ export const Users = () => {
         <div>
           {listData?.length ? (
             <>
-              <div
-                style={
-                  {
-                    // backgroundColor: "red",
-                    // maxHeight: "70vh",
-                    // height: "100%",
-                    // overflow: "auto",
-                    // padding: "1em",
-                  }
-                }
-              >
+              <div>
                 <List
                   itemLayout="Horizontal"
                   dataSource={listData}
@@ -174,8 +175,15 @@ export const Users = () => {
                   renderItem={(item, index) => (
                     <List.Item
                       actions={[
-                        item.roles.includes("paciente") && (
-                          <Link key="createNewDate" to={"/createnewdate"}>
+                        item.roles.includes("patient") && (
+                          <Link
+                            key="createNewDate"
+                            onClick={() => {
+                              // setUserSelected(item._id);
+                              setOpenCreateNewDate(true);
+                              onOpenCreateNewDate(item._id, openCreateNewDate);
+                            }}
+                          >
                             <DiffOutlined />
                           </Link>
                         ),
@@ -191,7 +199,7 @@ export const Users = () => {
                         >
                           <EditOutlined />
                         </Link>,
-                        roleData !== "paciente" && (
+                        roleData !== "patient" && (
                           <Popconfirm
                             title="Are you sure to delete this user?"
                             onConfirm={() =>
@@ -211,7 +219,7 @@ export const Users = () => {
                     >
                       <List.Item.Meta
                         avatar={
-                          <Link to = {`/user/${item._id}`}>
+                          <Link to={`/user/${item._id}`}>
                             <Avatar
                               src={`https://api.dicebear.com/7.x/miniavs/svg?seed=${index}`}
                             />
@@ -247,6 +255,15 @@ export const Users = () => {
           )}
         </div>
       </div>
+      {userSelected && (
+        <Drawer
+          title="Basic Drawer"
+          onClose={onCloseCreateNewDate}
+          open={openCreateNewDate}
+        >
+          <CreateNewDate id={userSelected} />
+        </Drawer>
+      )}
     </>
   );
 };

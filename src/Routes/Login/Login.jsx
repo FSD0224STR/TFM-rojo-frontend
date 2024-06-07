@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
-  PlusOutlined,
   EyeInvisibleOutlined,
   EyeTwoTone,
   UserOutlined,
@@ -11,20 +10,21 @@ import {
 import { Alert, Button, Form, Input, Spin } from "antd";
 
 // Notifications
-import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 // UserApi
 import { AuthContext } from "../../contexts/authContext.jsx";
 
 export const Login = () => {
-  // const [passwordVisible, setPasswordVisible] = React.useState(false);
-
   // User data
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const { login } = useContext(AuthContext);
+
+  const onFinishLogin = (value) => {
+    login(value);
+  };
 
   return (
     <>
@@ -40,6 +40,7 @@ export const Login = () => {
             flexDirection: "column",
             justifyContent: "center",
           }}
+          onFinish={onFinishLogin}
         >
           <h1 style={{ textAlign: "center" }}>Login</h1>
           <Form.Item
@@ -59,8 +60,6 @@ export const Login = () => {
             <Input
               size="large"
               placeholder="E-mail"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
               suffix={<UserOutlined />}
             />
           </Form.Item>
@@ -79,12 +78,10 @@ export const Login = () => {
           >
             <Input.Password
               size="large"
-              placeholder="Contraseña"
+              placeholder="Password"
               iconRender={(visible) =>
                 visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
               }
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
             />
           </Form.Item>
           <br />
@@ -97,25 +94,17 @@ export const Login = () => {
               alignItems: "center",
             }}
           >
-            <Button
-              htmlType="submit"
-              size="large"
-              style={{ width: "300px" }}
-              onClick={() => {
-                login(email, password);
-              }}
-            >
+            <Button htmlType="submit" size="large" style={{ width: "300px" }}>
               Login
             </Button>
             {/* <Button type="link" size="large">
               <Link to="/CreateUser">Nuevo usuario</Link>
             </Button> */}
             <Button type="link" size="large">
-              <Link to="/forgotpassword">Forgot password</Link>
+              <Link to="/changepassword">Change password</Link>
             </Button>
           </div>
         </Form>
-        <ToastContainer />
       </div>
     </>
   );

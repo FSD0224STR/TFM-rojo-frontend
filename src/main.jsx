@@ -10,13 +10,15 @@ import { Login } from "./Routes/Login/Login.jsx";
 import { CreateUserForm } from "./Routes/CreateUserForm/CreateUserForm.jsx";
 import { UserData } from "./Routes/UserData/UsersData.jsx";
 import { CreateNewDate } from "./components/CreateNewDate/CreateNewDate.jsx";
-import { ForgotPassword } from "./Routes/Login/ForgotPassword.jsx";
+import { ChangePassword } from "./Routes/Login/ChangePassword.jsx";
 import { UpdateUserForm } from "./Routes/CreateUserForm/UpdateUserForm.jsx";
 import { CreateBills } from "./components/CreateBills/CreateBills.jsx";
 import { Agenda } from "./Routes/Agenda/Agenda.jsx";
 import UserDetails from "./components/users/userDetails.jsx";
 
 import { MyUser } from "./Routes/MyUser/MyUser.jsx";
+import { CreateDate } from "./Routes/CreateDate/CreateDate.jsx";
+import { Bills } from "./Routes/Bills.jsx";
 
 const router = createBrowserRouter([
   {
@@ -28,8 +30,8 @@ const router = createBrowserRouter([
         element: <Login />,
       },
       {
-        path: "/forgotpassword",
-        element: <ForgotPassword />,
+        path: "/changepassword",
+        element: <ChangePassword />,
       },
       {
         path: "/createuser",
@@ -37,7 +39,6 @@ const router = createBrowserRouter([
       },
       {
         path: "/updateuser/",
-
         element: <UpdateUserForm />,
       },
       {
@@ -54,7 +55,7 @@ const router = createBrowserRouter([
       },
       {
         path: "/createnewdate",
-        element: <CreateNewDate />,
+        element: <CreateDate />,
       },
       {
         path: "/agenda",
@@ -65,8 +66,8 @@ const router = createBrowserRouter([
         element: <UserDetails />,
       },
       {
-        path: "/createbills",
-        element: <CreateBills />,
+        path: "/bills/",
+        element: <Bills />,
       },
     ],
   },

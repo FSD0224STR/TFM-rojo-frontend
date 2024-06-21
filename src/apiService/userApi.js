@@ -1,6 +1,7 @@
-const baseUrl =
-  "https://api.render.com/deploy/srv-cpqslcjv2p9s73dps37g?key=E71a06B80XM";
+// const baseUrl =
+//   "https://api.render.com/deploy/srv-cpqslcjv2p9s73dps37g?key=E71a06B80XM";
 
+const baseUrl = "https://localhost:3000";
 // Login
 export const LoginApi = async (user) => {
   const response = await fetch(`${baseUrl}/user/login`, {

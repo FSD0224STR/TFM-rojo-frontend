@@ -1,5 +1,7 @@
-const baseUrl =
-  "https://api.render.com/deploy/srv-cpqslcjv2p9s73dps37g?key=E71a06B80XM";
+// const baseUrl =
+//   "https://api.render.com/deploy/srv-cpqslcjv2p9s73dps37g?key=E71a06B80XM";
+
+const baseUrl = "https://localhost:3000";
 
 export const createDate = async (newDate) => {
   const response = await fetch(`${baseUrl}/date/newDate`, {

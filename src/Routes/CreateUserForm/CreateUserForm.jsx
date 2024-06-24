@@ -320,7 +320,11 @@ export const CreateUserForm = () => {
                 },
               ]}
             >
-              <Upload action="/upload.do" listType="picture-card">
+              <Upload
+                multiple={false}
+                listType="picture-circle"
+                action="/upload.do"
+              >
                 <button style={{ border: 0, background: "none" }} type="button">
                   <PlusOutlined />
                   <div style={{ marginTop: 8 }}>profile photo</div>

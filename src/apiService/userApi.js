@@ -1,5 +1,5 @@
-const baseUrl = "https://tfm-rojo-backend-1emu.onrender.com";
-// const baseUrl = "http://localhost:3000";
+// const baseUrl = "https://tfm-rojo-backend-1emu.onrender.com";
+const baseUrl = "http://localhost:3000";
 
 // 44.226.145.213
 // 54.187.200.255
@@ -117,4 +117,39 @@ export const updateUserApi = async (userData) => {
     return response.status;
   }
   return response.status;
+};
+
+const convertBase64 = (file) => {
+  return new Promise((resolve, reject) => {
+    const fileReader = new FileReader();
+    fileReader.readAsDataURL(file);
+
+    fileReader.onload = () => {
+      resolve(fileReader.result);
+    };
+
+    fileReader.onerror = (error) => {
+      reject(error);
+    };
+  });
+};
+
+export const loadProfilePhotoApi = async (event) => {
+  // console.log(event);
+  const file = event;
+  const base64 = await convertBase64(file);
+  console.log(JSON.stringify(base64));
+  const response = await fetch(`${baseUrl}/user/uploadImage`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ base64 }),
+  });
+  console.log(response);
+  if (!response.ok) {
+    return response.status;
+  } else {
+    return response.status;
+  }
 };

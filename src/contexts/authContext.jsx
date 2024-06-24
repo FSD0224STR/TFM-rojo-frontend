@@ -8,6 +8,7 @@ import {
   updateUserPassword,
   searchUser,
   updateUserApi,
+  loadProfilePhotoApi,
 } from "../apiService/userApi";
 
 export const AuthContext = React.createContext();
@@ -135,6 +136,20 @@ export const AuthProvider = ({ children }) => {
     setLoading(false);
   };
 
+  // Load profile photo
+  const loadProfilePhoto = async (image) => {
+    // console.log(image);
+    // setLoading(true);
+    const response = await loadProfilePhotoApi(image);
+    if (response === 200) {
+      setSuccess("Profile photo successfully loaded");
+      setLoading(false);
+    } else {
+      setError("Problem loading profile photo");
+      setLoading(false);
+    }
+  };
+
   // Update user password
   const updatePasswordApi = async (user) => {
     setError("");
@@ -208,6 +223,7 @@ export const AuthProvider = ({ children }) => {
     updateUser,
     navigate,
     ResetMessages,
+    loadProfilePhoto,
   };
 
   useEffect(() => {

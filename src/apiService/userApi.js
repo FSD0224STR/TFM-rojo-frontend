@@ -1,13 +1,6 @@
 // const baseUrl = "https://tfm-rojo-backend-1emu.onrender.com";
 const baseUrl = "http://localhost:3000";
 
-// 44.226.145.213
-// 54.187.200.255
-// 34.213.214.55
-// 35.164.95.156
-// 44.230.95.183
-// 44.229.200.200
-
 // Login
 export const LoginApi = async (user) => {
   const response = await fetch(`${baseUrl}/user/login`, {

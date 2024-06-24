@@ -12,6 +12,7 @@ import { UserData } from "./Routes/UserData/UsersData.jsx";
 import { CreateNewDate } from "./components/CreateNewDate/CreateNewDate.jsx";
 import { ChangePassword } from "./Routes/Login/ChangePassword.jsx";
 import { UpdateUserForm } from "./Routes/CreateUserForm/UpdateUserForm.jsx";
+import { CreateBills } from "./components/CreateBills/CreateBills.jsx";
 import { Agenda } from "./Routes/Agenda/Agenda.jsx";
 import UserDetails from "./components/users/userDetails.jsx";
 

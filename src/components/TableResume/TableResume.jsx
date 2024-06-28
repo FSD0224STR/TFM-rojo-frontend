@@ -2,8 +2,9 @@ import React, { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../contexts/authContext";
 import { Space, Table, Tag } from "antd";
 import { DatesContext } from "../../contexts/DatesContext";
+import dayjs from "dayjs";
 
-export const TableResume = ({ searchid }) => {
+export const TableResume = ({ searchid, type }) => {
   const { userData } = useContext(AuthContext);
   const { dates, findAllDoctorsDates } = useContext(DatesContext);
   const [datesById, setDatesById] = useState();
@@ -12,7 +13,7 @@ export const TableResume = ({ searchid }) => {
       title: "Date",
       dataIndex: "date",
       key: "Date",
-      render: (text) => <a>{text}</a>,
+      render: (text) => dayjs(text).format("YYYY-MM-DD"),
     },
     {
       title: "Time",
@@ -49,56 +50,58 @@ export const TableResume = ({ searchid }) => {
   const columnBills = [
     {
       title: "Bill",
-      dataIndex: "Bill",
-      key: "Bill",
-      render: (text) => <a>{text}</a>,
-    },
-    {
-      title: "billNumber",
       dataIndex: "billNumber",
       key: "billNumber",
     },
     {
-      title: "date",
+      title: "Date",
       dataIndex: "date",
       key: "date",
     },
     {
-      title: "description",
+      title: "Description",
       dataIndex: "description",
       key: "description",
     },
     {
-      title: "treatments",
+      title: "Treatments",
       dataIndex: "treatments",
       key: "treatments",
     },
     {
-      title: "totalBill",
+      title: "Total",
       dataIndex: "totalBill",
       key: "totalBill",
     },
     {
-      title: "status",
+      title: "Status",
       dataIndex: "status",
       key: "status",
     },
   ];
 
   const findDates = async () => {
-    // const searchid = "663bd24c7dfd3e530bff8870";
     const response = await findAllDoctorsDates();
     setDatesById(response.filter((date) => date.idPatient === searchid));
   };
 
   useEffect(() => {
-    findDates();
-    console.log(datesById);
+    if (type == "dates") {
+      findDates();
+    } else {
+      console.log(type);
+    }
   }, []);
   return (
     <>
       <div style={{ height: "100%" }}>
-        <Table columns={(columnDates, columnBills)} dataSource={datesById} />
+        <Table
+          columns={type === "dates" ? columnDates : columnBills}
+          dataSource={datesById}
+          pagination={{
+            pageSize: 5,
+          }}
+        />
       </div>
     </>
   );

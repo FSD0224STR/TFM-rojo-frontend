@@ -1,6 +1,7 @@
 import React from 'react';
 import { Badge, Descriptions } from 'antd';
 import { useContext, useState } from 'react';
+import { MdEmail } from 'react-icons/md';
 import {AuthContext } from '../../contexts/authContext.jsx';
 
 function userDetails() {
@@ -88,8 +89,10 @@ function userDetails() {
   return (
     <>
       <div>
-        <img src={`https://api.dicebear.com/7.x/miniavs/svg?seed=${searchedUser?._id}`} alt='avatar' style={{ width: '250px', height: '250px', borderRadius: '50%', marginBottom: '5em', marginTop: '1em', border: '2px solid #fff', boxShadow: '0 0 10px #fff', translate: '-50%', position: 'absolute', top: '0', left: '20%', marginBottom: '40px' }} />
-        <br />
+        <img src={`https://api.dicebear.com/7.x/miniavs/svg?seed=${searchedUser?._id}`} alt='avatar' style={{ width: '250px', height: '250px', borderRadius: '50%', marginBottom: '40px', marginTop: '1em', border: '2px solid #fff', boxShadow: '0 0 10px #fff', position: 'absolute', top: '0', left: '20%' }} />
+        <button style={{ position: 'absolute', top: '100px', left: 'calc(20% + 250px)', cursor: 'pointer', border: 'none', background: 'transparent' }}>
+          <MdEmail size="24" style={{ color: '#007bff' }} />
+        </button>
       </div>
       <div>
         <Descriptions column={3} size="big" style={{ width: '100%', marginTop: '5em'}}>
@@ -101,9 +104,7 @@ function userDetails() {
         </Descriptions>
       </div>
     </>
-    
   );
 }
-
 
 export default userDetails;

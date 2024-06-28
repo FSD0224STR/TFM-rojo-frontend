@@ -3,9 +3,10 @@ import { Badge, Descriptions } from 'antd';
 import { useContext, useState } from 'react';
 import { MdEmail } from 'react-icons/md';
 import {AuthContext } from '../../contexts/authContext.jsx';
+import FloatingEmailForm from './emailForm.jsx';
 
-function userDetails() {
-  
+function UserDetails() {
+  const [showEmailForm, setShowEmailForm] = useState(false);
   const { searchedUser } = useContext(AuthContext);
 
   const items = [
@@ -90,7 +91,7 @@ function userDetails() {
     <>
       <div>
         <img src={`https://api.dicebear.com/7.x/miniavs/svg?seed=${searchedUser?._id}`} alt='avatar' style={{ width: '250px', height: '250px', borderRadius: '50%', marginBottom: '40px', marginTop: '1em', border: '2px solid #fff', boxShadow: '0 0 10px #fff', position: 'absolute', top: '0', left: '20%' }} />
-        <button style={{ position: 'absolute', top: '100px', left: 'calc(20% + 250px)', cursor: 'pointer', border: 'none', background: 'transparent' }}>
+        <button onClick={() => setShowEmailForm(true)} style={{ position: 'absolute', top: '100px', left: 'calc(20% + 250px)', cursor: 'pointer', border: 'none', background: 'transparent' }}>
           <MdEmail size="24" style={{ color: '#007bff' }} />
         </button>
       </div>
@@ -103,8 +104,9 @@ function userDetails() {
           ))}
         </Descriptions>
       </div>
+      <FloatingEmailForm isVisible={showEmailForm} onClose={() => setShowEmailForm(false)} />
     </>
   );
 }
 
-export default userDetails;
+export default UserDetails;

@@ -117,15 +117,16 @@ export const AuthProvider = ({ children }) => {
     setError("");
     setSuccess("");
     setLoading(true);
-    delete newUser.confirmPassword;
-    // console.log("Data Auth Context", newUser);
+    console.log("Data Auth Context", newUser);
 
     const response = await createUser(newUser);
-
     if (response === 200) {
       setSuccess("User created successfully");
+      // setTimeout(() => {
+      //   getMyProfile();
+      // }, 1000);
       setTimeout(() => {
-        getMyProfile();
+        navigate("/userdata");
       }, 1000);
     } else if (response === 409) {
       setError("This user already exists");
@@ -139,11 +140,13 @@ export const AuthProvider = ({ children }) => {
   // Load profile photo
   const loadProfilePhoto = async (image) => {
     // console.log(image);
-    // setLoading(true);
+    setLoading(true);
     const response = await loadProfilePhotoApi(image);
-    if (response === 200) {
+    console.log("respuesta", response.url);
+    if (response.url !== "") {
       setSuccess("Profile photo successfully loaded");
       setLoading(false);
+      return response.url;
     } else {
       setError("Problem loading profile photo");
       setLoading(false);

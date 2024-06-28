@@ -131,7 +131,7 @@ export const loadProfilePhotoApi = async (event) => {
   // console.log(event);
   const file = event;
   const base64 = await convertBase64(file);
-  console.log(JSON.stringify(base64));
+  // console.log(JSON.stringify(base64));
   const response = await fetch(`${baseUrl}/user/uploadImage`, {
     method: "POST",
     headers: {
@@ -139,10 +139,7 @@ export const loadProfilePhotoApi = async (event) => {
     },
     body: JSON.stringify({ base64 }),
   });
-  console.log(response);
-  if (!response.ok) {
-    return response.status;
-  } else {
-    return response.status;
-  }
+  // console.log(await response.json());
+
+  return await response.json();
 };

@@ -1,12 +1,14 @@
 import React, { useContext, useEffect, useState } from "react";
+
 import { Link } from "react-router-dom";
 import {
   PlusOutlined,
   EyeInvisibleOutlined,
   EyeTwoTone,
+  InboxOutlined,
 } from "@ant-design/icons";
 
-import { Button, DatePicker, Form, Input, Select, Upload } from "antd";
+import { Button, DatePicker, Form, Input, Select, Upload, message } from "antd";
 
 const { Option } = Select;
 
@@ -32,8 +34,29 @@ export const CreateUserForm = () => {
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState("");
   const [fileList, setFileList] = useState();
+  const [fileUrl, setFileUrl] = useState();
+
+  const [userDataForm] = Form.useForm();
 
   // Image preview
+  const getBase64 = (img, callback) => {
+    const reader = new FileReader();
+    reader.addEventListener("load", () => callback(reader.result));
+    reader.readAsDataURL(img);
+  };
+
+  const beforeUpload = (file) => {
+    const isJpgOrPng = file.type === "image/jpeg" || file.type === "image/png";
+    if (!isJpgOrPng) {
+      message.error("You can only upload JPG/PNG file!");
+    }
+    const isLt2M = file.size / 1024 / 1024 < 2;
+    if (!isLt2M) {
+      message.error("Image must smaller than 2MB!");
+    }
+    return isJpgOrPng && isLt2M;
+  };
+
   const handlePreview = async (file) => {
     if (!file.url && !file.preview) {
       file.preview = await getBase64(file.originFileObj);
@@ -73,6 +96,7 @@ export const CreateUserForm = () => {
 
   const onFinishCreateUser = (values) => {
     createNewUser(values);
+    // console.log(values);
   };
 
   const prefixSelector = (
@@ -102,14 +126,27 @@ export const CreateUserForm = () => {
   );
 
   useEffect(() => {
-    console.log(userData.id);
-  }, []);
+    // console.log(userData.id);
+    userDataForm.setFieldsValue({
+      fileUrlLink: fileUrl,
+    });
+  }, [fileUrl]);
+
+  const normFile = (e) => {
+    // console.log(fileUrl);
+    // console.log("Upload event:", e);
+    if (Array.isArray(e)) {
+      return e;
+    }
+    return e?.fileList;
+  };
 
   return (
     <>
       {isLoggedIn && (
         <div style={{ height: "100%" }}>
           <Form
+            form={userDataForm}
             labelCol={{ span: 20 }}
             wrapperCol={{ span: 25 }}
             labelWrap={{ wrap: "wrap" }}
@@ -362,19 +399,28 @@ export const CreateUserForm = () => {
             <Form.Item
               name="profilePhoto"
               label="Profile photo"
+              getValueFromEvent={normFile}
               rules={[
                 {
                   required: false,
                   message: "Entre una contraseña valida",
                 },
               ]}
+              valuePropName={fileUrl}
+              beforeUpload={beforeUpload}
             >
               <Upload
-                // style={{ width: "100%" }}
-                action={(value) => loadProfilePhoto(value)}
-                listType="picture-card"
+                action={async (value) => {
+                  const url = await loadProfilePhoto(value);
+                  console.log(url);
+                  setFileUrl(url);
+                }}
+                listType="picture-circle"
+                fileList={fileList}
+                onPreview={handlePreview}
                 maxCount={1}
                 multiple="false"
+                onChange={handleChange}
               >
                 <button style={{ border: 0, background: "none" }} type="button">
                   <PlusOutlined />
@@ -382,18 +428,16 @@ export const CreateUserForm = () => {
                 </button>
               </Upload>
             </Form.Item>
-            <Upload
-              action={(value) => loadProfilePhoto(value)}
-              listType="picture-circle"
-              fileList={fileList}
-              onPreview={handlePreview}
-              onChange={handleChange}
-            >
-              <button style={{ border: 0, background: "none" }} type="button">
-                <PlusOutlined />
-                <div style={{ marginTop: 8 }}>profile photo</div>
-              </button>
-            </Upload>
+
+            {/* File url */}
+            <Form.Item name="fileUrlLink">
+              <Input
+                // type="hidden"
+                name="fileUrl"
+                value={fileUrl}
+                onChange={(e) => setFileUrl(e.target.value)}
+              />
+            </Form.Item>
 
             {/* END */}
             <div

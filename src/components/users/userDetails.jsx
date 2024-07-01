@@ -97,8 +97,8 @@ function UserDetails() {
       </div>
       <div>
         <Descriptions column={3} size="big" style={{ width: '100%', marginTop: '5em'}}>
-          {items.map((item) => (
-            <Descriptions.Item label={item.label}>
+          {items.map((item, i) => (
+            <Descriptions.Item label={item.label} key={i}>
               {item.children}
             </Descriptions.Item>
           ))}

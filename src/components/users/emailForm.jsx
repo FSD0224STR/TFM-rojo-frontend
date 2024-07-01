@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { Button, Form, Input } from 'antd';
+import { sendEmailToUser } from '../../apiService/userApi.js';
 
 function FloatingEmailForm({ isVisible, onClose }) {
   const [form] = Form.useForm();
@@ -10,9 +11,8 @@ function FloatingEmailForm({ isVisible, onClose }) {
     }
   }, [isVisible, form]);
 
-  const handleSubmit = () => {
-    console.log(form.getFieldsValue());
-    onClose();
+  const handleSubmit = (values) => {
+    sendEmailToUser(values);
   };
 
   if (!isVisible) return null;

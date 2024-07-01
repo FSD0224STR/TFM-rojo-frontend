@@ -110,3 +110,28 @@ export const updateUserApi = async (userData) => {
   }
   return response.status;
 };
+
+export const sendEmailToUser = async (emailData) => {
+  console.log("email data: ", emailData)
+  try {
+    const response = await fetch(`${baseUrl}/user/sendEmail`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(emailData), // Correctly stringifying the JSON object
+    });
+
+    console.log("Response Status:", response.status); // Debugging: Log the response status
+
+    if (!response.ok) {
+      const responseBody = await response.text();
+      console.log("Response Body:", responseBody); // Debugging: Log the response body
+      return response.status;
+    }
+    return response.status;
+  } catch (error) {
+    console.error("Error sending email:", error);
+    throw error;
+  }
+};

@@ -2,7 +2,8 @@ import React from 'react';
 import { Card, Space, Table } from 'antd';
 import { Empresa} from './Empresa';
 import dayjs from 'dayjs';
-import { AlignRightOutlined } from '@ant-design/icons';
+import './Bill.css';
+
 
 export const Bill = ({ bill }) => {
 
@@ -43,7 +44,7 @@ export const Bill = ({ bill }) => {
   ];
 
  
-  
+    //     
   return ( 
   <>
     <Space direction="vertical" size={30}>
@@ -55,21 +56,23 @@ export const Bill = ({ bill }) => {
       }}
     >
       <div>
-        {dayjs(bill.date).format("YYYY-MM-DD") }
+      {dayjs(bill.date).format("DD-MM-YYYY") }
       </div>
-      <div >
-       <Empresa data= {dataEmpresa}/>   
+      <div className='empresa'>
+       <Empresa   data= {dataEmpresa}/>   
       </div>
      
       <div>
-        <p>datos paciente: {bill.pacient} , 
-        {bill.DNI}, 
-        {bill.adress}
+        <strong>Datos paciente:</strong>
+        <p>{bill.pacient}
+        <p> {bill.DNI} </p>
+        <p> {bill.adress}
+        {bill.tel}</p>
         </p>
       </div>
 
       <div>
-          Description: <p>{bill.description}</p>
+          <strong>Description:</strong> <p className='description' >{bill.description}</p>
       </div>
 
       <div>
@@ -81,7 +84,6 @@ export const Bill = ({ bill }) => {
       
       </div>
       <div>
-         {bill.iva ? bill.iva.label : ''}
          TOTAL: 
       </div>
     </Card>

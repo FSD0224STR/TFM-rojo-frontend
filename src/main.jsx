@@ -66,8 +66,8 @@ const router = createBrowserRouter([
         element: <UserDetails />,
       },
       {
-        path: "/bills/",
-        element: <Bills />,
+        path: "/createBills/",
+        element: <CreateBills />,
       },
     ],
   },

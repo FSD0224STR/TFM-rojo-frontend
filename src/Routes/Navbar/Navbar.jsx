@@ -40,6 +40,11 @@ export const Navbar = () => {
       icon: <UserOutlined />,
       label: <Link to={"/bills"}>Bills</Link>,
     },
+    isLoggedIn && {
+      key: "tabletest",
+      icon: <UserOutlined />,
+      label: <Link to={"/tabletest"}>table test</Link>,
+    },
     {
       type: "divider",
     },

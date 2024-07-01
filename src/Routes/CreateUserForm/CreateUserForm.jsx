@@ -6,23 +6,7 @@ import {
   EyeTwoTone,
 } from "@ant-design/icons";
 
-import {
-  Button,
-  Cascader,
-  Checkbox,
-  DatePicker,
-  Form,
-  Input,
-  InputNumber,
-  Radio,
-  Select,
-  Slider,
-  Switch,
-  TreeSelect,
-  Upload,
-  notification,
-  Space,
-} from "antd";
+import { Button, DatePicker, Form, Input, Select, Upload } from "antd";
 
 const { Option } = Select;
 
@@ -35,20 +19,35 @@ import { provinces } from "./Provinces.js";
 import { AuthContext } from "../../contexts/authContext.jsx";
 import { CountryCodes } from "./ContryCodes.js";
 
-// import Search from "antd/lib/transfer/search.js";
-// import Search from "antd/lib/input/Search.js";
-
 export const CreateUserForm = () => {
-  // const [passwordVisible, setPasswordVisible] = useState(false);
-  const { roleData, isLoggedIn, setError } = useContext(AuthContext);
-  // const [selectCountry, setSelectCountry] = useState([]);
+  const {
+    roleData,
+    isLoggedIn,
+    setError,
+    createNewUser,
+    loadProfilePhoto,
+    userData,
+  } = useContext(AuthContext);
   const [selectProvinces, setSelectProvinces] = useState([]);
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const [previewImage, setPreviewImage] = useState("");
+  const [fileList, setFileList] = useState();
+
+  // Image preview
+  const handlePreview = async (file) => {
+    if (!file.url && !file.preview) {
+      file.preview = await getBase64(file.originFileObj);
+    }
+    setPreviewImage(file.url || file.preview);
+    setPreviewOpen(true);
+  };
+
+  const handleChange = ({ fileList: newFileList }) => setFileList(newFileList);
 
   // User Data
   const [province, setProvince] = useState("");
 
   const findProvince = async (e) => {
-    // console.log(typeof e);
     const countryFound = countries.filter((country) => {
       if (country.value === e) {
         return country;
@@ -68,12 +67,12 @@ export const CreateUserForm = () => {
 
   const roleOptions = [
     { value: "admin" },
-    { value: "paciente" },
+    { value: "patient" },
     { value: "doctor" },
   ];
 
-  const onFinish = (values) => {
-    console.log(values);
+  const onFinishCreateUser = (values) => {
+    createNewUser(values);
   };
 
   const prefixSelector = (
@@ -94,13 +93,17 @@ export const CreateUserForm = () => {
                   style={{ width: "100%", height: "100%" }}
                 />
               </Option>
-              {console.log(flag)}
+              {/* {console.log(flag)} */}
             </>
           );
         })}
       </Select>
     </Form.Item>
   );
+
+  useEffect(() => {
+    console.log(userData.id);
+  }, []);
 
   return (
     <>
@@ -113,12 +116,11 @@ export const CreateUserForm = () => {
             labelAlign="left"
             scrollToFirstError
             layout="vertical"
-            onFinish={onFinish}
-            // onFinish={createNewUser}
+            onFinish={onFinishCreateUser}
             onFinishFailed={() => setError("You must fill the form")}
           >
             <h1 style={{ textAlign: "center" }}>Create a new user</h1>
-
+            {/* DNI */}
             <Form.Item
               name="dni"
               label="DNI"
@@ -131,6 +133,8 @@ export const CreateUserForm = () => {
             >
               <Input type="number" size="large" placeholder="DNI" />
             </Form.Item>
+
+            {/* Name */}
             <Form.Item
               name="name"
               label="Name"
@@ -143,6 +147,8 @@ export const CreateUserForm = () => {
             >
               <Input size="large" placeholder="Name" />
             </Form.Item>
+
+            {/* Last name */}
             <Form.Item
               name="lastName"
               label="Last Name"
@@ -155,6 +161,8 @@ export const CreateUserForm = () => {
             >
               <Input size="large" placeholder="Last Name" />
             </Form.Item>
+
+            {/* Email */}
             <Form.Item
               name="email"
               label="E-mail"
@@ -182,7 +190,7 @@ export const CreateUserForm = () => {
               <Input
                 size="large"
                 placeholder="Phone number"
-                addonBefore={prefixSelector}
+                // addonBefore={prefixSelector}
               />
             </Form.Item>
 
@@ -200,6 +208,7 @@ export const CreateUserForm = () => {
               <Input size="large" placeholder="Adress" />
             </Form.Item>
 
+            {/* Password */}
             <Form.Item
               name="password"
               label="Password"
@@ -221,13 +230,14 @@ export const CreateUserForm = () => {
               ]}
               hasFeedback
             >
-              <Input.Password placeholder="Password" />
+              <Input.Password size="large" placeholder="Password" />
             </Form.Item>
+
+            {/* Confirm password */}
             <Form.Item
               name="confirmPassword"
               label="Confirm password"
               dependencies={["password"]}
-              labe
               hasFeedback
               rules={[
                 {
@@ -246,9 +256,11 @@ export const CreateUserForm = () => {
                 }),
               ]}
             >
-              <Input.Password placeholder="Confirm password" />
+              <Input.Password size="large" placeholder="Confirm password" />
             </Form.Item>
-            <Form.Item
+
+            {/* Country */}
+            {/* <Form.Item
               name="country"
               label="Country"
               rules={[
@@ -268,8 +280,10 @@ export const CreateUserForm = () => {
                   findProvince(e);
                 }}
               ></Select>
-            </Form.Item>
-            <Form.Item
+            </Form.Item> */}
+
+            {/* Province */}
+            {/* <Form.Item
               name="province"
               label="Province"
               dependencies={["country"]}
@@ -287,7 +301,9 @@ export const CreateUserForm = () => {
                 options={selectProvinces}
                 // onChange={(e) => setProvince(e)}
               ></Select>
-            </Form.Item>
+            </Form.Item> */}
+
+            {/* Role if admin */}
             {roleData === "admin" && (
               <Form.Item
                 name="roles"
@@ -306,6 +322,8 @@ export const CreateUserForm = () => {
                 ></Select>
               </Form.Item>
             )}
+
+            {/* Role if not admin */}
             {roleData !== "admin" && (
               <Form.Item
                 name="roles"
@@ -317,9 +335,11 @@ export const CreateUserForm = () => {
                   },
                 ]}
               >
-                <Input size="large" placeholder="paciente" disabled></Input>
+                <Input size="large" placeholder="patient" disabled></Input>
               </Form.Item>
             )}
+
+            {/* Birthday */}
             <Form.Item
               name="birthDay"
               label="Birthday"
@@ -330,8 +350,14 @@ export const CreateUserForm = () => {
                 },
               ]}
             >
-              <DatePicker size="large" placeholder="Birthday" />
+              <DatePicker
+                size="large"
+                style={{ width: "100%" }}
+                placeholder="Birthday"
+              />
             </Form.Item>
+
+            {/* Profile photo */}
             <Form.Item
               name="profilePhoto"
               label="Profile photo"
@@ -342,13 +368,33 @@ export const CreateUserForm = () => {
                 },
               ]}
             >
-              <Upload action="/upload.do" listType="picture-card">
+              <Upload
+                // style={{ width: "100%" }}
+                action={(value) => loadProfilePhoto(value)}
+                listType="picture-card"
+                maxCount={1}
+                multiple="false"
+              >
                 <button style={{ border: 0, background: "none" }} type="button">
                   <PlusOutlined />
                   <div style={{ marginTop: 8 }}>profile photo</div>
                 </button>
               </Upload>
             </Form.Item>
+            <Upload
+              action={(value) => loadProfilePhoto(value)}
+              listType="picture-circle"
+              fileList={fileList}
+              onPreview={handlePreview}
+              onChange={handleChange}
+            >
+              <button style={{ border: 0, background: "none" }} type="button">
+                <PlusOutlined />
+                <div style={{ marginTop: 8 }}>profile photo</div>
+              </button>
+            </Upload>
+
+            {/* END */}
             <div
               style={{ display: "flex", gap: "1em", justifyContent: "center" }}
             >

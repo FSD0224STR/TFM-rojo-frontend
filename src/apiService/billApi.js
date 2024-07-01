@@ -44,4 +44,3 @@ export const getAllBills = async () => {
 //   return response.status;
 // };
 
-// knlĺmm

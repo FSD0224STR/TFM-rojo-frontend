@@ -122,24 +122,28 @@ const convertBase64 = (file) => {
     };
 
     fileReader.onerror = (error) => {
-      reject(error);
+      resolve("error");
     };
   });
 };
 
-export const loadProfilePhotoApi = async (event) => {
+export const loadProfilePhotoApi = async (file) => {
   // console.log(event);
-  const file = event;
   const base64 = await convertBase64(file);
-  // console.log(JSON.stringify(base64));
-  const response = await fetch(`${baseUrl}/user/uploadImage`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ base64 }),
-  });
-  // console.log(await response.json());
+  // console.log("base64", base64);
+  if (base64 === "error") {
+    return "errorLoading";
+  } else {
+    const response = await fetch(`${baseUrl}/user/uploadImage`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ base64 }),
+    });
+    // console.log(await response.json());
 
-  return await response.json();
+    return await response.json();
+  }
+  // console.log(JSON.stringify(base64));
 };

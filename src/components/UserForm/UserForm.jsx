@@ -6,7 +6,7 @@ import {
   EyeTwoTone,
 } from "@ant-design/icons";
 
-import { Button, DatePicker, Form, Input, Select, Upload } from "antd";
+import { Button, DatePicker, Form, Input, Select, Upload, message } from "antd";
 
 const { Option } = Select;
 
@@ -33,8 +33,26 @@ export const UserForm = ({ type }) => {
   const [previewImage, setPreviewImage] = useState("");
   const [fileList, setFileList] = useState();
   const [roleOptions, setRoleOptions] = useState();
+  const [fileUrl, setFileUrl] = useState();
+  const [userDataForm] = Form.useForm();
 
   // Image preview
+  const getBase64 = (img, callback) => {
+    const reader = new FileReader();
+    reader.addEventListener("load", () => callback(reader.result));
+    reader.readAsDataURL(img);
+  };
+  const beforeUpload = (file) => {
+    const isJpgOrPng = file.type === "image/jpeg" || file.type === "image/png";
+    if (!isJpgOrPng) {
+      message.error("You can only upload JPG/PNG file!");
+    }
+    const isLt2M = file.size / 1024 / 1024 < 2;
+    if (!isLt2M) {
+      message.error("Image must smaller than 2MB!");
+    }
+    return isJpgOrPng && isLt2M;
+  };
   const handlePreview = async (file) => {
     if (!file.url && !file.preview) {
       file.preview = await getBase64(file.originFileObj);
@@ -69,24 +87,33 @@ export const UserForm = ({ type }) => {
   //   const roleOptions = [{ value: "admin" }, { value: "patient" }];
 
   const onFinishCreateUser = (values) => {
-    createNewUser(values);
+    console.log(values);
+    // createNewUser(values);
   };
 
   useEffect(() => {
-    if (type === "patient") {
+    if (type === "notPatient") {
       setRoleOptions([
-        { value: "patient" },
+        // { value: "patient" },
         { value: "doctor" },
         { value: "admin" },
       ]);
     }
   }, []);
 
+  useEffect(() => {
+    // console.log("URL from useEffect", fileUrl);
+    userDataForm.setFieldsValue({
+      fileUrlLink: fileUrl,
+    });
+  }, [fileUrl]);
+
   return (
     <>
       {isLoggedIn && (
         <div style={{ height: "100%" }}>
           <Form
+            form={userDataForm}
             labelCol={{ span: 20 }}
             wrapperCol={{ span: 25 }}
             labelWrap={{ wrap: "wrap" }}
@@ -304,20 +331,21 @@ export const UserForm = ({ type }) => {
             )}
 
             {/* Role if not admin */}
-            {roleData !== "admin" && (
-              <Form.Item
-                name="roles"
-                label="Rol"
-                rules={[
-                  {
-                    required: true,
-                    message: "Select a rol",
-                  },
-                ]}
-              >
-                <Input size="large" placeholder="patient" disabled></Input>
-              </Form.Item>
-            )}
+            {roleData !== "admin" ||
+              (type === "patient" && (
+                <Form.Item
+                  name="roles"
+                  label="Rol"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Select a rol",
+                    },
+                  ]}
+                >
+                  <Input size="large" placeholder="patient" disabled></Input>
+                </Form.Item>
+              ))}
 
             {/* Birthday */}
             <Form.Item
@@ -350,10 +378,18 @@ export const UserForm = ({ type }) => {
             >
               <Upload
                 // style={{ width: "100%" }}
-                action={(value) => loadProfilePhoto(value)}
+                // action={(value) => loadProfilePhoto(value)}
                 listType="picture-card"
+                action={async (value) => {
+                  const url = await loadProfilePhoto(value);
+                  console.log(url);
+                  setFileUrl(url);
+                }}
+                fileList={fileList}
+                onPreview={handlePreview}
                 maxCount={1}
                 multiple="false"
+                onChange={handleChange}
               >
                 <button style={{ border: 0, background: "none" }} type="button">
                   <PlusOutlined />
@@ -361,18 +397,16 @@ export const UserForm = ({ type }) => {
                 </button>
               </Upload>
             </Form.Item>
-            <Upload
-              action={(value) => loadProfilePhoto(value)}
-              listType="picture-circle"
-              fileList={fileList}
-              onPreview={handlePreview}
-              onChange={handleChange}
-            >
-              <button style={{ border: 0, background: "none" }} type="button">
-                <PlusOutlined />
-                <div style={{ marginTop: 8 }}>profile photo</div>
-              </button>
-            </Upload>
+
+            {/* File url */}
+            <Form.Item name="fileUrlLink">
+              <Input
+                // type="hidden"
+                name="fileUrl"
+                // value={fileUrl}
+                // onChange={(e) => setFileUrl(e.target.value)}
+              />
+            </Form.Item>
 
             {/* END */}
             <div

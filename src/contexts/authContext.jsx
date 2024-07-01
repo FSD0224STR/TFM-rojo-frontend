@@ -142,14 +142,21 @@ export const AuthProvider = ({ children }) => {
     // console.log(image);
     setLoading(true);
     const response = await loadProfilePhotoApi(image);
-    console.log("respuesta", response.url);
-    if (response.url !== "") {
+    // console.log("respuesta", response);
+    if (response === "errorLoading") {
+      setError("Problem loading profile photo");
+      setLoading(false);
+      return null;
+    }
+    if (response.url !== "" && response !== null) {
+      // console.log("Error");
       setSuccess("Profile photo successfully loaded");
       setLoading(false);
       return response.url;
     } else {
       setError("Problem loading profile photo");
       setLoading(false);
+      return null;
     }
   };
 

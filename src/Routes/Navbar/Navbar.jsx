@@ -69,6 +69,12 @@ export const Navbar = () => {
             icon: <UserAddOutlined />,
             label: <Link to={"/createuser"}>Create user</Link>,
           },
+        isLoggedIn &&
+          roleData !== "patient" && {
+            key: "CreatePatient",
+            icon: <UserAddOutlined />,
+            label: <Link to={"/createuserpatient"}>Create patient</Link>,
+          },
         isLoggedIn && {
           key: "Logout",
           icon: <LogoutOutlined />,

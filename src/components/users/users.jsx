@@ -221,7 +221,16 @@ export const Users = () => {
                         avatar={
                           <Link to={`/user/${item._id}`}>
                             <Avatar
-                              src={`https://api.dicebear.com/7.x/miniavs/svg?seed=${index}`}
+                              src={
+                                item?.fileUrlLink !== undefined
+                                  ? `${item.fileUrlLink}`
+                                  : `https://api.dicebear.com/7.x/miniavs/svg?seed=${index}`
+                              }
+                              style={{
+                                width: "50px",
+                                height: "50px",
+                                marginTop: "20px",
+                              }}
                             />
                           </Link>
                         }

@@ -1,10 +1,10 @@
 import React from "react";
 import { UserForm } from "../../components/UserForm/UserForm";
 
-export const CreateUserForm = () => {
+export const CreatePatientForm = () => {
   return (
     <div style={{ height: "100%" }}>
-      <UserForm type="notPatient" />
+      <UserForm type="patient" />
     </div>
   );
 };

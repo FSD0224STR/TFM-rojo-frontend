@@ -8,6 +8,7 @@ import {
   updateUserPassword,
   searchUser,
   updateUserApi,
+  loadProfilePhotoApi,
 } from "../apiService/userApi";
 
 export const AuthContext = React.createContext();
@@ -116,15 +117,16 @@ export const AuthProvider = ({ children }) => {
     setError("");
     setSuccess("");
     setLoading(true);
-    delete newUser.confirmPassword;
-    // console.log("Data Auth Context", newUser);
+    console.log("Data Auth Context", newUser);
 
     const response = await createUser(newUser);
-
     if (response === 200) {
       setSuccess("User created successfully");
+      // setTimeout(() => {
+      //   getMyProfile();
+      // }, 1000);
       setTimeout(() => {
-        getMyProfile();
+        navigate("/userdata");
       }, 1000);
     } else if (response === 409) {
       setError("This user already exists");
@@ -133,6 +135,29 @@ export const AuthProvider = ({ children }) => {
     }
 
     setLoading(false);
+  };
+
+  // Load profile photo
+  const loadProfilePhoto = async (image) => {
+    // console.log(image);
+    setLoading(true);
+    const response = await loadProfilePhotoApi(image);
+    // console.log("respuesta", response);
+    if (response === "errorLoading") {
+      setError("Problem loading profile photo");
+      setLoading(false);
+      return null;
+    }
+    if (response.url !== "" && response !== null) {
+      // console.log("Error");
+      setSuccess("Profile photo successfully loaded");
+      setLoading(false);
+      return response.url;
+    } else {
+      setError("Problem loading profile photo");
+      setLoading(false);
+      return null;
+    }
   };
 
   // Update user password
@@ -208,6 +233,7 @@ export const AuthProvider = ({ children }) => {
     updateUser,
     navigate,
     ResetMessages,
+    loadProfilePhoto,
   };
 
   useEffect(() => {

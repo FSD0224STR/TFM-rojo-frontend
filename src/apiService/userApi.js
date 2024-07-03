@@ -1,7 +1,5 @@
-
 // const baseUrl = "https://tfm-rojo-backend-1emu.onrender.com";
 const baseUrl = "http://localhost:3000";
-
 
 // Login
 export const LoginApi = async (user) => {
@@ -57,7 +55,7 @@ export const createUser = async (newUser) => {
     },
     body: JSON.stringify(newUser),
   });
-  console.log(response);
+  // console.log(response);
   if (!response.ok) {
     const error = await response;
     return error.status;

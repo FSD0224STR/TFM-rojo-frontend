@@ -20,6 +20,7 @@ import { MyUser } from "./Routes/MyUser/MyUser.jsx";
 import { CreateDate } from "./Routes/CreateDate/CreateDate.jsx";
 import { Bills } from "./Routes/Bills.jsx";
 import { CreatePatientForm } from "./Routes/CreateUserForm/CreatePatientForm.jsx";
+import { TableTest } from "./Routes/TableTest/TableTest.jsx";
 
 const router = createBrowserRouter([
   {
@@ -67,8 +68,12 @@ const router = createBrowserRouter([
         element: <UserDetails />,
       },
       {
-        path: "/createBills/",
-        element: <CreateBills />,
+        path: "/tabletest",
+        element: <TableTest />,
+      },
+      {
+        path: "/bills/",
+        element: <Bills />,
       },
       {
         path: "/createuserpatient/",

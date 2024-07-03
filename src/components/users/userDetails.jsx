@@ -1,4 +1,4 @@
-import { Card } from 'antd';
+import { Card } from "antd";
 import { useContext, useState } from "react";
 import { useParams } from "react-router-dom";
 import { AuthContext } from "../../contexts/authContext.jsx";
@@ -23,32 +23,37 @@ function UserDetails() {
 
   return (
     <>
-      <Card title={`User Detail for user ${id}`} style={{ width: 300 }}>
-        <div>
-          <img src={`https://api.dicebear.com/7.x/miniavs/svg?seed=${id}`} alt="" />
-        </div>
-        <div>
-          <h3>User Data</h3>
+      <div style={{ height: "100%" }}>
+        <Card title={`User Detail for user ${id}`} style={{ width: 300 }}>
           <div>
-            <p>Dni: {dni}</p>
-            <p>Name: {name}</p>
-            <p>Last Name: {lastName}</p>
-            <p>Email: {email}</p>
-            <p>Country: {country}</p>
-            <p>Province: {province}</p>
-            <p>Birth Day: {birthDay}</p>
-            <p>Role: {role}</p>
+            <img
+              src={`https://api.dicebear.com/7.x/miniavs/svg?seed=${id}`}
+              alt=""
+            />
           </div>
-        </div>
-        <div>
-          <h3>Facturas del paciente</h3>
           <div>
-            <p>Factura 1</p>
-            <p>Factura 2</p>
-            <p>Factura 3</p>
+            <h3>User Data</h3>
+            <div>
+              <p>Dni: {dni}</p>
+              <p>Name: {name}</p>
+              <p>Last Name: {lastName}</p>
+              <p>Email: {email}</p>
+              <p>Country: {country}</p>
+              <p>Province: {province}</p>
+              <p>Birth Day: {birthDay}</p>
+              <p>Role: {role}</p>
+            </div>
           </div>
-        </div>
-      </Card>
+          <div>
+            <h3>Facturas del paciente</h3>
+            <div>
+              <p>Factura 1</p>
+              <p>Factura 2</p>
+              <p>Factura 3</p>
+            </div>
+          </div>
+        </Card>
+      </div>
     </>
   );
 }

@@ -42,7 +42,9 @@ export const Login = () => {
           }}
           onFinish={onFinishLogin}
         >
-          <h1 style={{ textAlign: "center" }}>Login</h1>
+          <div>
+            <h1 style={{ textAlign: "center" }}>MolarisApp</h1>
+          </div>
           <Form.Item
             name="email"
             label="Email"

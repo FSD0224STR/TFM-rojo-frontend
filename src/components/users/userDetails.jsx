@@ -1,9 +1,11 @@
 import React from "react";
 import { Badge, Descriptions } from "antd";
 import { useContext, useState } from "react";
-import { MdEmail } from "react-icons/md";
+import { MailOutlined } from "@ant-design/icons";
 import { AuthContext } from "../../contexts/authContext.jsx";
 import FloatingEmailForm from "./emailForm.jsx";
+import dayjs from "dayjs";
+import { TableResume } from "../TableResume/TableResume.jsx";
 
 function UserDetails() {
   const [showEmailForm, setShowEmailForm] = useState(false);
@@ -45,12 +47,12 @@ function UserDetails() {
     {
       key: "7",
       label: "Fecha de nacimiento",
-      children: searchedUser?.birthDay,
+      children: dayjs(searchedUser?.birthDay).format("YYYY-MM-DD"),
     },
     {
       key: "8",
       label: "Rol",
-      children: searchedUser?.role,
+      children: searchedUser?.roles,
       span: 2,
     },
     {
@@ -91,7 +93,11 @@ function UserDetails() {
     <>
       <div>
         <img
-          src={`https://api.dicebear.com/7.x/miniavs/svg?seed=${searchedUser?._id}`}
+          src={
+            searchedUser?.fileUrlLink !== undefined
+              ? searchedUser?.fileUrlLink
+              : `https://api.dicebear.com/7.x/miniavs/svg?seed=${searchedUser?._id}`
+          }
           alt="avatar"
           style={{
             width: "250px",
@@ -117,7 +123,8 @@ function UserDetails() {
             background: "transparent",
           }}
         >
-          <MdEmail size="24" style={{ color: "#007bff" }} />
+          <MailOutlined />
+          {/* <MdEmail size="24" style={{ color: "#007bff" }} /> */}
         </button>
       </div>
       <div>
@@ -137,6 +144,8 @@ function UserDetails() {
         isVisible={showEmailForm}
         onClose={() => setShowEmailForm(false)}
       />
+      <TableResume searchid={searchedUser?._id} type="dates"></TableResume>
+      <TableResume searchid={searchedUser?._id} type="bill"></TableResume>
     </>
   );
 }

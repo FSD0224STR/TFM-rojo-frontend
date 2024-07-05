@@ -148,6 +148,14 @@ export const loadProfilePhotoApi = async (file) => {
   // console.log(JSON.stringify(base64));
 };
 
+export const sendEmailToUser = async (emailData) => {
+  console.log("email data: ", emailData);
+  try {
+    const response = await fetch(`${baseUrl}/user/sendEmail`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify(emailData), // Correctly stringifying the JSON object
     });
 

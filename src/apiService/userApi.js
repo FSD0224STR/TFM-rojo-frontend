@@ -131,7 +131,7 @@ export const sendEmailToUser = async (emailData) => {
     }
     return response.status;
   } catch (error) {
-    console.error("Error sending email:", error);
+    console.error("Error sending the email:", error);
     throw error;
   }
 };

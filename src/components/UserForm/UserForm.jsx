@@ -17,16 +17,20 @@ import "react-toastify/dist/ReactToastify.css";
 // import { countries } from "./Countries.js";
 // import { provinces } from "./Provinces.js";
 import { AuthContext } from "../../contexts/authContext.jsx";
+import dayjs from "dayjs";
 // import { CountryCodes } from "./ContryCodes.js";
 
-export const UserForm = ({ type }) => {
+export const UserForm = ({ type, update }) => {
   const {
     roleData,
     isLoggedIn,
     setError,
     createNewUser,
     loadProfilePhoto,
+    loadingPhoto,
     userData,
+    searchedUser,
+    updateUser,
   } = useContext(AuthContext);
   const [selectProvinces, setSelectProvinces] = useState([]);
   const [previewOpen, setPreviewOpen] = useState(false);
@@ -35,6 +39,7 @@ export const UserForm = ({ type }) => {
   const [roleOptions, setRoleOptions] = useState();
   const [fileUrl, setFileUrl] = useState();
   const [userDataForm] = Form.useForm();
+  const [userDataChange, setUserDataChange] = useState(false);
 
   // Image preview
   const getBase64 = (img, callback) => {
@@ -86,9 +91,10 @@ export const UserForm = ({ type }) => {
 
   //   const roleOptions = [{ value: "admin" }, { value: "patient" }];
 
-  const onFinishCreateUser = (values) => {
+  const handleFinish = (values) => {
     console.log(values);
-    // createNewUser(values);
+    !update && createNewUser(values);
+    update && userDataChange && updateUser;
   };
 
   useEffect(() => {
@@ -108,6 +114,35 @@ export const UserForm = ({ type }) => {
     });
   }, [fileUrl]);
 
+  const [initialData, setInitialData] = useState();
+
+  useEffect(() => {
+    setInitialData("");
+    if (type === "patient") {
+      userDataForm.setFieldsValue({
+        roles: "patient",
+      });
+    } else if (update === true) {
+      console.log(searchedUser);
+      userDataForm.setFieldsValue({
+        userId: searchedUser?._id,
+        dni: searchedUser?.dni,
+        name: searchedUser?.name,
+        lastName: searchedUser?.lastName,
+        email: searchedUser?.email,
+        country: searchedUser?.country,
+        province: searchedUser?.province,
+        birthDay: dayjs(searchedUser?.birthDay),
+        roles: searchedUser?.roles,
+        phone: searchedUser?.phone,
+        prefix: searchedUser?.prefix,
+        address: searchedUser?.address,
+        profilePhoto: searchedUser?.profilePhoto,
+        fileUrlLink: searchedUser?.fileUrlLink,
+      });
+    }
+  }, []);
+
   return (
     <>
       {isLoggedIn && (
@@ -120,10 +155,24 @@ export const UserForm = ({ type }) => {
             labelAlign="left"
             scrollToFirstError
             layout="vertical"
-            onFinish={onFinishCreateUser}
+            onFinish={handleFinish}
             onFinishFailed={() => setError("You must fill the form")}
+            onValuesChange={() => setUserDataChange(true)}
           >
-            <h1 style={{ textAlign: "center" }}>Create a new user</h1>
+            {update !== true ? (
+              <h1 style={{ textAlign: "center" }}>Create a new user</h1>
+            ) : (
+              <h1 style={{ textAlign: "center" }}>
+                Update user: {searchedUser?.name} {searchedUser?.lastName}
+              </h1>
+            )}
+
+            {roleData === "admin" && update === true && (
+              <Form.Item name="userId" label="User Id">
+                <Input size="large" placeholder="userId" disabled={true} />
+              </Form.Item>
+            )}
+
             {/* DNI */}
             <Form.Item
               name="dni"
@@ -137,7 +186,6 @@ export const UserForm = ({ type }) => {
             >
               <Input type="number" size="large" placeholder="DNI" />
             </Form.Item>
-
             {/* Name */}
             <Form.Item
               name="name"
@@ -151,7 +199,6 @@ export const UserForm = ({ type }) => {
             >
               <Input size="large" placeholder="Name" />
             </Form.Item>
-
             {/* Last name */}
             <Form.Item
               name="lastName"
@@ -165,7 +212,6 @@ export const UserForm = ({ type }) => {
             >
               <Input size="large" placeholder="Last Name" />
             </Form.Item>
-
             {/* Email */}
             <Form.Item
               name="email"
@@ -179,7 +225,6 @@ export const UserForm = ({ type }) => {
             >
               <Input type="email" size="large" placeholder="E-mail" />
             </Form.Item>
-
             {/* Phone */}
             <Form.Item
               name="phone"
@@ -197,7 +242,6 @@ export const UserForm = ({ type }) => {
                 // addonBefore={prefixSelector}
               />
             </Form.Item>
-
             {/* Adress */}
             <Form.Item
               name="address"
@@ -213,59 +257,62 @@ export const UserForm = ({ type }) => {
             </Form.Item>
 
             {/* Password */}
-            <Form.Item
-              name="password"
-              label="Password"
-              rules={[
-                {
-                  validator: (_, value) =>
-                    value.length >= 6
-                      ? Promise.resolve()
-                      : Promise.reject(
-                          new Error(
-                            "The password must be at least 6 characters"
-                          )
-                        ),
-                },
-                {
-                  required: true,
-                  message: "Write the password",
-                },
-              ]}
-              hasFeedback
-              hidden={type === "patient" && true}
-            >
-              <Input.Password size="large" placeholder="Password" />
-            </Form.Item>
+            {type !== "patient" ||
+              (update === true && (
+                <Form.Item
+                  name="password"
+                  label="Password"
+                  rules={[
+                    {
+                      validator: (_, value) =>
+                        value.length >= 6
+                          ? Promise.resolve()
+                          : Promise.reject(
+                              new Error(
+                                "The password must be at least 6 characters"
+                              )
+                            ),
+                    },
+                    {
+                      required: true,
+                      message: "Write the password",
+                    },
+                  ]}
+                  hasFeedback
+                >
+                  <Input.Password size="large" placeholder="Password" />
+                </Form.Item>
+              ))}
 
             {/* Confirm password */}
-            <Form.Item
-              name="confirmPassword"
-              label="Confirm password"
-              dependencies={["password"]}
-              labe
-              hasFeedback
-              rules={[
-                {
-                  required: true,
-                  message: "Confirm password is required",
-                },
-                ({ getFieldValue }) => ({
-                  validator(_, value) {
-                    if (!value || getFieldValue("password") === value) {
-                      return Promise.resolve();
-                    }
-                    return Promise.reject(
-                      new Error("The password do not match")
-                    );
-                  },
-                }),
-              ]}
-              hidden={type === "patient" && true}
-            >
-              <Input.Password size="large" placeholder="Confirm password" />
-            </Form.Item>
-
+            {type !== "patient" ||
+              (update === true && (
+                <Form.Item
+                  name="confirmPassword"
+                  label="Confirm password"
+                  dependencies={["password"]}
+                  labe
+                  hasFeedback
+                  rules={[
+                    {
+                      required: true,
+                      message: "Confirm password is required",
+                    },
+                    ({ getFieldValue }) => ({
+                      validator(_, value) {
+                        if (!value || getFieldValue("password") === value) {
+                          return Promise.resolve();
+                        }
+                        return Promise.reject(
+                          new Error("The password do not match")
+                        );
+                      },
+                    }),
+                  ]}
+                >
+                  <Input.Password size="large" placeholder="Confirm password" />
+                </Form.Item>
+              ))}
             {/* Country */}
             {/* <Form.Item
               name="country"
@@ -288,7 +335,6 @@ export const UserForm = ({ type }) => {
                 }}
               ></Select>
             </Form.Item> */}
-
             {/* Province */}
             {/* <Form.Item
               name="province"
@@ -309,9 +355,8 @@ export const UserForm = ({ type }) => {
                 // onChange={(e) => setProvince(e)}
               ></Select>
             </Form.Item> */}
-
             {/* Role if admin */}
-            {roleData === "admin" && (
+            {roleData === "admin" && type !== "patient" && (
               <Form.Item
                 name="roles"
                 label="Rol"
@@ -338,12 +383,17 @@ export const UserForm = ({ type }) => {
                   label="Rol"
                   rules={[
                     {
-                      required: true,
+                      // required: true,
                       message: "Select a rol",
                     },
                   ]}
                 >
-                  <Input size="large" placeholder="patient" disabled></Input>
+                  <Input
+                    size="large"
+                    placeholder="patient"
+                    // value="patient"
+                    disabled
+                  ></Input>
                 </Form.Item>
               ))}
 
@@ -364,7 +414,6 @@ export const UserForm = ({ type }) => {
                 placeholder="Birthday"
               />
             </Form.Item>
-
             {/* Profile photo */}
             <Form.Item
               name="profilePhoto"
@@ -372,9 +421,10 @@ export const UserForm = ({ type }) => {
               rules={[
                 {
                   required: false,
-                  message: "Entre una contraseña valida",
+                  message: "Place your photo",
                 },
               ]}
+              status="success"
             >
               <Upload
                 // style={{ width: "100%" }}
@@ -385,11 +435,13 @@ export const UserForm = ({ type }) => {
                   console.log(url);
                   setFileUrl(url);
                 }}
-                fileList={fileList}
+                // fileList={fileList}
+                beforeUpload={beforeUpload}
                 onPreview={handlePreview}
                 maxCount={1}
                 multiple="false"
-                onChange={handleChange}
+                // onChange={handleChange}
+                // status="success"
               >
                 <button style={{ border: 0, background: "none" }} type="button">
                   <PlusOutlined />
@@ -397,7 +449,6 @@ export const UserForm = ({ type }) => {
                 </button>
               </Upload>
             </Form.Item>
-
             {/* File url */}
             <Form.Item name="fileUrlLink">
               <Input
@@ -407,7 +458,6 @@ export const UserForm = ({ type }) => {
                 // onChange={(e) => setFileUrl(e.target.value)}
               />
             </Form.Item>
-
             {/* END */}
             <div
               style={{ display: "flex", gap: "1em", justifyContent: "center" }}

@@ -16,6 +16,7 @@ export const AuthContext = React.createContext();
 export const AuthProvider = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [loadingPhoto, setLoadingPhoto] = useState(false);
   const [success, setSuccess] = useState("");
   const [error, setError] = useState(null);
   const [data, setData] = useState([]);
@@ -117,7 +118,7 @@ export const AuthProvider = ({ children }) => {
     setError("");
     setSuccess("");
     setLoading(true);
-    console.log("Data Auth Context", newUser);
+    // console.log("Data Auth Context", newUser);
 
     const response = await createUser(newUser);
     if (response === 200) {
@@ -140,7 +141,7 @@ export const AuthProvider = ({ children }) => {
   // Load profile photo
   const loadProfilePhoto = async (image) => {
     // console.log(image);
-    setLoading(true);
+    setLoadingPhoto(true);
     const response = await loadProfilePhotoApi(image);
     // console.log("respuesta", response);
     if (response === "errorLoading") {
@@ -151,11 +152,11 @@ export const AuthProvider = ({ children }) => {
     if (response.url !== "" && response !== null) {
       // console.log("Error");
       setSuccess("Profile photo successfully loaded");
-      setLoading(false);
+      setLoadingPhoto(false);
       return response.url;
     } else {
       setError("Problem loading profile photo");
-      setLoading(false);
+      setLoadingPhoto(false);
       return null;
     }
   };
@@ -219,6 +220,7 @@ export const AuthProvider = ({ children }) => {
     loading,
     setLoading,
     login,
+    loadingPhoto,
     logout,
     data,
     userData,

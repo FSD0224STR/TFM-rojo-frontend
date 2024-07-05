@@ -219,7 +219,7 @@ export const Users = () => {
                     >
                       <List.Item.Meta
                         avatar={
-                          <Link to={`/user/${item._id}`}>
+                          <Link>
                             <Avatar
                               src={
                                 item?.fileUrlLink !== undefined
@@ -234,6 +234,13 @@ export const Users = () => {
                             />
                           </Link>
                         }
+                        key={item._id}
+                        onClick={() => {
+                          searchUserInfo(item._id);
+                          setTimeout(() => {
+                            navigate(`/user`);
+                          }, 500);
+                        }}
                         title={`${item.name} ${item.lastName}`}
                         description={
                           <div>

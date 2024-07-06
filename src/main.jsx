@@ -64,7 +64,7 @@ const router = createBrowserRouter([
         element: <Agenda />,
       },
       {
-        path: "/user/:id",
+        path: "/user",
         element: <UserDetails />,
       },
       {

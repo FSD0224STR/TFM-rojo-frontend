@@ -8,6 +8,7 @@ import {
   updateUserPassword,
   searchUser,
   updateUserApi,
+  sendEmailToUser,
   loadProfilePhotoApi,
 } from "../apiService/userApi";
 
@@ -71,6 +72,15 @@ export const AuthProvider = ({ children }) => {
       }
     } else {
       navigate("/");
+    }
+  };
+
+  const SendEmailToUser = async (email) => {
+    const response = await sendEmailToUser(email);
+    if (response === 200) {
+      setSuccess("Email sent successfully");
+    } else {
+      setError("The email was not sent");
     }
   };
 

@@ -57,6 +57,7 @@ export const TableResume = ({ searchid, type, datesRange }) => {
       title: "Date",
       dataIndex: "date",
       key: "date",
+      render: (text) => dayjs(text).format("YYYY-MM-DD"),
     },
     {
       title: "Description",
@@ -98,7 +99,6 @@ export const TableResume = ({ searchid, type, datesRange }) => {
   }, []);
 
   useEffect(() => {
-    findDates();
     if (datesRange?.length > 0) {
       // console.log(
       //   "dates pasado por prop",

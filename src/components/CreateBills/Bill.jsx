@@ -1,12 +1,24 @@
-import React from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Card, Space, Table } from 'antd';
 import { Empresa} from './Empresa';
 import dayjs from 'dayjs';
 import './Bill.css';
-
+import { DatesContext } from '../../contexts/DatesContext';
 
 export const Bill = ({ bill }) => {
+  const {  searchUserInfo } = useContext(DatesContext);
 
+  const [patientName, setPatientName] = useState()
+  useEffect(() => {
+    fillUserData(bill.Patient)
+  }, [bill.Patient])
+
+  const fillUserData = async (id) => {
+    const response= await searchUserInfo(id);
+ 
+    setPatientName(response.name + " " + response.lastName)
+
+  }
   const dataEmpresa = {
     name: "Clínica Odontodalia",
     cif: "B09485939",
@@ -44,9 +56,10 @@ export const Bill = ({ bill }) => {
   ];
 
  
-    //     
+      
   return ( 
   <>
+  
     <Space direction="vertical" size={30}>
     <Card
       title="Factura"
@@ -56,6 +69,10 @@ export const Bill = ({ bill }) => {
       }}
     >
       <div>
+      <p>Nº {bill.billNumber} </p>
+      </div>
+
+      <div>
       {dayjs(bill.date).format("DD-MM-YYYY") }
       </div>
       <div className='empresa'>
@@ -64,11 +81,11 @@ export const Bill = ({ bill }) => {
      
       <div>
         <strong>Datos paciente:</strong>
-        <p>{bill.pacient}
-        <p> {bill.DNI} </p>
+        <p>{patientName} </p>
+        <p> {bill.idPatient} </p>
         <p> {bill.adress}
         {bill.tel}</p>
-        </p>
+        
       </div>
 
       <div>
@@ -84,7 +101,7 @@ export const Bill = ({ bill }) => {
       
       </div>
       <div>
-         TOTAL: 
+         TOTAL: {bill.totalSum} €
       </div>
     </Card>
  

@@ -12,11 +12,12 @@ export const BillProvider = ({ children }) => {
 
 
   const GetBills = async () => {
-    const response= await getAllBills () 
-      if (response.length) {
+    const response= await getAllBills ()
+  
+      if (response.data.length) {
     
-        setBillData(response);
-    
+        setBillData(response.data);
+    return response.data
       } else {
         setError("No bills found")
       }

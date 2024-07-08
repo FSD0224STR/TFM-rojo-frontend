@@ -1,7 +1,7 @@
 const baseUrl = "http://localhost:3000";
 
 export const createBill = async (newBill) => {
-    alert ("hola")
+   
     const response = await fetch(`${baseUrl}/bill/newBill`, {
     method: "POST",
     headers: {
@@ -18,7 +18,7 @@ export const getAllBills = async () => {
   
   const response = await fetch(`${baseUrl}/bill/getBill`)
  
-  // console.log(response);
+  // console.log(response.json);
   if (!response.ok) return { error: response.status };
   return await response.json();
 };

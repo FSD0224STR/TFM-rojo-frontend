@@ -1,10 +1,12 @@
 import { Outlet } from "react-router-dom";
-import { Layout, Modal, Spin } from "antd";
+import { FloatButton, Layout, Modal, Spin } from "antd";
 import { AuthContext, AuthProvider } from "../contexts/authContext";
 import { Navbar } from "./Navbar/Navbar";
 import { useContext, useEffect } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "./LayoutPage.css";
+import { ChatComponent } from "../components/Chat/ChatComponent";
+import { WechatOutlined } from "@ant-design/icons";
 
 const { Content, Footer } = Layout;
 
@@ -28,6 +30,7 @@ export const LayoutPage = () => {
         <Layout className="OutletContainer">
           <Content className="OutletContent">
             <Outlet className="Outlet" />
+            <ChatComponent />
           </Content>
 
           <Spin

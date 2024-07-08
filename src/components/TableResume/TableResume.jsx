@@ -4,7 +4,7 @@ import { Space, Table, Tag } from "antd";
 import { DatesContext } from "../../contexts/DatesContext";
 import dayjs from "dayjs";
 
-export const TableResume = ({ searchid, type }) => {
+export const TableResume = ({ searchid, type, datesRange }) => {
   const { userData } = useContext(AuthContext);
   const { dates, findAllDoctorsDates } = useContext(DatesContext);
   const [datesById, setDatesById] = useState();
@@ -82,7 +82,11 @@ export const TableResume = ({ searchid, type }) => {
 
   const findDates = async () => {
     const response = await findAllDoctorsDates();
-    setDatesById(response.filter((date) => date.idPatient === searchid));
+    if (searchid) {
+      setDatesById(response.filter((date) => date.idPatient === searchid));
+    } else {
+      setDatesById(response);
+    }
   };
 
   useEffect(() => {
@@ -92,6 +96,24 @@ export const TableResume = ({ searchid, type }) => {
       console.log(type);
     }
   }, []);
+
+  useEffect(() => {
+    findDates();
+    if (datesRange?.length > 0) {
+      // console.log(
+      //   "dates pasado por prop",
+      //   dayjs(datesRange[0]).format("YYYY-MM-DD"),
+      //   dayjs(datesRange[1]).format("YYYY-MM-DD")
+      // );
+      setDatesById(
+        datesById.filter((date) => {
+          dayjs(date?.date).format("YYYY-MM-DD") >=
+            dayjs(datesRange[0]).format("YYYY-MM-DD");
+        })
+      );
+    }
+  }, [datesRange]);
+
   return (
     <>
       <div style={{ height: "100%" }}>

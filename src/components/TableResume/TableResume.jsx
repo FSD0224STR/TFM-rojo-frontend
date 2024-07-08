@@ -3,6 +3,8 @@ import { AuthContext } from "../../contexts/authContext";
 import { Space, Table, Tag } from "antd";
 import { DatesContext } from "../../contexts/DatesContext";
 import dayjs from "dayjs";
+import isBetween from "dayjs/plugin/isBetween";
+dayjs.extend(isBetween);
 
 export const TableResume = ({ searchid, type, datesRange }) => {
   const { userData } = useContext(AuthContext);
@@ -82,10 +84,21 @@ export const TableResume = ({ searchid, type, datesRange }) => {
 
   const findDates = async () => {
     const response = await findAllDoctorsDates();
-    if (searchid) {
-      setDatesById(response.filter((date) => date.idPatient === searchid));
-    } else {
-      setDatesById(response);
+    if (response.length > 0) {
+      var datesArray;
+      if (searchid) {
+        datesArray = response.filter((date) => date.idPatient === searchid);
+      } else {
+        datesArray = response;
+      }
+      if (datesRange?.length > 0) {
+        return setDatesById(
+          datesArray.filter((date) =>
+            dayjs(date?.date).isBetween(datesRange[0], datesRange[1])
+          )
+        );
+      }
+      return setDatesById(datesArray);
     }
   };
 
@@ -99,19 +112,6 @@ export const TableResume = ({ searchid, type, datesRange }) => {
 
   useEffect(() => {
     findDates();
-    if (datesRange?.length > 0) {
-      // console.log(
-      //   "dates pasado por prop",
-      //   dayjs(datesRange[0]).format("YYYY-MM-DD"),
-      //   dayjs(datesRange[1]).format("YYYY-MM-DD")
-      // );
-      setDatesById(
-        datesById.filter((date) => {
-          dayjs(date?.date).format("YYYY-MM-DD") >=
-            dayjs(datesRange[0]).format("YYYY-MM-DD");
-        })
-      );
-    }
   }, [datesRange]);
 
   return (

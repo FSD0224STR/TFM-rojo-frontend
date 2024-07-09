@@ -208,7 +208,7 @@ export const AuthProvider = ({ children }) => {
 
   const updateUser = async (dataUser) => {
     setLoading(true);
-
+    // console.log("dataUser", dataUser);
     const response = await updateUserApi(dataUser);
     if (response === 200)
       return (

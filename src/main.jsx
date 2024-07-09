@@ -68,10 +68,6 @@ const router = createBrowserRouter([
         element: <UserDetails />,
       },
       {
-        path: "/tabletest",
-        element: <TableTest />,
-      },
-      {
         path: "/bills/",
         element: <Bills />,
       },

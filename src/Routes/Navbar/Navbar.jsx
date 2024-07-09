@@ -25,20 +25,20 @@ export const Navbar = () => {
         icon: <CalendarOutlined />,
         label: <Link to={"/agenda"}>Agenda</Link>,
       },
-    // isLoggedIn && {
-    //   key: "CreateDate",
-    //   icon: <DiffOutlined />,
-    //   label: <Link to={"/createnewdate"}>Create Date</Link>,
-    // },
+     isLoggedIn && {
+       key: "CreateDate",
+       icon: <DiffOutlined />,
+       label: <Link to={"/createnewdate"}>Create Date</Link>,
+     },
     isLoggedIn && {
       key: "UserData",
       icon: <UserOutlined />,
       label: <Link to={"/userdata"}>Users Data</Link>,
     },
     isLoggedIn && {
-      key: "Bills",
+      key: "CreateBills",
       icon: <UserOutlined />,
-      label: <Link to={"/bills"}>Bills</Link>,
+      label: <Link to={"/CreateBills"}>Create Bills</Link>,
     },
     isLoggedIn && {
       key: "tabletest",

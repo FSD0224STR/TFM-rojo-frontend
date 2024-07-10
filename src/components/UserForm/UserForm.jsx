@@ -6,7 +6,16 @@ import {
   EyeTwoTone,
 } from "@ant-design/icons";
 
-import { Button, DatePicker, Form, Input, Select, Upload, message } from "antd";
+import {
+  Button,
+  DatePicker,
+  Form,
+  Image,
+  Input,
+  Select,
+  Upload,
+  message,
+} from "antd";
 
 const { Option } = Select;
 
@@ -32,6 +41,7 @@ export const UserForm = ({ type, update }) => {
     searchedUser,
     updateUser,
   } = useContext(AuthContext);
+
   const [selectProvinces, setSelectProvinces] = useState([]);
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState("");
@@ -47,6 +57,7 @@ export const UserForm = ({ type, update }) => {
     reader.addEventListener("load", () => callback(reader.result));
     reader.readAsDataURL(img);
   };
+
   const beforeUpload = (file) => {
     const isJpgOrPng = file.type === "image/jpeg" || file.type === "image/png";
     if (!isJpgOrPng) {
@@ -58,6 +69,7 @@ export const UserForm = ({ type, update }) => {
     }
     return isJpgOrPng && isLt2M;
   };
+
   const handlePreview = async (file) => {
     if (!file.url && !file.preview) {
       file.preview = await getBase64(file.originFileObj);
@@ -92,9 +104,10 @@ export const UserForm = ({ type, update }) => {
   //   const roleOptions = [{ value: "admin" }, { value: "patient" }];
 
   const handleFinish = (values) => {
-    console.log(values);
+    // console.log(values);
     !update && createNewUser(values);
-    update && userDataChange && updateUser;
+    update && !userDataChange && setError("No changes were made");
+    update && userDataChange && updateUser(values);
   };
 
   useEffect(() => {
@@ -117,13 +130,11 @@ export const UserForm = ({ type, update }) => {
   const [initialData, setInitialData] = useState();
 
   useEffect(() => {
-    setInitialData("");
     if (type === "patient") {
       userDataForm.setFieldsValue({
         roles: "patient",
       });
     } else if (update === true) {
-      console.log(searchedUser);
       userDataForm.setFieldsValue({
         userId: searchedUser?._id,
         dni: searchedUser?.dni,
@@ -137,7 +148,7 @@ export const UserForm = ({ type, update }) => {
         phone: searchedUser?.phone,
         prefix: searchedUser?.prefix,
         address: searchedUser?.address,
-        profilePhoto: searchedUser?.profilePhoto,
+        // profilePhoto: searchedUser?.profilePhoto,
         fileUrlLink: searchedUser?.fileUrlLink,
       });
     }
@@ -168,8 +179,8 @@ export const UserForm = ({ type, update }) => {
             )}
 
             {roleData === "admin" && update === true && (
-              <Form.Item name="userId" label="User Id">
-                <Input size="large" placeholder="userId" disabled={true} />
+              <Form.Item name="userId" label="User Id" hidden>
+                <Input size="large" placeholder="userId" readOnly />
               </Form.Item>
             )}
 
@@ -435,7 +446,7 @@ export const UserForm = ({ type, update }) => {
                   console.log(url);
                   setFileUrl(url);
                 }}
-                // fileList={fileList}
+                fileList={fileList}
                 beforeUpload={beforeUpload}
                 onPreview={handlePreview}
                 maxCount={1}
@@ -449,8 +460,17 @@ export const UserForm = ({ type, update }) => {
                 </button>
               </Upload>
             </Form.Item>
+
+            <Form.Item>
+              <Image
+                width={100}
+                style={{ borderRadius: "50%" }}
+                src={searchedUser?.fileUrlLink}
+              />
+            </Form.Item>
+
             {/* File url */}
-            <Form.Item name="fileUrlLink">
+            <Form.Item name="fileUrlLink" hidden>
               <Input
                 // type="hidden"
                 name="fileUrl"
@@ -463,7 +483,7 @@ export const UserForm = ({ type, update }) => {
               style={{ display: "flex", gap: "1em", justifyContent: "center" }}
             >
               <Button htmlType="submit" size="large">
-                Create
+                {!update ? "Create" : "Update"}
               </Button>
               <Button size="large">
                 <Link to={"/userdata"}>Cancel</Link>

@@ -14,12 +14,13 @@ export const CreateBills = () => {
   const [bill, setBill] = useState({});
   const [form] = Form.useForm();
 
-  const { userPatients, findPatients, searchUserInfo } = useContext(DatesContext);
+  const { userPatients, findPatients, searchUserInfo } =
+    useContext(DatesContext);
 
   const findAllBills = async () => {
     const response = await GetBills();
     // console.log (response)
-    form.setFieldsValue({ billNumber: response.length + 1,  });
+    form.setFieldsValue({ billNumber: response?.length + 1 });
   };
 
   useEffect(() => {
@@ -27,18 +28,20 @@ export const CreateBills = () => {
     findAllBills();
   }, []);
 
-  const patientIdField = Form.useWatch("Patient", form) 
+  const patientIdField = Form.useWatch("Patient", form);
   useEffect(() => {
-    fillUserData(patientIdField)
-  }, [patientIdField])
+    patientIdField !== undefined && fillUserData(patientIdField);
+  }, [patientIdField]);
 
   const fillUserData = async (id) => {
-    const response= await searchUserInfo(id);
-    console.log(response)
-    form.setFieldsValue({ dni:response?.dni, adress: response?.address, tel: response?.phone });
-
-  }
-
+    const response = await searchUserInfo(id);
+    // console.log(response);
+    form.setFieldsValue({
+      dni: response?.dni,
+      adress: response?.address,
+      tel: response?.phone,
+    });
+  };
 
   const handleTotal = (_, values) => {
     const treatmentsCopy = [...values.treatments];
@@ -224,11 +227,7 @@ export const CreateBills = () => {
             <Input readOnly placeholder="Total Sum" />
           </Form.Item>
 
-          <Form.Item
-            label="Status"
-            name="status"
-            initialValue={"pending"}
-          >
+          <Form.Item label="Status" name="status" initialValue={"pending"}>
             <Select
               size="large"
               options={[

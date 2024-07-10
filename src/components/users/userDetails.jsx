@@ -1,11 +1,11 @@
-import React from "react";
-import { Badge, Descriptions } from "antd";
 import { useContext, useState } from "react";
 import { MailOutlined } from "@ant-design/icons";
 import { AuthContext } from "../../contexts/authContext.jsx";
 import FloatingEmailForm from "./emailForm.jsx";
 import dayjs from "dayjs";
 import { TableResume } from "../TableResume/TableResume.jsx";
+import React from "react";
+import { Badge, Descriptions } from "antd";
 
 function UserDetails() {
   const [showEmailForm, setShowEmailForm] = useState(false);
@@ -14,12 +14,12 @@ function UserDetails() {
   const items = [
     {
       key: "1",
-      label: "Nombre",
+      label: "Name",
       children: searchedUser?.name,
     },
     {
       key: "2",
-      label: "Apellido",
+      label: "Last name",
       children: searchedUser?.lastName,
     },
     {
@@ -28,124 +28,112 @@ function UserDetails() {
       children: searchedUser?.email,
     },
     {
-      key: "4",
-      label: "Country",
-      children: searchedUser?.country,
-    },
-    {
-      key: "5",
-      label: "Province",
-      children: searchedUser?.province,
-      span: 2,
-    },
-    {
       key: "6",
-      label: "Es cliente",
-      children: <Badge status="processing" text="Sí" />,
+      label: "Client",
+      children: <Badge status="processing" text="Yes" />,
       span: 3,
     },
     {
       key: "7",
-      label: "Fecha de nacimiento",
+      label: "Birth date",
       children: dayjs(searchedUser?.birthDay).format("YYYY-MM-DD"),
     },
     {
       key: "8",
-      label: "Rol",
+      label: "Role",
       children: searchedUser?.roles,
       span: 2,
     },
     {
       key: "9",
-      label: "Dni",
+      label: "DNI",
       children: searchedUser?.dni,
-    },
-    {
-      key: "10",
-      label: "Billing",
-      children: (
-        <>
-          Factura 1...
-          <br />
-          Factura 2...
-          <br />
-          Factura 3...
-          <br />
-          Factura 4...
-          <br />
-          Factura 5...
-          <br />
-          Factura 6...
-          <br />
-          Factura 7...
-          <br />
-          Factura 8...
-          <br />
-          Factura 9...
-          <br />
-          Factura 10...
-        </>
-      ),
     },
   ];
 
   return (
     <>
-      <div>
-        <img
-          src={
-            searchedUser?.fileUrlLink !== undefined
-              ? searchedUser?.fileUrlLink
-              : `https://api.dicebear.com/7.x/miniavs/svg?seed=${searchedUser?._id}`
-          }
-          alt="avatar"
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          padding: "20px",
+          justifyContent: "space-around",
+          width: "100%",
+          height: "100%",
+        }}
+      >
+        <div
           style={{
-            width: "250px",
-            height: "250px",
-            borderRadius: "50%",
-            marginBottom: "40px",
-            marginTop: "1em",
-            border: "2px solid #fff",
-            boxShadow: "0 0 10px #fff",
-            position: "absolute",
-            top: "0",
-            left: "20%",
-          }}
-        />
-        <button
-          onClick={() => setShowEmailForm(true)}
-          style={{
-            position: "absolute",
-            top: "100px",
-            left: "calc(20% + 250px)",
-            cursor: "pointer",
-            border: "none",
-            background: "transparent",
+            flex: 1,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            marginRight: "20px",
           }}
         >
-          <MailOutlined />
-          {/* <MdEmail size="24" style={{ color: "#007bff" }} /> */}
-        </button>
-      </div>
-      <div>
-        <Descriptions
-          column={3}
-          size="big"
-          style={{ width: "100%", marginTop: "5em" }}
+          <h1>{searchedUser?.name + " " + searchedUser?.lastName}</h1>
+          <div style={{ marginBottom: "20px" }}>
+            <img
+              src={
+                searchedUser?.fileUrlLink !== undefined
+                  ? searchedUser?.fileUrlLink
+                  : `https://api.dicebear.com/7.x/miniavs/svg?seed=${searchedUser?._id}`
+              }
+              alt="User"
+              style={{ width: "300px", height: "300px", borderRadius: "50%" }}
+            />
+          </div>
+          <div>
+            <button
+              onClick={() => setShowEmailForm(!showEmailForm)}
+              style={{
+                marginBottom: "20px",
+                backgroundColor: "#1890ff",
+                color: "white",
+                border: "none",
+                padding: "10px",
+                borderRadius: "50%",
+                cursor: "pointer",
+              }}
+            >
+              <MailOutlined />
+            </button>
+            <FloatingEmailForm
+              isVisible={showEmailForm}
+              onClose={() => setShowEmailForm(false)}
+              emailDefault={searchedUser.email}
+            />
+          </div>
+          <Descriptions title={""} layout="vertical" bordered>
+            {items.map((item) => (
+              <Descriptions.Item label={item.label} key={item.key}>
+                {item.children}
+              </Descriptions.Item>
+            ))}
+          </Descriptions>
+        </div>
+
+        <div
+          style={{
+            flex: 1,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            marginLeft: "20px",
+          }}
         >
-          {items.map((item, i) => (
-            <Descriptions.Item label={item.label} key={i}>
-              {item.children}
-            </Descriptions.Item>
-          ))}
-        </Descriptions>
+          <div style={{ width: "100%", marginBottom: "20px" }}>
+            <h2 style={{ textAlign: "center" }}>Bills</h2>
+            <TableResume searchid={searchedUser?._id} type="bill" />
+          </div>
+
+          <div style={{ width: "100%" }}>
+            <h2 style={{ textAlign: "center" }}>Appointments</h2>
+            <TableResume searchid={searchedUser?._id} type="dates" />
+          </div>
+        </div>
       </div>
-      <FloatingEmailForm
-        isVisible={showEmailForm}
-        onClose={() => setShowEmailForm(false)}
-      />
-      <TableResume searchid={searchedUser?._id} type="dates"></TableResume>
-      <TableResume searchid={searchedUser?._id} type="bill"></TableResume>
     </>
   );
 }

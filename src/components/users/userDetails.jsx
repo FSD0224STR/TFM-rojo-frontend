@@ -19,7 +19,7 @@ function UserDetails() {
     },
     {
       key: "2",
-      label: "Surname",
+      label: "Last name",
       children: searchedUser?.lastName,
     },
     {
@@ -53,65 +53,44 @@ function UserDetails() {
 
   return (
     <>
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gridTemplateRows: '1fr 1fr', gap: '20px', height: '100vh' }}>
-        <img
-            src={
+      <div style={{ display: 'flex', flexDirection: 'row', padding: '20px', justifyContent: 'space-around', width: '100%' }}>
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', marginRight: '20px' }}>
+          <h1>{searchedUser?.name + " " + searchedUser?.lastName}</h1>
+          <div style={{ marginBottom: '20px' }}>
+            <img src={
               searchedUser?.fileUrlLink !== undefined
                 ? searchedUser?.fileUrlLink
                 : `https://api.dicebear.com/7.x/miniavs/svg?seed=${searchedUser?._id}`
-            }
-            alt="avatar"
-            style={{
-              width: "250px",
-              height: "250px",
-              borderRadius: "50%",
-              marginBottom: "40px",
-              marginTop: "5em",
-              border: "2px solid #fff",
-              boxShadow: "0 0 10px #fff",
-              position: "absolute",
-              top: "0",
-              left: "20%",
-            }}
-          />
-          <button
-            onClick={() => setShowEmailForm(true)}
-            style={{
-              position: "absolute",
-              top: "100px",
-              left: "calc(20% + 250px)",
-              cursor: "pointer",
-              border: "none",
-              background: "transparent",
-            }}
-          >
-            <MailOutlined />
-          </button>
-        <div style={{ gridArea: '1 / 1 / 2 / 2' }}>
-        </div>
-        <div style={{ gridArea: '1 / 2 / 2 / 3', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
-          <Descriptions
-            bordered={items.length > 3 ? true : false}
-            column={3}
-            size="big"
-            style={{ maxWidth: '1000px', textAlign: 'center' }}
-          >
-            {items.map((item, i) => (
-              <Descriptions.Item label={item.label} key={i}>
+            } alt="User" style={{ width: '300px', height: '300px', borderRadius: '50%' }} />
+          </div>
+          <div>
+            <button
+                onClick={() => setShowEmailForm(!showEmailForm)}
+                style={{ marginBottom: '20px', backgroundColor: '#1890ff', color: 'white', border: 'none', padding: '10px', borderRadius: '50%', cursor: 'pointer'}}
+              >
+                <MailOutlined />
+              </button>
+              <FloatingEmailForm isVisible={showEmailForm} onClose={() => setShowEmailForm(false)} emailDefault={searchedUser.email} />
+          </div>
+          <Descriptions title={""} layout="vertical" bordered>
+            {items.map(item => (
+              <Descriptions.Item label={item.label} key={item.key}>
                 {item.children}
               </Descriptions.Item>
             ))}
           </Descriptions>
         </div>
 
-        {/* Cuadrante 3: Facturas */}
-        <div style={{ gridArea: '2 / 1 / 3 / 2', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-          <TableResume searchid={searchedUser?._id} type="bill"></TableResume>
-        </div>
-
-        {/* Cuadrante 4: Citas */}
-        <div style={{ gridArea: '2 / 2 / 3 / 3', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-          <TableResume searchid={searchedUser?._id} type="dates"></TableResume>
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', marginLeft: '20px' }}>
+          <div style={{ width: '100%', marginBottom: '20px' }}>
+            <h2 style={{ textAlign: 'center' }}>Bills</h2>
+            <TableResume searchid={searchedUser?._id} type="bill" />
+          </div>
+  
+          <div style={{ width: '100%' }}>
+            <h2 style={{ textAlign: 'center' }}>Appointments</h2>
+            <TableResume searchid={searchedUser?._id} type="dates" />
+          </div>
         </div>
       </div>
     </>

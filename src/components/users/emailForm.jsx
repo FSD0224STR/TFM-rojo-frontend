@@ -2,14 +2,22 @@ import React, { useEffect } from 'react';
 import { Button, Form, Input } from 'antd';
 import { sendEmailToUser } from '../../apiService/userApi.js';
 
-function FloatingEmailForm({ isVisible, onClose }) {
+function FloatingEmailForm({ isVisible, onClose, emailDefault }) {
   const [form] = Form.useForm();
+  const [email, setEmail] = React.useState(emailDefault || '');
 
   useEffect(() => {
     if (isVisible) {
       form.resetFields();
     }
   }, [isVisible, form]);
+
+  useEffect(() => {
+    if (emailDefault) {
+      form.setFieldsValue({ email: emailDefault });
+    }
+  }
+  , [emailDefault, form]);
 
   const handleSubmit = (values) => {
     sendEmailToUser(values);
@@ -18,7 +26,7 @@ function FloatingEmailForm({ isVisible, onClose }) {
   if (!isVisible) return null;
 
   return (
-    <div style={{ position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', backgroundColor: '#C3C3C3', padding: '20px', borderRadius: '10px', boxShadow: '0 2px 10px rgba(0,0,0,0.3)', zIndex: 1000 }}>
+    <div style={{ position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', backgroundColor: '#C3C3C3', padding: '20px', borderRadius: '10px', boxShadow: '0 2px 10px rgba(0,0,0,0.3)', zIndex: 9999 }}>
       <Form
         form={form}
         onFinish={handleSubmit}
@@ -35,7 +43,6 @@ function FloatingEmailForm({ isVisible, onClose }) {
           rules={[
             {
               required: true,
-              type: 'email',
               message: 'Please write a valid email!',
             },
           ]}
@@ -58,7 +65,7 @@ function FloatingEmailForm({ isVisible, onClose }) {
 
         <Form.Item
           name="message"
-          label="Message : "
+          label="Text : "
           rules={[
             {
               required: true,

@@ -180,12 +180,7 @@ export const CreateBills = () => {
                       key={[field.key, "price"]}
                       rules={[{ required: true, message: "Missing price" }]}
                     >
-                      <InputNumber
-                        placeholder="PRICE"
-                        min={0}
-                        max={100}
-                        suffix="€"
-                      />
+                      <InputNumber placeholder="PRICE" min={0} suffix="€" />
                     </Form.Item>
 
                     {/* iva */}

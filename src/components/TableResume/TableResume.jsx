@@ -7,8 +7,8 @@ import dayjs from "dayjs";
 import isBetween from "dayjs/plugin/isBetween";
 dayjs.extend(isBetween);
 
-export const TableResume = ({ searchid, type, datesRange }) => {
-  const { userData } = useContext(AuthContext);
+export const TableResume = ({ searchid, type, fullData, datesRange }) => {
+  const { userData, searchUserInfoTable } = useContext(AuthContext);
   const { dates, findAllDoctorsDates } = useContext(DatesContext);
   const { GetBills } = useContext(BillContext);
   const [datesById, setDatesById] = useState();
@@ -51,12 +51,25 @@ export const TableResume = ({ searchid, type, datesRange }) => {
       ),
     },
   ];
+  const findUserName = async (id) => {
+    const user = await searchUserInfoTable(id);
+    const userName = user.name;
+    console.log(userName);
+    return userName;
+  };
 
   const columnBills = [
     {
       title: "Bill",
       dataIndex: "billNumber",
       key: "billNumber",
+    },
+    {
+      title: "Patient",
+      dataIndex: "Patient",
+      key: "idPatient",
+      hidden: false,
+      render: async (id) => await findUserName(id),
     },
     {
       title: "Date",
@@ -103,7 +116,7 @@ export const TableResume = ({ searchid, type, datesRange }) => {
 
   const findBills = async () => {
     const response = await GetBills();
-    console.log(response);
+    // console.log(response);
     if (response.length > 0) {
       var billsArray;
       if (searchid) {

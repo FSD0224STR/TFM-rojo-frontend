@@ -7,7 +7,7 @@ import { DatePicker } from "antd";
 import { CloseOutlined } from "@ant-design/icons";
 import { BillContext } from "../../contexts/BillsContext";
 import { DatesContext } from "../../contexts/DatesContext";
-
+import dayjs from "dayjs";
 
 const { TextArea } = Input;
 
@@ -73,6 +73,7 @@ export const CreateBills = ({ update }) => {
         form.setFieldsValue({ treatments: treatmentsCopy, totalSum });
       }
     });
+      update && setbillDataChange(true)
   };
 
   const filterOption = (input, option) =>
@@ -88,16 +89,14 @@ export const CreateBills = ({ update }) => {
 
   useEffect(() => {
     if (update === true) {
-      Form.setFieldsValue({
-        billId: searchedBill?._id,
+      form.setFieldsValue({
+        id: searchedBill?._id,
         date: dayjs(searchedBill?.date),
         billNumber: searchedBill?.billNumber,
-        dni: searchedBill?.dni,
-        name: searchedBill?.Patient.name + " " + searchedBill?.Patient.lastName,
-        adress: searchedBill?.adress,
-        tel: searchedBill?.tel,
+        Patient: searchedBill?.Patient[0]._id,
         description: searchedBill?.description,
         treatments: searchedBill?.treatments,
+        totalSum: searchedBill?.totalSum,
       });
     }
   }, []);
@@ -134,7 +133,7 @@ export const CreateBills = ({ update }) => {
           }}
           autoComplete="off"
         >
-          <Form.Item name="id" label="id" hidden>
+          <Form.Item name="id" label="id">
             <Input readOnly />
           </Form.Item>
 

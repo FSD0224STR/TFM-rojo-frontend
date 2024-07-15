@@ -1,73 +1,4 @@
 import React, { useContext, useEffect, useState } from "react";
-import { createBill, getAllBills } from "../apiService/billApi";
-import { AuthContext } from "../contexts/authContext";
-
-export const BillContext = React.createContext();
-
-export const BillProvider = ({ children }) => {
-  const { setError, setSuccess, setLoading } = useContext(AuthContext);
-
-  const [billData, setBillData] = useState();
-  const [billToEdit, setBillToEdit] = useState();
-
-  const GetBills = async () => {
-    const response = await getAllBills();
-
-    if (response.data.length) {
-      setBillData(response.data);
-      return response.data;
-    } else {
-      setError("No bills found");
-    }
-  };
-
-  // Crate new user
-  const createNewBill = async (newBill) => {
-    setError("");
-    setSuccess("");
-    setLoading(true);
-    console.log(newBill);
-    const response = await createBill(newBill);
-
-    if (response === 200) {
-      setSuccess("Bill created successfully");
-    } else {
-      setError("Problem creating bill");
-    }
-
-    setLoading(false);
-  };
-
-  // const updateUser = async (dataUser) => {
-  //     setLoading(true);
-  //
-  //     const response = await updateUserApi(dataUser);
-  //     if (response === 200)
-  //       return (
-  //         setSuccess("Successfully updated"),
-  //         getMyProfile(),
-  //         setLoading(false),
-  //         ResetMessages()
-  //       );
-  //
-  //     return setError("The update was not successful"), ResetMessages();
-  //   };
-
-  const BillContextValue = {
-    createNewBill,
-    GetBills,
-    billData,
-    billToEdit,
-    setBillToEdit,
-  };
-
-  return (
-    <BillContext.Provider value={BillContextValue}>
-      {children}
-    </BillContext.Provider>
-  );
-};
-import React, { useContext, useEffect, useState } from "react";
 import {
   createBill,
   getAllBills,
@@ -81,7 +12,7 @@ export const BillContext = React.createContext();
 export const BillProvider = ({ children }) => {
   const { setError, setSuccess, setLoading } = useContext(AuthContext);
   const { searchedUser, updateUser } = useContext(AuthContext);
-  const [searchedBill, setSearchedBill] = useState ()
+  const [searchedBill, setSearchedBill] = useState();
 
   const GetBills = async () => {
     const response = await getAllBills();
@@ -112,13 +43,14 @@ export const BillProvider = ({ children }) => {
 
   const searchBillInfo = async (idBill) => {
     const response = await searchBill(idBill);
-    // console.log(response);
-    return setSearchedBill(response.data);
+    console.log(response);
+    setSearchedBill(response.data);
+    return response.data;
   };
 
   const updateBill = async (billData) => {
     setLoading(true);
-
+    console.log(billData);
     const response = await updateBillApi(billData);
     if (response === 200)
       return (
@@ -128,32 +60,39 @@ export const BillProvider = ({ children }) => {
     return setError("The update was not successful"), ResetMessages();
   };
 
-  const deleteBill = async (idBill) => {
+  const deleteBill = async (billData) => {
     const data = {
-      billNumber: billNumber,
-      Patient: "",
+      billNumber: billData.billNumber,
+      id: billData._id,
+      Patient: billData.Patient,
       date: "",
       description: "",
-      treatments:{
-          price: "",
-          iva: "",
-          qty: "",
-          total: "", 
-          treatment:"", },
+      treatments: {
+        price: "",
+        iva: "",
+        qty: "",
+        total: "",
+        treatment: "",
+      },
       totalSum: "",
-      status: "Delete",
-    }
+      status: "removed",
+    };
 
-    const response= await updateBillApi (data);
-    return response.data;
-  }
+    const response = await updateBillApi(data);
+    if (response = 200) {
+      setSuccess("Deleted successfully");
+    } else {
+      setError("Could not deleted ");
+    }
+  };
 
   const BillContextValue = {
     createNewBill,
     GetBills,
     updateBill,
     searchBillInfo,
-    deleteBill
+    deleteBill,
+    searchedBill,
   };
 
   return (

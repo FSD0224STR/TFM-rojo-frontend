@@ -59,8 +59,6 @@ export const updateBillApi = async (billData) => {
     body: JSON.stringify(billData),
   });
   // console.log(response.status);
-  if (!response.ok) {
-    return response.status;
-  }
+ 
   return response.status;
 };

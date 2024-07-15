@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../contexts/authContext";
 import { Button, Popconfirm, Space, Table, Tag } from "antd";
-import { DeleteOutlined } from "@ant-design/icons";
+import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { DatesContext } from "../../contexts/DatesContext";
 import { BillContext } from "../../contexts/BillsContext";
 import dayjs from "dayjs";
@@ -10,10 +10,10 @@ import { Link } from "react-router-dom";
 dayjs.extend(isBetween);
 
 export const TableResume = ({ searchid, type, fullData, datesRange }) => {
-  const { userData, searchUserInfoTable, GetUsers, data } =
+  const { userData, searchUserInfoTable, GetUsers, data, navigate } =
     useContext(AuthContext);
   const { dates, findAllDoctorsDates } = useContext(DatesContext);
-  const { GetBills, billToEdit, setBillToEdit } = useContext(BillContext);
+  const { GetBills, searchBillInfo, searchedBill, deleteBill } = useContext(BillContext);
   const [datesById, setDatesById] = useState();
   const [billsById, setBillsById] = useState();
   const columnDates = [
@@ -101,11 +101,11 @@ export const TableResume = ({ searchid, type, fullData, datesRange }) => {
       dataIndex: "",
       key: "delete",
       render: (_, record) => {
-        return (
+        return ( record.status !== "paid" && 
           <Popconfirm
             title="Delete the task"
             description="Are you sure to delete this task?"
-            onConfirm={() => console.log(record._id)}
+            onConfirm={ () => {deleteBill(record); findBills()}}
             // onCancel={cancel}
             okText="Yes"
             cancelText="No"
@@ -122,14 +122,21 @@ export const TableResume = ({ searchid, type, fullData, datesRange }) => {
       dataIndex: "",
       key: "Edit",
       render: (_, record) => {
-        findBillToEdit(record._id);
-        return <Link to="/UpdateBills">Edit</Link>;
+        return (
+          record.status !== "paid" && (
+            <Button type="link" onClick={() => findBillToEdit(record)}>
+              <EditOutlined />
+            </Button>
+          )
+        );
       },
     },
   ];
 
-  const findBillToEdit = (id) => {
-    console.log(id);
+  const findBillToEdit = async (record) => {
+    const response =
+      record.status !== "paid" && (await searchBillInfo(record._id));
+    response && navigate("/UpdateBills");
   };
 
   const findDates = async () => {
@@ -155,17 +162,18 @@ export const TableResume = ({ searchid, type, fullData, datesRange }) => {
   const findBills = async () => {
     const response = await GetBills();
     // console.log(response);
-    if (response.length > 0) {
+    const billsArrayNoRemoved= response.filter (bill => bill.status !== "removed")
+    if (billsArrayNoRemoved.length > 0) {
       var billsArray;
       if (searchid) {
-        billsArray = response.filter((bill) => bill?.Patient === searchid);
+        billsArray = billsArrayNoRemoved.filter((bill) => bill?.Patient === searchid);
       } else {
-        billsArray = response;
+        billsArray = billsArrayNoRemoved;
       }
       if (datesRange?.length > 0) {
         return setBillsById(
           billsArray.filter((bill) =>
-            dayjs(bill?.bill).isBetween(datesRange[0], datesRange[1])
+            dayjs(bill?.bill).isBetween(datesRange[0], datesRange[1]) 
           )
         );
       }
@@ -180,6 +188,7 @@ export const TableResume = ({ searchid, type, fullData, datesRange }) => {
       findBills();
     }
   }, []);
+  
 
   useEffect(() => {
     findDates();
@@ -197,6 +206,8 @@ export const TableResume = ({ searchid, type, fullData, datesRange }) => {
       );
     }
   }, [datesRange]);
+
+
 
   return (
     <>

@@ -1,16 +1,19 @@
 import React, { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../contexts/authContext";
-import { Space, Table, Tag } from "antd";
+import { Button, Popconfirm, Space, Table, Tag } from "antd";
+import { DeleteOutlined } from "@ant-design/icons";
 import { DatesContext } from "../../contexts/DatesContext";
 import { BillContext } from "../../contexts/BillsContext";
 import dayjs from "dayjs";
 import isBetween from "dayjs/plugin/isBetween";
+import { Link } from "react-router-dom";
 dayjs.extend(isBetween);
 
 export const TableResume = ({ searchid, type, fullData, datesRange }) => {
-  const { userData, searchUserInfoTable } = useContext(AuthContext);
+  const { userData, searchUserInfoTable, GetUsers, data } =
+    useContext(AuthContext);
   const { dates, findAllDoctorsDates } = useContext(DatesContext);
-  const { GetBills } = useContext(BillContext);
+  const { GetBills, billToEdit, setBillToEdit } = useContext(BillContext);
   const [datesById, setDatesById] = useState();
   const [billsById, setBillsById] = useState();
   const columnDates = [
@@ -35,11 +38,6 @@ export const TableResume = ({ searchid, type, fullData, datesRange }) => {
       dataIndex: "reason",
       key: "Reason",
     },
-    // {
-    //   title: "state",
-    //   dataIndex: "state",
-    //   key: "state",
-    // },
     {
       title: "state",
       key: "state",
@@ -51,12 +49,6 @@ export const TableResume = ({ searchid, type, fullData, datesRange }) => {
       ),
     },
   ];
-  const findUserName = async (id) => {
-    const user = await searchUserInfoTable(id);
-    const userName = user.name;
-    console.log(userName);
-    return userName;
-  };
 
   const columnBills = [
     {
@@ -69,7 +61,9 @@ export const TableResume = ({ searchid, type, fullData, datesRange }) => {
       dataIndex: "Patient",
       key: "idPatient",
       hidden: false,
-      render: async (id) => await findUserName(id),
+      render: (_, record) => {
+        return record.Patient[0].name + " " + record.Patient[0].lastName;
+      },
     },
     {
       title: "Date",
@@ -92,7 +86,51 @@ export const TableResume = ({ searchid, type, fullData, datesRange }) => {
       dataIndex: "status",
       key: "status",
     },
+    // {
+    //   title: "state",
+    //   key: "state",
+    //   dataIndex: "state",
+    //   render: (_, data) => (
+    //     <Tag color={data.color} key={data.key}>
+    //       {data.state}
+    //     </Tag>
+    //   ),
+    // },
+    {
+      title: "Delete",
+      dataIndex: "",
+      key: "delete",
+      render: (_, record) => {
+        return (
+          <Popconfirm
+            title="Delete the task"
+            description="Are you sure to delete this task?"
+            onConfirm={() => console.log(record._id)}
+            // onCancel={cancel}
+            okText="Yes"
+            cancelText="No"
+          >
+            <Button type="link">
+              <DeleteOutlined />
+            </Button>
+          </Popconfirm>
+        );
+      },
+    },
+    {
+      title: "Edit",
+      dataIndex: "",
+      key: "Edit",
+      render: (_, record) => {
+        findBillToEdit(record._id);
+        return <Link to="/UpdateBills">Edit</Link>;
+      },
+    },
   ];
+
+  const findBillToEdit = (id) => {
+    console.log(id);
+  };
 
   const findDates = async () => {
     const response = await findAllDoctorsDates();
@@ -166,7 +204,6 @@ export const TableResume = ({ searchid, type, fullData, datesRange }) => {
         <Table
           columns={type === "dates" ? columnDates : columnBills}
           dataSource={type === "dates" ? datesById : billsById}
-          // dataSource={datesById}
           pagination={{
             pageSize: 5,
           }}

@@ -22,6 +22,7 @@ import { Bills } from "./Routes/Bills.jsx";
 import { CreatePatientForm } from "./Routes/CreateUserForm/CreatePatientForm.jsx";
 import { TableTest } from "./Routes/TableTest/TableTest.jsx";
 import { Bill } from "./components/CreateBills/Bill.jsx";
+import { FinantialReport } from "./Routes/FinantialReport/FinantialReport.jsx";
 
 const router = createBrowserRouter([
   {
@@ -69,8 +70,8 @@ const router = createBrowserRouter([
         element: <UserDetails />,
       },
       {
-        path: "/tabletest",
-        element: <TableTest />,
+        path: "/FinantialReport",
+        element: <FinantialReport />,
       },
       {
         path: "/CreateBills/",

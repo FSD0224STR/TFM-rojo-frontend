@@ -58,7 +58,6 @@ export const Bill = ({ bill }) => {
       <Space direction="vertical" size={30}>
         <Card
           title="Factura"
-          extra={<a href="#">Edit</a>}
           style={{
             width: 500,
           }}

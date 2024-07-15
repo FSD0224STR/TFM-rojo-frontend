@@ -206,6 +206,12 @@ export const AuthProvider = ({ children }) => {
     return setSearchedUser(response.data);
   };
 
+  const searchUserInfoTable = async (idUser) => {
+    const response = await searchUser(idUser);
+    // console.log(response);
+    return response.data;
+  };
+
   const updateUser = async (dataUser) => {
     setLoading(true);
     // console.log("dataUser", dataUser);
@@ -246,6 +252,7 @@ export const AuthProvider = ({ children }) => {
     navigate,
     ResetMessages,
     loadProfilePhoto,
+    searchUserInfoTable,
   };
 
   useEffect(() => {

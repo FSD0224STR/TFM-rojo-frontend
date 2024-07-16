@@ -79,7 +79,7 @@ export const BillProvider = ({ children }) => {
     };
 
     const response = await updateBillApi(data);
-    if (response = 200) {
+    if (response === 200) {
       setSuccess("Deleted successfully");
     } else {
       setError("Could not deleted ");

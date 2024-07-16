@@ -1,29 +1,28 @@
 import { WechatOutlined } from "@ant-design/icons";
 import { Avatar, FloatButton, List } from "antd";
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
+import { AuthContext } from "../../contexts/authContext";
 
 export const ChatComponent = () => {
   const [chatOpen, setChatOpen] = useState(false);
+  const [usersToChat, setUsersToChat] = useState();
+
+  const { findUsers } = useContext(AuthContext);
 
   const handleOpenChat = () => {
     setChatOpen(!chatOpen);
     // alert(chatOpen);
   };
 
-  const data = [
-    {
-      title: "Ant Design Title 1",
-    },
-    {
-      title: "Ant Design Title 2",
-    },
-    {
-      title: "Ant Design Title 3",
-    },
-    {
-      title: "Ant Design Title 4",
-    },
-  ];
+  const findUsersToChat = async () => {
+    const response = await findUsers();
+    setUsersToChat(response.filter((user) => user.roles !== "patient"));
+  };
+
+  useEffect(() => {
+    findUsersToChat();
+  }, []);
+
   return (
     <>
       {/* <div
@@ -61,16 +60,20 @@ export const ChatComponent = () => {
         <List
           header="Company Chat"
           itemLayout="horizontal"
-          dataSource={data}
+          dataSource={usersToChat}
           renderItem={(item, index) => (
             <List.Item>
               <List.Item.Meta
                 avatar={
                   <Avatar
-                    src={`https://api.dicebear.com/7.x/miniavs/svg?seed=${index}`}
+                    src={
+                      !item.fileUrlLink
+                        ? `https://api.dicebear.com/7.x/miniavs/svg?seed=${index}`
+                        : item.fileUrlLink
+                    }
                   />
                 }
-                title={<a href="https://ant.design">{item.title}</a>}
+                title={`${item.roles} - ${item.name} ${item.lastName}`}
                 // description="Ant Design, a design language for background applications, is refined by Ant UED Team"
               />
             </List.Item>

@@ -5,7 +5,7 @@ import { AuthContext } from "../../contexts/authContext";
 export const UserData = () => {
   const { setListData, data, GetUsers } = useContext(AuthContext);
   useEffect(() => {
-    GetUsers();
+    // GetUsers();
   }, []);
   return (
     <div>

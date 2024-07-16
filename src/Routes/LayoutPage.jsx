@@ -30,7 +30,7 @@ export const LayoutPage = () => {
         <Layout className="OutletContainer">
           <Content className="OutletContent">
             <Outlet className="Outlet" />
-            <ChatComponent />
+            {/* <ChatComponent /> */}
           </Content>
 
           <Spin

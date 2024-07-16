@@ -1,21 +1,29 @@
 import React, { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../contexts/authContext";
-import { Space, Table, Tag } from "antd";
+import { Button, Popconfirm, Space, Table, Tag } from "antd";
 import { DatesContext } from "../../contexts/DatesContext";
 import dayjs from "dayjs";
 import isBetween from "dayjs/plugin/isBetween";
+import { DeleteOutlined } from "@ant-design/icons";
 dayjs.extend(isBetween);
 
 export const TableResume = ({ searchid, type, datesRange }) => {
+  const [update, setUpdate] = useState(true);
   const { userData } = useContext(AuthContext);
   const { dates, findAllDoctorsDates } = useContext(DatesContext);
   const [datesById, setDatesById] = useState();
+
+  const find_dates = (text) => {
+    const day = dayjs(text).format("YYYY-MM-DD");
+    return day;
+  };
+
   const columnDates = [
     {
       title: "Date",
       dataIndex: "date",
       key: "Date",
-      render: (text) => dayjs(text).format("YYYY-MM-DD"),
+      render: (text) => find_dates(text),
     },
     {
       title: "Time",
@@ -47,6 +55,28 @@ export const TableResume = ({ searchid, type, datesRange }) => {
         </Tag>
       ),
     },
+    {
+      title: "Delete",
+      dataIndex: "",
+      key: "delete",
+      render: (_, record) => {
+        return (
+          <Popconfirm
+            title="Delete the task"
+            description="Are you sure to delete this task?"
+            onConfirm={() => console.log(record._id)}
+            // onCancel={cancel}
+            okText="Yes"
+            cancelText="No"
+          >
+            <Button type="link">
+              <DeleteOutlined />
+            </Button>
+          </Popconfirm>
+        );
+      },
+      hidden: type !== "dates" ? true : false,
+    },
   ];
 
   const columnBills = [
@@ -59,6 +89,7 @@ export const TableResume = ({ searchid, type, datesRange }) => {
       title: "Date",
       dataIndex: "date",
       key: "date",
+      hidden: update,
     },
     {
       title: "Description",

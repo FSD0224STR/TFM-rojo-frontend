@@ -18,10 +18,11 @@ import UserDetails from "./components/users/userDetails.jsx";
 
 import { MyUser } from "./Routes/MyUser/MyUser.jsx";
 import { CreateDate } from "./Routes/CreateDate/CreateDate.jsx";
-import { Bills } from "./Routes/Bills.jsx";
 import { CreatePatientForm } from "./Routes/CreateUserForm/CreatePatientForm.jsx";
 import { TableTest } from "./Routes/TableTest/TableTest.jsx";
 import { Bill } from "./components/CreateBills/Bill.jsx";
+import { ChatLayout } from "./Routes/Chat/ChatLayout.jsx";
+import { SimpleChat } from "./components/Chat/SimpleChat.jsx";
 
 const router = createBrowserRouter([
   {
@@ -80,6 +81,12 @@ const router = createBrowserRouter([
         path: "/createuserpatient/",
         element: <CreatePatientForm />,
       },
+      {
+        path: "/chat/",
+        element: <SimpleChat />,
+        // element: <ChatLayout />,
+      },
+      // },
     ],
   },
 ]);

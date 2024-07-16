@@ -462,11 +462,13 @@ export const UserForm = ({ type, update }) => {
             </Form.Item>
 
             <Form.Item>
-              <Image
-                width={100}
-                style={{ borderRadius: "50%" }}
-                src={searchedUser?.fileUrlLink}
-              />
+              {update && (
+                <Image
+                  width={100}
+                  style={{ borderRadius: "50%" }}
+                  src={searchedUser.fileUrlLink ? searchedUser.fileUrlLink : ""}
+                />
+              )}
             </Form.Item>
 
             {/* File url */}

@@ -8,6 +8,7 @@ import {
   HomeOutlined,
   DiffOutlined,
   ProfileOutlined,
+  WechatOutlined,
 } from "@ant-design/icons";
 import { Menu } from "antd";
 import { useContext, useEffect } from "react";
@@ -25,11 +26,11 @@ export const Navbar = () => {
         icon: <CalendarOutlined />,
         label: <Link to={"/agenda"}>Agenda</Link>,
       },
-     isLoggedIn && {
-       key: "CreateDate",
-       icon: <DiffOutlined />,
-       label: <Link to={"/createnewdate"}>Create Date</Link>,
-     },
+    isLoggedIn && {
+      key: "CreateDate",
+      icon: <DiffOutlined />,
+      label: <Link to={"/createnewdate"}>Create Date</Link>,
+    },
     isLoggedIn && {
       key: "UserData",
       icon: <UserOutlined />,
@@ -44,6 +45,11 @@ export const Navbar = () => {
       key: "tabletest",
       icon: <UserOutlined />,
       label: <Link to={"/tabletest"}>table test</Link>,
+    },
+    isLoggedIn && {
+      key: "chat",
+      icon: <WechatOutlined />,
+      label: <Link to={"/chat"}>Chat</Link>,
     },
     {
       type: "divider",

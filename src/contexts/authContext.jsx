@@ -38,18 +38,18 @@ export const AuthProvider = ({ children }) => {
     if (user.email) {
       const response = await LoginApi(user);
       if (response.error === 403) {
-        setError("La contraseña es incorrecta");
+        setError("The password is invalid");
         setLoading(false);
       } else if (response.error === 404) {
-        setError("El usuario no existe");
+        setError("The user does not exist");
 
         setLoading(false);
       } else {
         ResetMessages();
-        setLoading(false);
-
         localStorage.setItem("access_token", `Bearer ${response}`);
         getMyProfile();
+        navigate("/userdata");
+        setLoading(false);
       }
     } else {
       setError("Write your email address");
@@ -84,9 +84,15 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const GetUsers = async (role, email) => {
+  const findUsers = async () => {
     const token = localStorage.getItem("access_token");
     const response = await getAllUsers(token);
+    return response;
+  };
+
+  const GetUsers = async (role, email) => {
+    const response = await findUsers();
+
     if (response.error === 400) {
       localStorage.removeItem("access_token");
       navigate("/");
@@ -107,8 +113,18 @@ export const AuthProvider = ({ children }) => {
           });
           setData(users);
         }
+        if (
+          localStorage.getItem("access_token") !== null &&
+          localStorage.getItem("access_token") !== undefined &&
+          localStorage.getItem("access_token") !== "" &&
+          window.location.href.split("/")[3] === ""
+        ) {
+          navigate("/userdata");
+          setLoading(false);
+        }
       }
-      navigate("/userdata");
+
+      // navigate("/userdata");
       return setIsLoggedIn(true), setLoading(false);
     }
   };
@@ -207,6 +223,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   const updateUser = async (dataUser) => {
+    ResetMessages();
     setLoading(true);
     // console.log("dataUser", dataUser);
     const response = await updateUserApi(dataUser);
@@ -215,7 +232,7 @@ export const AuthProvider = ({ children }) => {
         setSuccess("Successfully updated"),
         getMyProfile(),
         setLoading(false),
-        ResetMessages()
+        navigate("/userdata")
       );
 
     return setError("The update was not successful"), ResetMessages();
@@ -223,37 +240,44 @@ export const AuthProvider = ({ children }) => {
 
   const authContextValue = {
     isLoggedIn,
-    setSuccess,
     success,
-    setError,
     error,
     loading,
-    setLoading,
-    login,
     loadingPhoto,
-    logout,
     data,
     userData,
     roleData,
     userName,
+    searchedUser,
+    setSuccess,
+    setError,
+    setLoading,
+    login,
+    logout,
     setData,
     GetUsers,
     createNewUser,
     updatePasswordApi,
     searchUserInfo,
-    searchedUser,
     updateUser,
     navigate,
     ResetMessages,
     loadProfilePhoto,
+    findUsers,
   };
 
   useEffect(() => {
     ResetMessages();
     setLoading(false);
     getMyProfile();
-
-    // console.log("getMyProfile");
+    if (
+      localStorage.getItem("access_token") !== null &&
+      localStorage.getItem("access_token") !== undefined &&
+      localStorage.getItem("access_token") !== "" &&
+      window.location.href.split("/")[3] === ""
+    ) {
+      setLoading(true);
+    }
   }, []);
 
   return (

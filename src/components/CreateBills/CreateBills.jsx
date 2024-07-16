@@ -7,11 +7,17 @@ import { DatePicker } from "antd";
 import { CloseOutlined } from "@ant-design/icons";
 import { BillContext } from "../../contexts/BillsContext";
 import { DatesContext } from "../../contexts/DatesContext";
+import dayjs from "dayjs";
+
 const { TextArea } = Input;
 
-export const CreateBills = () => {
-  const { createNewBill, GetBills, billData } = useContext(BillContext);
+export const CreateBills = ({ update }) => {
+  const { createNewBill, GetBills, billData, updateBill, searchedBill } =
+    useContext(BillContext);
+
   const [bill, setBill] = useState({});
+  const [billDataChange, setbillDataChange] = useState(false);
+
   const [form] = Form.useForm();
 
   const { userPatients, findPatients, searchUserInfo } =
@@ -48,18 +54,26 @@ export const CreateBills = () => {
     let totalSum = 0;
 
     values.treatments.forEach((fieldGroup, index) => {
-      if (fieldGroup && fieldGroup.qty && fieldGroup.iva && fieldGroup.price) {
+      if (
+        fieldGroup &&
+        fieldGroup.qty != null &&
+        fieldGroup.iva != null &&
+        fieldGroup.price != null
+      ) {
         // console.log(fieldGroup);
         fieldGroup.total =
           fieldGroup.qty * fieldGroup.price * (fieldGroup.iva + 1);
         treatmentsCopy.splice(index, 1, fieldGroup);
         // console.log("fieldGroup", fieldGroup);
         // console.log("treatmentsCopy", treatmentsCopy);
+        fieldGroup.total = Number(fieldGroup.total.toFixed(2));
 
         totalSum += fieldGroup.total;
+
         form.setFieldsValue({ treatments: treatmentsCopy, totalSum });
       }
     });
+      update && setbillDataChange(true)
   };
 
   const filterOption = (input, option) =>
@@ -68,8 +82,24 @@ export const CreateBills = () => {
   const onFinish = (value) => {
     console.log(value);
     setBill(value);
-    createNewBill(value);
+    !update && createNewBill(value);
+    update && !billDataChange && setError("No changes were made");
+    update && billDataChange && updateBill(value);
   };
+
+  useEffect(() => {
+    if (update === true) {
+      form.setFieldsValue({
+        id: searchedBill?._id,
+        date: dayjs(searchedBill?.date),
+        billNumber: searchedBill?.billNumber,
+        Patient: searchedBill?.Patient[0]._id,
+        description: searchedBill?.description,
+        treatments: searchedBill?.treatments,
+        totalSum: searchedBill?.totalSum,
+      });
+    }
+  }, []);
 
   const ivaOptions = [
     {
@@ -103,6 +133,10 @@ export const CreateBills = () => {
           }}
           autoComplete="off"
         >
+          <Form.Item name="id" label="id">
+            <Input readOnly />
+          </Form.Item>
+
           <Form.Item name="date" label="Date">
             <DatePicker />
           </Form.Item>
@@ -121,15 +155,15 @@ export const CreateBills = () => {
           </Form.Item>
 
           <Form.Item name="dni" label="DNI">
-            <Input />
+            <Input readOnly />
           </Form.Item>
 
           <Form.Item name="adress" label="Adress">
-            <Input />
+            <Input readOnly />
           </Form.Item>
 
           <Form.Item name="tel" label="Tel">
-            <Input />
+            <Input readOnly />
           </Form.Item>
 
           <Form.Item name="description" label="Description">
@@ -159,8 +193,9 @@ export const CreateBills = () => {
                       name={[field.name, "qty"]}
                       key={[field.key, "qty"]}
                       rules={[{ required: true, message: "Missing quantity" }]}
+                      initialValue={1}
                     >
-                      <InputNumber placeholder="Qty" />
+                      <InputNumber placeholder="Qty" min={1} />
                     </Form.Item>
 
                     {/* Treatment */}
@@ -180,12 +215,7 @@ export const CreateBills = () => {
                       key={[field.key, "price"]}
                       rules={[{ required: true, message: "Missing price" }]}
                     >
-                      <InputNumber
-                        placeholder="PRICE"
-                        min={0}
-                        max={100}
-                        suffix="€"
-                      />
+                      <InputNumber placeholder="PRICE" min={1} suffix="€" />
                     </Form.Item>
 
                     {/* iva */}
@@ -239,7 +269,7 @@ export const CreateBills = () => {
           </Form.Item>
 
           <Button type="primary" htmlType="submit">
-            Save
+            {!update ? "Save" : "Update"}
           </Button>
         </Form>
       </div>

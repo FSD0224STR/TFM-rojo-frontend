@@ -222,6 +222,12 @@ export const AuthProvider = ({ children }) => {
     return setSearchedUser(response.data);
   };
 
+  const searchUserInfoTable = async (idUser) => {
+    const response = await searchUser(idUser);
+    // console.log(response);
+    return response.data;
+  };
+
   const updateUser = async (dataUser) => {
     ResetMessages();
     setLoading(true);
@@ -263,6 +269,7 @@ export const AuthProvider = ({ children }) => {
     navigate,
     ResetMessages,
     loadProfilePhoto,
+    searchUserInfoTable,
     findUsers,
   };
 

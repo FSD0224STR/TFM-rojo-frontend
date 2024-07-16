@@ -30,14 +30,33 @@ export const getAllBills = async () => {
 //   return response.status;
 // };
 //
-// export const changeStatusBillApi = async (idBill, newStatus, color) => {
-//   const response = await fetch(`${baseUrl}/bill/changeStatus`, {
-//     method: "PUT",
-//     headers: {
-//       "Content-Type": "application/json",
-//     },
-//     body: JSON.stringify({ id: idBill, status: newStatus, color: color }),
-//   });
-//   // console.log(response);
-//   return response.status;
-// };
+
+export const searchBill = async (idBill) => {
+  const response = await fetch(`${baseUrl}/bill/searchBill`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ id: idBill }),
+  });
+  // console.log(response);
+  if (!response.ok) {
+    const error = await response.json();
+    return { error: error.message };
+  }
+
+  return { data: await response.json() };
+};
+
+export const updateBillApi = async (billData) => {
+  const response = await fetch(`${baseUrl}/bill/updateBill`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(billData),
+  });
+  // console.log(response.status);
+
+  return response.status;
+};

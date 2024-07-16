@@ -15,7 +15,6 @@ import { UpdateUserForm } from "./Routes/CreateUserForm/UpdateUserForm.jsx";
 import { CreateBills } from "./components/CreateBills/CreateBills.jsx";
 import { Agenda } from "./Routes/Agenda/Agenda.jsx";
 import UserDetails from "./components/users/userDetails.jsx";
-
 import { MyUser } from "./Routes/MyUser/MyUser.jsx";
 import { CreateDate } from "./Routes/CreateDate/CreateDate.jsx";
 import { CreatePatientForm } from "./Routes/CreateUserForm/CreatePatientForm.jsx";
@@ -76,6 +75,10 @@ const router = createBrowserRouter([
       {
         path: "/CreateBills/",
         element: <CreateBills />,
+      },
+      {
+        path: "/UpdateBills/",
+        element: <CreateBills update={true}/>,
       },
       {
         path: "/createuserpatient/",

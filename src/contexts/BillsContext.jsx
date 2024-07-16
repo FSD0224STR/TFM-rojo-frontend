@@ -1,26 +1,30 @@
 import React, { useContext, useEffect, useState } from "react";
-import { createBill, getAllBills } from "../apiService/billApi";
+import {
+  createBill,
+  getAllBills,
+  updateBillApi,
+  searchBill,
+} from "../apiService/billApi";
 import { AuthContext } from "../contexts/authContext";
 
 export const BillContext = React.createContext();
 
 export const BillProvider = ({ children }) => {
   const { setError, setSuccess, setLoading } = useContext(AuthContext);
-
-  const [billData, setBillData] = useState();
+  const { searchedUser, updateUser } = useContext(AuthContext);
+  const [searchedBill, setSearchedBill] = useState();
 
   const GetBills = async () => {
     const response = await getAllBills();
 
     if (response.data.length) {
-      setBillData(response.data);
       return response.data;
     } else {
       setError("No bills found");
     }
   };
 
-  // Crate new user
+  // Create new bill
   const createNewBill = async (newBill) => {
     setError("");
     setSuccess("");
@@ -37,25 +41,58 @@ export const BillProvider = ({ children }) => {
     setLoading(false);
   };
 
-  // const updateUser = async (dataUser) => {
-  //     setLoading(true);
-  //
-  //     const response = await updateUserApi(dataUser);
-  //     if (response === 200)
-  //       return (
-  //         setSuccess("Successfully updated"),
-  //         getMyProfile(),
-  //         setLoading(false),
-  //         ResetMessages()
-  //       );
-  //
-  //     return setError("The update was not successful"), ResetMessages();
-  //   };
+  const searchBillInfo = async (idBill) => {
+    const response = await searchBill(idBill);
+    console.log(response);
+    setSearchedBill(response.data);
+    return response.data;
+  };
+
+  const updateBill = async (billData) => {
+    setLoading(true);
+    console.log(billData);
+    const response = await updateBillApi(billData);
+    if (response === 200)
+      return (
+        setSuccess("Successfully updated"), setLoading(false), ResetMessages()
+      );
+
+    return setError("The update was not successful"), ResetMessages();
+  };
+
+  const deleteBill = async (billData) => {
+    const data = {
+      billNumber: billData.billNumber,
+      id: billData._id,
+      Patient: billData.Patient,
+      date: "",
+      description: "",
+      treatments: {
+        price: "",
+        iva: "",
+        qty: "",
+        total: "",
+        treatment: "",
+      },
+      totalSum: "",
+      status: "removed",
+    };
+
+    const response = await updateBillApi(data);
+    if ((response = 200)) {
+      setSuccess("Deleted successfully");
+    } else {
+      setError("Could not deleted ");
+    }
+  };
 
   const BillContextValue = {
     createNewBill,
     GetBills,
-    billData,
+    updateBill,
+    searchBillInfo,
+    deleteBill,
+    searchedBill,
   };
 
   return (

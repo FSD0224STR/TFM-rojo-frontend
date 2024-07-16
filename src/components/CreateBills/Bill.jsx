@@ -4,6 +4,9 @@ import { Empresa } from "./Empresa";
 import dayjs from "dayjs";
 import "./Bill.css";
 import { DatesContext } from "../../contexts/DatesContext";
+import { jsPDF } from "jspdf";
+
+
 
 export const Bill = ({ bill }) => {
   const { searchUserInfo } = useContext(DatesContext);
@@ -18,6 +21,20 @@ export const Bill = ({ bill }) => {
     const response = await searchUserInfo(id);
     setPatientName(response?.name + " " + response?.lastName);
   };
+
+  const generarPdf = () => {
+    const doc = new jsPDF();
+    console.log (dayjs(bill?.date).format("DD-MM-YYYY"))
+    doc.text( `Nº : ${bill?.billNumber}`, 10, 20);
+    doc.text( `Fecha: ${(dayjs(bill?.date).format("DD-MM-YYYY"))}`,10,30 );
+    doc.text ( `Cliente: ${patientName}`, 10,40);
+    doc.text (`${bill?.totalSum}`, 10,50);
+
+    // guardar el pdf con un nombre especifico
+  
+    doc.save(`bill_${bill?.billNumber}.pdf`)
+  };
+
   const dataEmpresa = {
     name: "Clínica Odontodalia",
     cif: "B09485939",
@@ -61,6 +78,7 @@ export const Bill = ({ bill }) => {
           style={{
             width: 500,
           }}
+        
         >
           <div>
             <p>Nº {bill?.billNumber} </p>
@@ -91,8 +109,11 @@ export const Bill = ({ bill }) => {
             <Table columns={columns} dataSource={bill?.treatments} />
           </div>
           <div>TOTAL: {bill?.totalSum} €</div>
+        <button onClick={generarPdf}>imprimir</button>
         </Card>
+            
       </Space>
     </>
   );
 };
+  

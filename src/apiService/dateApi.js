@@ -1,5 +1,5 @@
-// const baseUrl = "http://localhost:3000";
-const baseUrl = "https://tfm-rojo-backend-1emu.onrender.com";
+import { url } from "./url";
+const baseUrl = url;
 
 export const createDate = async (newDate) => {
   const response = await fetch(`${baseUrl}/date/newDate`, {

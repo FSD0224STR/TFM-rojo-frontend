@@ -1,5 +1,5 @@
-// const baseUrl = "http://localhost:3000";
-const baseUrl = "https://tfm-rojo-backend-1emu.onrender.com";
+import { url } from "./url";
+const baseUrl = url;
 
 export const createBill = async (newBill) => {
   const response = await fetch(`${baseUrl}/bill/newBill`, {

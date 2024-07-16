@@ -21,7 +21,7 @@ import { CreatePatientForm } from "./Routes/CreateUserForm/CreatePatientForm.jsx
 import { TableTest } from "./Routes/TableTest/TableTest.jsx";
 import { Bill } from "./components/CreateBills/Bill.jsx";
 import { ChatLayout } from "./Routes/Chat/ChatLayout.jsx";
-import { SimpleChat } from "./components/Chat/SimpleChat.jsx";
+import { SimpleChat } from "./Routes/SimpleChat/SimpleChat.jsx";
 
 const router = createBrowserRouter([
   {
@@ -78,7 +78,7 @@ const router = createBrowserRouter([
       },
       {
         path: "/UpdateBills/",
-        element: <CreateBills update={true}/>,
+        element: <CreateBills update={true} />,
       },
       {
         path: "/createuserpatient/",

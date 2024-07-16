@@ -1,26 +1,17 @@
 import React, { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../contexts/authContext";
-import {
-  Button,
-  Popconfirm,
-  Button,
-  Popconfirm,
-  Space,
-  Table,
-  Tag,
-} from "antd";
+import { Button, Popconfirm, Space, Table, Tag } from "antd";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { DatesContext } from "../../contexts/DatesContext";
 import { BillContext } from "../../contexts/BillsContext";
 import dayjs from "dayjs";
 import isBetween from "dayjs/plugin/isBetween";
 import { Link } from "react-router-dom";
-import { DeleteOutlined } from "@ant-design/icons";
 dayjs.extend(isBetween);
 
 export const TableResume = ({ searchid, type, fullData, datesRange }) => {
   const [update, setUpdate] = useState(true);
-  const { userData, searchUserInfoTable, GetUsers, data, navigate } =
+  const { userData, searchUserInfoTable, GetUsers, data, navigate, setError } =
     useContext(AuthContext);
   const { dates, findAllDoctorsDates } = useContext(DatesContext);
   const { GetBills, searchBillInfo, searchedBill, deleteBill } =
@@ -101,7 +92,7 @@ export const TableResume = ({ searchid, type, fullData, datesRange }) => {
       key: "idPatient",
       hidden: false,
       render: (_, record) => {
-        return record.Patient[0].name + " " + record.Patient[0].lastName;
+        return record?.Patient[0].name + " " + record?.Patient[0].lastName;
       },
     },
     {
@@ -179,8 +170,12 @@ export const TableResume = ({ searchid, type, fullData, datesRange }) => {
   ];
 
   const findBillToEdit = async (record) => {
+    console.log(record._id);
     const response =
       record.status !== "paid" && (await searchBillInfo(record._id));
+
+    console.log(response);
+    !response && setError("Couldn't find");
     response && navigate("/UpdateBills");
   };
 

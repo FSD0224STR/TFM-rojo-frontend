@@ -11,6 +11,7 @@ import {
   sendEmailToUser,
   loadProfilePhotoApi,
 } from "../apiService/userApi";
+import { socket } from "../components/SimpleChatComponents/Socket";
 
 export const AuthContext = React.createContext();
 
@@ -20,6 +21,7 @@ export const AuthProvider = ({ children }) => {
   const [loadingPhoto, setLoadingPhoto] = useState(false);
   const [success, setSuccess] = useState("");
   const [error, setError] = useState(null);
+  const [message, setMessage] = useState();
   const [data, setData] = useState([]);
   const [roleData, setDataRole] = useState("");
   const [userData, setUserData] = useState();
@@ -248,6 +250,7 @@ export const AuthProvider = ({ children }) => {
     isLoggedIn,
     success,
     error,
+    message,
     loading,
     loadingPhoto,
     data,
@@ -257,6 +260,7 @@ export const AuthProvider = ({ children }) => {
     searchedUser,
     setSuccess,
     setError,
+    setMessage,
     setLoading,
     login,
     logout,

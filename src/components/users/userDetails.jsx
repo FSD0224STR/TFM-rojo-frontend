@@ -102,7 +102,7 @@ function UserDetails() {
             <FloatingEmailForm
               isVisible={showEmailForm}
               onClose={() => setShowEmailForm(false)}
-              emailDefault={searchedUser.email}
+              emailDefault={searchedUser?.email}
             />
           </div>
           <Descriptions title={""} layout="vertical" bordered>

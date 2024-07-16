@@ -11,7 +11,7 @@ import { WechatOutlined } from "@ant-design/icons";
 const { Content, Footer } = Layout;
 
 export const LayoutPage = () => {
-  const { loading, success, error } = useContext(AuthContext);
+  const { loading, success, error, message } = useContext(AuthContext);
 
   useEffect(() => {
     // console.log("error", error);
@@ -21,7 +21,10 @@ export const LayoutPage = () => {
     if (error) {
       toast.error(error);
     }
-  }, [error, success]);
+    if (message) {
+      toast(message);
+    }
+  }, [error, success, message]);
 
   return (
     <>

@@ -1,58 +1,138 @@
-import { Card } from "antd";
 import { useContext, useState } from "react";
-import { useParams } from "react-router-dom";
+import { MailOutlined } from "@ant-design/icons";
 import { AuthContext } from "../../contexts/authContext.jsx";
+import FloatingEmailForm from "./emailForm.jsx";
+import dayjs from "dayjs";
+import { TableResume } from "../TableResume/TableResume.jsx";
+import React from "react";
+import { Badge, Descriptions } from "antd";
 
 function UserDetails() {
-  const { id } = useParams();
+  const [showEmailForm, setShowEmailForm] = useState(false);
+  const { searchedUser } = useContext(AuthContext);
 
-  const { searchUser, updateUser, setError } = useContext(AuthContext);
-
-  const [dni, setDni] = useState(`${searchUser?.dni}`);
-  const [name, setName] = useState(`${searchUser?.name}`);
-  const [lastName, setLastName] = useState(`${searchUser?.lastName}`);
-  const [email, setEmail] = useState(`${searchUser?.email}`);
-  const [country, setCountry] = useState(`${searchUser?.country}`);
-  const [province, setProvince] = useState(`${searchUser?.province}`);
-  const [birthDay, setBirthDay] = useState(`${searchUser?.birthDay}`);
-  const [role, setRole] = useState(`${searchUser?.roles}`);
-  const [userDataChange, setUserDataChange] = useState(false);
-  if (!id) {
-    return <div>User Detail not found</div>;
-  }
+  const items = [
+    {
+      key: "1",
+      label: "Name",
+      children: searchedUser?.name,
+    },
+    {
+      key: "2",
+      label: "Last name",
+      children: searchedUser?.lastName,
+    },
+    {
+      key: "3",
+      label: "Email",
+      children: searchedUser?.email,
+    },
+    {
+      key: "6",
+      label: "Client",
+      children: <Badge status="processing" text="Yes" />,
+      span: 3,
+    },
+    {
+      key: "7",
+      label: "Birth date",
+      children: dayjs(searchedUser?.birthDay).format("YYYY-MM-DD"),
+    },
+    {
+      key: "8",
+      label: "Role",
+      children: searchedUser?.roles,
+      span: 2,
+    },
+    {
+      key: "9",
+      label: "DNI",
+      children: searchedUser?.dni,
+    },
+  ];
 
   return (
     <>
-      <div style={{ height: "100%" }}>
-        <Card title={`User Detail for user ${id}`} style={{ width: 300 }}>
-          <div>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          padding: "20px",
+          justifyContent: "space-around",
+          width: "100%",
+          height: "100%",
+        }}
+      >
+        <div
+          style={{
+            flex: 1,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            marginRight: "20px",
+          }}
+        >
+          <h1>{searchedUser?.name + " " + searchedUser?.lastName}</h1>
+          <div style={{ marginBottom: "20px" }}>
             <img
-              src={`https://api.dicebear.com/7.x/miniavs/svg?seed=${id}`}
-              alt=""
+              src={
+                searchedUser?.fileUrlLink !== undefined
+                  ? searchedUser?.fileUrlLink
+                  : `https://api.dicebear.com/7.x/miniavs/svg?seed=${searchedUser?._id}`
+              }
+              alt="User"
+              style={{ width: "300px", height: "300px", borderRadius: "50%" }}
             />
           </div>
           <div>
-            <h3>User Data</h3>
-            <div>
-              <p>Dni: {dni}</p>
-              <p>Name: {name}</p>
-              <p>Last Name: {lastName}</p>
-              <p>Email: {email}</p>
-              <p>Country: {country}</p>
-              <p>Province: {province}</p>
-              <p>Birth Day: {birthDay}</p>
-              <p>Role: {role}</p>
-            </div>
+            <button
+              onClick={() => setShowEmailForm(!showEmailForm)}
+              style={{
+                marginBottom: "20px",
+                backgroundColor: "#1890ff",
+                color: "white",
+                border: "none",
+                padding: "10px",
+                borderRadius: "50%",
+                cursor: "pointer",
+              }}
+            >
+              <MailOutlined />
+            </button>
+            <FloatingEmailForm
+              isVisible={showEmailForm}
+              onClose={() => setShowEmailForm(false)}
+              emailDefault={searchedUser?.email}
+            />
           </div>
-          <div>
-            <h3>Facturas del paciente</h3>
-            <div>
-              <p>Factura 1</p>
-              <p>Factura 2</p>
-              <p>Factura 3</p>
-            </div>
+          <Descriptions title={""} layout="vertical" bordered>
+            {items.map((item) => (
+              <Descriptions.Item label={item.label} key={item.key}>
+                {item.children}
+              </Descriptions.Item>
+            ))}
+          </Descriptions>
+        </div>
+
+        <div
+          style={{
+            flex: 1,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            marginLeft: "20px",
+          }}
+        >
+          <div style={{ width: "100%", marginBottom: "20px" }}>
+            <h2 style={{ textAlign: "center" }}>Bills</h2>
+            <TableResume searchid={searchedUser?._id} type="bill" />
           </div>
-        </Card>
+
+          <div style={{ width: "100%" }}>
+            <h2 style={{ textAlign: "center" }}>Appointments</h2>
+            <TableResume searchid={searchedUser?._id} type="dates" />
+          </div>
+        </div>
       </div>
     </>
   );

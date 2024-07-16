@@ -8,16 +8,20 @@ import {
   updateUserPassword,
   searchUser,
   updateUserApi,
+  sendEmailToUser,
   loadProfilePhotoApi,
 } from "../apiService/userApi";
+import { socket } from "../components/SimpleChatComponents/Socket";
 
 export const AuthContext = React.createContext();
 
 export const AuthProvider = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [loadingPhoto, setLoadingPhoto] = useState(false);
   const [success, setSuccess] = useState("");
   const [error, setError] = useState(null);
+  const [message, setMessage] = useState();
   const [data, setData] = useState([]);
   const [roleData, setDataRole] = useState("");
   const [userData, setUserData] = useState();
@@ -36,18 +40,18 @@ export const AuthProvider = ({ children }) => {
     if (user.email) {
       const response = await LoginApi(user);
       if (response.error === 403) {
-        setError("La contraseña es incorrecta");
+        setError("The password is invalid");
         setLoading(false);
       } else if (response.error === 404) {
-        setError("El usuario no existe");
+        setError("The user does not exist");
 
         setLoading(false);
       } else {
         ResetMessages();
-        setLoading(false);
-
         localStorage.setItem("access_token", `Bearer ${response}`);
         getMyProfile();
+        navigate("/userdata");
+        setLoading(false);
       }
     } else {
       setError("Write your email address");
@@ -73,9 +77,24 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const GetUsers = async (role, email) => {
+  const SendEmailToUser = async (email) => {
+    const response = await sendEmailToUser(email);
+    if (response === 200) {
+      setSuccess("Email sent successfully");
+    } else {
+      setError("The email was not sent");
+    }
+  };
+
+  const findUsers = async () => {
     const token = localStorage.getItem("access_token");
     const response = await getAllUsers(token);
+    return response;
+  };
+
+  const GetUsers = async (role, email) => {
+    const response = await findUsers();
+
     if (response.error === 400) {
       localStorage.removeItem("access_token");
       navigate("/");
@@ -96,8 +115,18 @@ export const AuthProvider = ({ children }) => {
           });
           setData(users);
         }
+        if (
+          localStorage.getItem("access_token") !== null &&
+          localStorage.getItem("access_token") !== undefined &&
+          localStorage.getItem("access_token") !== "" &&
+          window.location.href.split("/")[3] === ""
+        ) {
+          navigate("/userdata");
+          setLoading(false);
+        }
       }
-      navigate("/userdata");
+
+      // navigate("/userdata");
       return setIsLoggedIn(true), setLoading(false);
     }
   };
@@ -117,7 +146,7 @@ export const AuthProvider = ({ children }) => {
     setError("");
     setSuccess("");
     setLoading(true);
-    console.log("Data Auth Context", newUser);
+    // console.log("Data Auth Context", newUser);
 
     const response = await createUser(newUser);
     if (response === 200) {
@@ -140,7 +169,7 @@ export const AuthProvider = ({ children }) => {
   // Load profile photo
   const loadProfilePhoto = async (image) => {
     // console.log(image);
-    setLoading(true);
+    setLoadingPhoto(true);
     const response = await loadProfilePhotoApi(image);
     // console.log("respuesta", response);
     if (response === "errorLoading") {
@@ -151,11 +180,11 @@ export const AuthProvider = ({ children }) => {
     if (response.url !== "" && response !== null) {
       // console.log("Error");
       setSuccess("Profile photo successfully loaded");
-      setLoading(false);
+      setLoadingPhoto(false);
       return response.url;
     } else {
       setError("Problem loading profile photo");
-      setLoading(false);
+      setLoadingPhoto(false);
       return null;
     }
   };
@@ -195,16 +224,23 @@ export const AuthProvider = ({ children }) => {
     return setSearchedUser(response.data);
   };
 
-  const updateUser = async (dataUser) => {
-    setLoading(true);
+  const searchUserInfoTable = async (idUser) => {
+    const response = await searchUser(idUser);
+    // console.log(response);
+    return response.data;
+  };
 
+  const updateUser = async (dataUser) => {
+    ResetMessages();
+    setLoading(true);
+    // console.log("dataUser", dataUser);
     const response = await updateUserApi(dataUser);
     if (response === 200)
       return (
         setSuccess("Successfully updated"),
         getMyProfile(),
         setLoading(false),
-        ResetMessages()
+        navigate("/userdata")
       );
 
     return setError("The update was not successful"), ResetMessages();
@@ -212,36 +248,47 @@ export const AuthProvider = ({ children }) => {
 
   const authContextValue = {
     isLoggedIn,
-    setSuccess,
     success,
-    setError,
     error,
+    message,
     loading,
-    setLoading,
-    login,
-    logout,
+    loadingPhoto,
     data,
     userData,
     roleData,
     userName,
+    searchedUser,
+    setSuccess,
+    setError,
+    setMessage,
+    setLoading,
+    login,
+    logout,
     setData,
     GetUsers,
     createNewUser,
     updatePasswordApi,
     searchUserInfo,
-    searchedUser,
     updateUser,
     navigate,
     ResetMessages,
     loadProfilePhoto,
+    searchUserInfoTable,
+    findUsers,
   };
 
   useEffect(() => {
     ResetMessages();
     setLoading(false);
     getMyProfile();
-
-    // console.log("getMyProfile");
+    if (
+      localStorage.getItem("access_token") !== null &&
+      localStorage.getItem("access_token") !== undefined &&
+      localStorage.getItem("access_token") !== "" &&
+      window.location.href.split("/")[3] === ""
+    ) {
+      setLoading(true);
+    }
   }, []);
 
   return (

@@ -15,12 +15,13 @@ import { UpdateUserForm } from "./Routes/CreateUserForm/UpdateUserForm.jsx";
 import { CreateBills } from "./components/CreateBills/CreateBills.jsx";
 import { Agenda } from "./Routes/Agenda/Agenda.jsx";
 import UserDetails from "./components/users/userDetails.jsx";
-
 import { MyUser } from "./Routes/MyUser/MyUser.jsx";
 import { CreateDate } from "./Routes/CreateDate/CreateDate.jsx";
-import { Bills } from "./Routes/Bills.jsx";
 import { CreatePatientForm } from "./Routes/CreateUserForm/CreatePatientForm.jsx";
 import { TableTest } from "./Routes/TableTest/TableTest.jsx";
+import { Bill } from "./components/CreateBills/Bill.jsx";
+import { ChatLayout } from "./Routes/Chat/ChatLayout.jsx";
+import { SimpleChat } from "./Routes/SimpleChat/SimpleChat.jsx";
 
 const router = createBrowserRouter([
   {
@@ -64,7 +65,7 @@ const router = createBrowserRouter([
         element: <Agenda />,
       },
       {
-        path: "/user/:id",
+        path: "/user",
         element: <UserDetails />,
       },
 
@@ -73,17 +74,23 @@ const router = createBrowserRouter([
         element: <TableTest />,
       },
       {
-        path: "/createBills/",
+        path: "/CreateBills/",
         element: <CreateBills />,
       },
       {
-        path: "/bills/",
-        element: <Bills />,
+        path: "/UpdateBills/",
+        element: <CreateBills update={true} />,
       },
       {
         path: "/createuserpatient/",
         element: <CreatePatientForm />,
       },
+      {
+        path: "/chat/",
+        element: <SimpleChat />,
+        // element: <ChatLayout />,
+      },
+      // },
     ],
   },
 ]);

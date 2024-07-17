@@ -132,12 +132,16 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = () => {
+    setMessage("");
     localStorage.removeItem("access_token");
     setIsLoggedIn(false);
     setUserName("");
     navigate("/");
     setTimeout(() => {
       setSuccess("You have logged out successfully");
+      if (userData) {
+        socket.emit("logout", { user: userData.name });
+      }
     }, 1000);
   };
 

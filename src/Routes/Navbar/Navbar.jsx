@@ -9,6 +9,7 @@ import {
   DiffOutlined,
   ProfileOutlined,
   WechatOutlined,
+  EuroOutlined,
 } from "@ant-design/icons";
 import { Menu } from "antd";
 import { useContext, useEffect } from "react";
@@ -20,25 +21,25 @@ export const Navbar = () => {
   const { logout, isLoggedIn, roleData, userName } = useContext(AuthContext);
 
   const Items = [
+    isLoggedIn && {
+      key: "UserData",
+      icon: <UserOutlined />,
+      label: <Link to={"/userdata"}>Users Data</Link>,
+    },
     isLoggedIn &&
       roleData !== "patient" && {
         key: "Agenda",
         icon: <CalendarOutlined />,
         label: <Link to={"/agenda"}>Agenda</Link>,
       },
-    isLoggedIn && {
-      key: "CreateDate",
-      icon: <DiffOutlined />,
-      label: <Link to={"/createnewdate"}>Create Date</Link>,
-    },
-    isLoggedIn && {
-      key: "UserData",
-      icon: <UserOutlined />,
-      label: <Link to={"/userdata"}>Users Data</Link>,
-    },
+    // isLoggedIn && {
+    //   key: "CreateDate",
+    //   icon: <DiffOutlined />,
+    //   label: <Link to={"/createnewdate"}>Create Date</Link>,
+    // },
     isLoggedIn && {
       key: "CreateBills",
-      icon: <UserOutlined />,
+      icon: <EuroOutlined />,
       label: <Link to={"/CreateBills"}>Create Bills</Link>,
     },
     isLoggedIn && {

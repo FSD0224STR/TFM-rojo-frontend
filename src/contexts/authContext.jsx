@@ -8,7 +8,7 @@ import {
   updateUserPassword,
   searchUser,
   updateUserApi,
-  sendEmailToUser,
+  sendEmailToUserApi,
   loadProfilePhotoApi,
 } from "../apiService/userApi";
 import { socket } from "../components/SimpleChatComponents/Socket";
@@ -77,13 +77,15 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const SendEmailToUser = async (email) => {
-    const response = await sendEmailToUser(email);
+  const sendEmailToUser = async (email) => {
+    setLoading(true);
+    const response = await sendEmailToUserApi(email);
     if (response === 200) {
       setSuccess("Email sent successfully");
     } else {
       setError("The email was not sent");
     }
+    setLoading(false);
   };
 
   const findUsers = async () => {
@@ -231,7 +233,8 @@ export const AuthProvider = ({ children }) => {
     const response = await searchUser(idUser);
     // console.log(response);
     setLoading(false);
-    return setSearchedUser(response.data);
+    setSearchedUser(response.data);
+    return response.data;
   };
 
   const searchUserInfoTable = async (idUser) => {
@@ -287,6 +290,7 @@ export const AuthProvider = ({ children }) => {
     loadProfilePhoto,
     searchUserInfoTable,
     findUsers,
+    sendEmailToUser,
   };
 
   useEffect(() => {

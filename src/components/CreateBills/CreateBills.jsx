@@ -9,21 +9,45 @@ import { BillContext } from "../../contexts/BillsContext";
 import { DatesContext } from "../../contexts/DatesContext";
 import dayjs from "dayjs";
 import { AuthContext } from "../../contexts/authContext";
+import jsPDF from "jspdf";
 
 const { TextArea } = Input;
 
 export const CreateBills = ({ update }) => {
-  const { setError}= useContext(AuthContext);
-  const { createNewBill, GetBills, billData, updateBill, searchedBill } =
-    useContext(BillContext);
+  const { setError, navigate, searchUserInfo } = useContext(AuthContext);
+  const {
+    createNewBill,
+    GetBills,
+    billData,
+    updateBill,
+    searchedBill,
+    fillUserData,
+  } = useContext(BillContext);
 
   const [bill, setBill] = useState({});
   const [billDataChange, setbillDataChange] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const [form] = Form.useForm();
 
-  const { userPatients, findPatients, searchUserInfo } =
-    useContext(DatesContext);
+  const { userPatients, findPatients } = useContext(DatesContext);
+
+  const generatePdf = () => {
+    // console.log(bill);
+    alert("hola");
+    // const patientName = await fillUserData(bill?.Patient);
+    // console.log(patientName);
+    const doc = new jsPDF();
+    // doc.text(`${dayjs(bill?.date).format("DD-MM-YYYY")}`, 10, 10);
+    // doc.text(`Nº : ${bill?.billNumber}`, 10, 20);
+    // doc.text(`Fecha: ${dayjs(bill?.date).format("DD-MM-YYYY")}`, 10, 30);
+    // doc.text(`Cliente: ${patientName}`, 10, 40);
+    doc.text("`${bill?.totalSum}`", 10, 50);
+
+    // guardar el pdf con un nombre especifico
+
+    doc.save("`bill_${bill?.billNumber}.pdf`");
+  };
 
   const findAllBills = async () => {
     const response = await GetBills();
@@ -38,10 +62,10 @@ export const CreateBills = ({ update }) => {
 
   const patientIdField = Form.useWatch("Patient", form);
   useEffect(() => {
-    patientIdField !== undefined && fillUserData(patientIdField);
+    patientIdField !== undefined && fillUserPersonalData(patientIdField);
   }, [patientIdField]);
 
-  const fillUserData = async (id) => {
+  const fillUserPersonalData = async (id) => {
     const response = await searchUserInfo(id);
     // console.log(response);
     form.setFieldsValue({
@@ -75,16 +99,59 @@ export const CreateBills = ({ update }) => {
         form.setFieldsValue({ treatments: treatmentsCopy, totalSum });
       }
     });
-      update && setbillDataChange(true)
+    update && setbillDataChange(true);
   };
 
   const filterOption = (input, option) =>
     (option?.label ?? "").toLowerCase().includes(input.toLowerCase());
 
   const onFinish = (value) => {
-    !update && createNewBill(value) && setBill(value) && showModal
+    // !update && createNewBill(value) && setBill(value) && showModal;
+    // update && !billDataChange && setError("No changes were made");
+    // update &&
+    //   billDataChange &&
+    //   updateBill(value) &&
+    setBill(value);
+    showModal();
+  };
+
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const saveBillFn = async () => {
+    // console.log(bill);
+    !update && createNewBill(bill) && confirmModal();
     update && !billDataChange && setError("No changes were made");
-    update && billDataChange && updateBill(value) && setBill(value) && showModal
+    update && billDataChange && updateBill(bill) && confirmModal();
+    generatePdf();
+  };
+
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleOk = () => {
+    navigate("/FinancialReport");
+  };
+
+  const handleCancelComfirmPdf = () => {
+    navigate("/FinancialReport");
+  };
+
+  const confirmModal = () => {
+    Modal.confirm({
+      title: "Print in pdf",
+      content: "Do you want to print this bill in pdf?",
+      footer: (_, { OkBtn, CancelBtn }) => (
+        <>
+          <CancelBtn onClick={() => handleCancelComfirmPdf()} />
+          <Button onClick={() => handleOk()} type="primary">
+            Print in PDF
+          </Button>
+        </>
+      ),
+    });
   };
 
   useEffect(() => {
@@ -100,17 +167,6 @@ export const CreateBills = ({ update }) => {
       });
     }
   }, []);
-
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const showModal = () => {
-    setIsModalOpen(true);
-  };
-  const handleOk = () => {
-    setIsModalOpen(false);
-  };
-  const handleCancel = () => {
-    setIsModalOpen(false);
-  };
 
   const ivaOptions = [
     {
@@ -138,7 +194,7 @@ export const CreateBills = ({ update }) => {
           form={form}
           name="newBill"
           onFinish={onFinish}
-          onFinishFailed={()=> setError("You must fill the form")}
+          onFinishFailed={() => setError("You must fill the form")}
           onValuesChange={handleTotal}
           style={{
             maxWidth: 600,
@@ -149,33 +205,42 @@ export const CreateBills = ({ update }) => {
             <Input readOnly />
           </Form.Item>
 
-          <Form.Item name="date" label="Date" 
-           rules={[
+          <Form.Item
+            name="date"
+            label="Date"
+            rules={[
               {
                 required: true,
                 message: "Please input!",
               },
-            ]}>
+            ]}
+          >
             <DatePicker />
           </Form.Item>
 
-          <Form.Item name="billNumber" label="Bill Number"
-           rules={[
-            {
-              required: true,
-              message: "Please input!",
-            },
-          ]}>
+          <Form.Item
+            name="billNumber"
+            label="Bill Number"
+            rules={[
+              {
+                required: true,
+                message: "Please input!",
+              },
+            ]}
+          >
             <Input readOnly />
           </Form.Item>
 
-          <Form.Item label="Patient" name="Patient"
-           rules={[
-            {
-              required: true,
-              message: "Please input!",
-            },
-          ]}>
+          <Form.Item
+            label="Patient"
+            name="Patient"
+            rules={[
+              {
+                required: true,
+                message: "Please input!",
+              },
+            ]}
+          >
             <Select
               size="large"
               showSearch
@@ -196,23 +261,28 @@ export const CreateBills = ({ update }) => {
             <Input readOnly />
           </Form.Item>
 
-          <Form.Item name="description" label="Description"
-           rules={[
-            {
-              required: true,
-              message: "Please input!",
-            },
-          ]}>
+          <Form.Item
+            name="description"
+            label="Description"
+            rules={[
+              {
+                required: true,
+                message: "Please input!",
+              },
+            ]}
+          >
             <TextArea rows={4} />
           </Form.Item>
 
-          <Form.List name="treatments"
-           rules={[
-            {
-              required: true,
-              message: "Please input!",
-            },
-          ]}>
+          <Form.List
+            name="treatments"
+            rules={[
+              {
+                required: true,
+                message: "Please input!",
+              },
+            ]}
+          >
             {(fields, { add, remove }) => (
               <div
                 style={{
@@ -310,23 +380,23 @@ export const CreateBills = ({ update }) => {
             />
           </Form.Item>
 
-          <Button type="primary" htmlType="submit"  >
-            {!update ? "Save" : "Update"}
+          <Button type="primary" htmlType="submit">
+            {/* {!update ? "Save" : "Update"} */}
+            Preview
           </Button>
         </Form>
       </div>
-      <Modal title= " Bill" width={550} centered open={isModalOpen} onOk={handleOk} onCancel={handleCancel} >
+      <Modal
+        title=" Bill"
+        width={550}
+        centered
+        open={isModalOpen}
+        onOk={saveBillFn}
+        onCancel={handleCancel}
+      >
         <Bill bill={bill} />
       </Modal>
-     
+      <Button onClick={() => generatePdf}>X</Button>
     </>
   );
 };
-// <label> {totalBill} </label>
-
-//  <Form.Item name="pacient" label="Pacient">
-// <Input />
-// <Form.Item>
-//    <Form.Item label="billNumber">
-// <Input value={billNumber} readOnly />
-// </Form.Item>

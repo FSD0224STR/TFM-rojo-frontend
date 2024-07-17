@@ -218,7 +218,7 @@ export const TableResume = ({ searchid, type, fullData, datesRange }) => {
         billsArray = billsArrayNoRemoved.filter(
           (bill) => bill?.Patient[0]?._id === searchid
         );
-        console.log("billsArray", billsArray);
+        // console.log("billsArray", billsArray);
       } else {
         billsArray = billsArrayNoRemoved;
       }

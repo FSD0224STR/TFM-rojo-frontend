@@ -29,7 +29,7 @@ export const BillProvider = ({ children }) => {
     setError("");
     setSuccess("");
     setLoading(true);
-    console.log(newBill);
+   // console.log(newBill);
     const response = await createBill(newBill);
 
     if (response === 200) {
@@ -43,14 +43,14 @@ export const BillProvider = ({ children }) => {
 
   const searchBillInfo = async (idBill) => {
     const response = await searchBill(idBill);
-    console.log(response);
+   // console.log(response);
     setSearchedBill(response.data);
     return response.data;
   };
 
   const updateBill = async (billData) => {
     setLoading(true);
-    console.log(billData);
+   // console.log(billData);
     const response = await updateBillApi(billData);
     if (response === 200)
       return (

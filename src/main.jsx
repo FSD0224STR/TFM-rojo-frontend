@@ -22,7 +22,7 @@ import { TableTest } from "./Routes/TableTest/TableTest.jsx";
 import { Bill } from "./components/CreateBills/Bill.jsx";
 import { ChatLayout } from "./Routes/Chat/ChatLayout.jsx";
 import { SimpleChat } from "./Routes/SimpleChat/SimpleChat.jsx";
-import { FinantialReport } from "./Routes/FinantialReport/FinantialReport.jsx";
+import { FinancialReport } from "./Routes/FinancialReport/FinancialReport.jsx";
 
 const router = createBrowserRouter([
   {
@@ -71,8 +71,8 @@ const router = createBrowserRouter([
       },
 
       {
-        path: "/FinantialReport",
-        element: <FinantialReport />,
+        path: "/FinancialReport",
+        element: <FinancialReport />,
       },
       {
         path: "/CreateBills/",

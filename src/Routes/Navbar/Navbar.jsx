@@ -10,6 +10,7 @@ import {
   ProfileOutlined,
   WechatOutlined,
   EuroOutlined,
+  ContainerOutlined,
 } from "@ant-design/icons";
 import { Menu } from "antd";
 import { useContext, useEffect } from "react";
@@ -21,42 +22,6 @@ export const Navbar = () => {
   const { logout, isLoggedIn, roleData, userName } = useContext(AuthContext);
 
   const Items = [
-    isLoggedIn && {
-      key: "UserData",
-      icon: <UserOutlined />,
-      label: <Link to={"/userdata"}>Users Data</Link>,
-    },
-    isLoggedIn &&
-      roleData !== "patient" && {
-        key: "Agenda",
-        icon: <CalendarOutlined />,
-        label: <Link to={"/agenda"}>Agenda</Link>,
-      },
-    isLoggedIn && {
-      key: "CreateDate",
-      icon: <DiffOutlined />,
-      label: <Link to={"/createnewdate"}>Create Date</Link>,
-    },
-    isLoggedIn && {
-      key: "UserData",
-      icon: <UserOutlined />,
-      label: <Link to={"/userdata"}>Users Data</Link>,
-    },
-    isLoggedIn && {
-      key: "CreateBills",
-      icon: <EuroOutlined />,
-      label: <Link to={"/CreateBills"}>Create Bills</Link>,
-    },
-    isLoggedIn && {
-      key: "FinantialReport",
-      icon: <UserOutlined />,
-      label: <Link to={"/tabletest"}>table test</Link>,
-    },
-    isLoggedIn && {
-      key: "chat",
-      icon: <WechatOutlined />,
-      label: <Link to={"/chat"}>Chat</Link>,
-    },
     {
       type: "divider",
     },
@@ -64,16 +29,46 @@ export const Navbar = () => {
       key: "user",
       icon: <ProfileOutlined />,
       label: isLoggedIn && (
-        <Link to={"/myuser"}>
-          <>
-            <p style={{ color: "white" }}>
-              {userName.split(" ")[0]} - {roleData}
-            </p>
-          </>
-        </Link>
+        // <Link to={"/myuser"}>
+        <>
+          <p style={{ color: "white" }}>
+            {userName.split(" ")[0]} - {roleData}
+          </p>
+        </>
+        // </Link>
       ),
       type: "group",
       children: [
+        isLoggedIn && {
+          key: "UserData",
+          icon: <UserOutlined />,
+          label: <Link to={"/userdata"}>Users Data</Link>,
+        },
+        isLoggedIn &&
+          roleData !== "patient" && {
+            key: "Agenda",
+            icon: <CalendarOutlined />,
+            label: <Link to={"/agenda"}>Agenda</Link>,
+          },
+        // isLoggedIn && {
+        //   key: "CreateDate",
+        //   icon: <DiffOutlined />,
+        //   label: <Link to={"/createnewdate"}>Create Date</Link>,
+        // },
+
+        isLoggedIn &&
+          roleData === "admin" && {
+            key: "CreateBills",
+            icon: <EuroOutlined />,
+            label: <Link to={"/CreateBills"}>Create Bills</Link>,
+          },
+        isLoggedIn &&
+          roleData === "admin" && {
+            key: "FinancialReport",
+            icon: <ContainerOutlined />,
+            label: <Link to={"/FinancialReport"}>Financial Report</Link>,
+          },
+
         !isLoggedIn && {
           key: "Login",
           icon: <LoginOutlined />,
@@ -81,7 +76,7 @@ export const Navbar = () => {
           id: "loggedin",
         },
         isLoggedIn &&
-          roleData !== "patient" && {
+          roleData === "admin" && {
             key: "CreateUser",
             icon: <UserAddOutlined />,
             label: <Link to={"/createuser"}>Create user</Link>,
@@ -92,6 +87,11 @@ export const Navbar = () => {
             icon: <UserAddOutlined />,
             label: <Link to={"/createuserpatient"}>Create patient</Link>,
           },
+        isLoggedIn && {
+          key: "chat",
+          icon: <WechatOutlined />,
+          label: <Link to={"/chat"}>Chat</Link>,
+        },
         isLoggedIn && {
           key: "Logout",
           icon: <LogoutOutlined />,

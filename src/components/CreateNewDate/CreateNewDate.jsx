@@ -293,7 +293,7 @@ export const CreateNewDate = ({ id }) => {
             />
           </Form.Item>
 
-          <Form.Item label="Color" name="color" valuePropName="">
+          <Form.Item label="Color" name="color" valuePropName="" hidden>
             <Input size="large" disabled placeholder={colorSelected} />
           </Form.Item>
 
@@ -304,7 +304,7 @@ export const CreateNewDate = ({ id }) => {
             }}
           >
             <Button type="primary" htmlType="submit">
-              Submit
+              Create
             </Button>
           </Form.Item>
         </Form>

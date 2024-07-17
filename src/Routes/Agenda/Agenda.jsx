@@ -41,14 +41,15 @@ export const Agenda = () => {
     // console.log(patientsDates);
   }, [dates]);
 
-  const doctorFunc = async (e) => {
+  const doctorFunc = async (id) => {
     // setLoading(true);
-    const doctorInfo = await searchDoctorInfo(e);
+    const doctorInfo = await searchDoctorInfo(id);
     const doctorName = `Dr. ${doctorInfo.name}`;
-    setDoctorId(e);
+    setDoctorId(id);
     await reloadAgenda();
     setDoctor(doctorName);
-    searchDoctorDates(e);
+    await searchDoctorDates(id);
+
     // setLoading(false);
   };
 

@@ -47,9 +47,10 @@ export const AuthProvider = ({ children }) => {
 
         setLoading(false);
       } else {
+        setIsLoggedIn(true);
         ResetMessages();
         localStorage.setItem("access_token", `Bearer ${response}`);
-        getMyProfile();
+        await getMyProfile();
         navigate("/userdata");
         setLoading(false);
       }
@@ -68,9 +69,8 @@ export const AuthProvider = ({ children }) => {
         setUserName(response.data.name);
         setUserData(response.data);
         setDataRole(response.data.role);
-        setTimeout(() => {
-          GetUsers(userRole, response.data.email);
-        }, 500);
+        await GetUsers(userRole, response.data.email);
+        if (isLoggedIn === false) setIsLoggedIn(true);
       }
     } else {
       navigate("/");
@@ -93,7 +93,9 @@ export const AuthProvider = ({ children }) => {
   };
 
   const GetUsers = async (role, email) => {
+    setLoading(true);
     const response = await findUsers();
+    // console.log(response);
 
     if (response.error === 400) {
       localStorage.removeItem("access_token");
@@ -104,16 +106,22 @@ export const AuthProvider = ({ children }) => {
       if (response.length && role !== "") {
         if (role === "admin") {
           setData(response);
+          setLoading(false);
+          // return response;
         } else if (role === "doctor") {
           const users = await response.filter((user) => {
             if (user.roles === "patient") return user;
           });
           setData(users);
+          setLoading(false);
+          // return users;
         } else if (role === "patient") {
           const users = await response.filter((user) => {
             if (user.email === email) return user;
           });
           setData(users);
+          setLoading(false);
+          // return users;
         }
         if (
           localStorage.getItem("access_token") !== null &&
@@ -121,13 +129,11 @@ export const AuthProvider = ({ children }) => {
           localStorage.getItem("access_token") !== "" &&
           window.location.href.split("/")[3] === ""
         ) {
-          navigate("/userdata");
           setLoading(false);
         }
       }
 
       // navigate("/userdata");
-      return setIsLoggedIn(true), setLoading(false);
     }
   };
 
@@ -155,12 +161,10 @@ export const AuthProvider = ({ children }) => {
     const response = await createUser(newUser);
     if (response === 200) {
       setSuccess("User created successfully");
-      // setTimeout(() => {
-      //   getMyProfile();
-      // }, 1000);
-      setTimeout(() => {
-        navigate("/userdata");
-      }, 1000);
+
+      await getMyProfile();
+
+      // await GetUsers();
     } else if (response === 409) {
       setError("This user already exists");
     } else {
@@ -223,8 +227,10 @@ export const AuthProvider = ({ children }) => {
   };
 
   const searchUserInfo = async (idUser) => {
+    setLoading(true);
     const response = await searchUser(idUser);
     // console.log(response);
+    setLoading(false);
     return setSearchedUser(response.data);
   };
 
@@ -237,12 +243,13 @@ export const AuthProvider = ({ children }) => {
   const updateUser = async (dataUser) => {
     ResetMessages();
     setLoading(true);
+    setData([]);
     // console.log("dataUser", dataUser);
     const response = await updateUserApi(dataUser);
     if (response === 200)
       return (
         setSuccess("Successfully updated"),
-        getMyProfile(),
+        await getMyProfile(),
         setLoading(false),
         navigate("/userdata")
       );
@@ -262,6 +269,7 @@ export const AuthProvider = ({ children }) => {
     roleData,
     userName,
     searchedUser,
+    getMyProfile,
     setSuccess,
     setError,
     setMessage,

@@ -21,7 +21,8 @@ import { CreateNewDate } from "../CreateNewDate/CreateNewDate.jsx";
 const { Search } = Input;
 
 export const Users = () => {
-  const { data, roleData, searchUserInfo, GetUsers } = useContext(AuthContext);
+  const { data, roleData, searchUserInfo, GetUsers, getMyProfile } =
+    useContext(AuthContext);
   const {
     setDoctor,
     setDateSelected,
@@ -50,13 +51,15 @@ export const Users = () => {
 
   const navigate = useNavigate();
 
-  const findUsers = async () => {
-    await GetUsers();
+  const findUsersComponent = async () => {
+    await getMyProfile();
+    // console.log(response);
+    data !== undefined && setListData(data);
   };
 
   useEffect(() => {
-    findUsers();
-    setListData(data);
+    findUsersComponent();
+    // setListData(data);
   }, []);
 
   return (
@@ -161,14 +164,14 @@ export const Users = () => {
           </div>
         )}
         <div>
-          {listData?.length ? (
+          {listData !== undefined ? (
             <>
               <div>
                 <List
                   itemLayout="Horizontal"
                   dataSource={listData}
                   pagination={{
-                    total: listData.length,
+                    total: listData?.length,
                     pageSize: 4,
                     showLessItems: true,
                   }}
@@ -190,8 +193,8 @@ export const Users = () => {
 
                         <Link
                           key="editUser"
-                          onClick={() => {
-                            searchUserInfo(item._id);
+                          onClick={async () => {
+                            await searchUserInfo(item._id);
                             setTimeout(() => {
                               navigate(`/updateuser/`);
                             }, 500);
@@ -199,22 +202,22 @@ export const Users = () => {
                         >
                           <EditOutlined />
                         </Link>,
-                        roleData !== "patient" && (
-                          <Popconfirm
-                            title="Are you sure to delete this user?"
-                            onConfirm={() =>
-                              alert(`You deleted ${item.name} ${item.lastName}`)
-                            }
-                            // onCancel={cancel}
-                            okText="Yes"
-                            cancelText="No"
-                            key="deleteUser"
-                          >
-                            <Link>
-                              <DeleteOutlined />
-                            </Link>
-                          </Popconfirm>
-                        ),
+                        // roleData !== "patient" && (
+                        //   <Popconfirm
+                        //     title="Are you sure to delete this user?"
+                        //     onConfirm={() =>
+                        //       alert(`You deleted ${item.name} ${item.lastName}`)
+                        //     }
+                        //     // onCancel={cancel}
+                        //     okText="Yes"
+                        //     cancelText="No"
+                        //     key="deleteUser"
+                        //   >
+                        //     <Link>
+                        //       <DeleteOutlined />
+                        //     </Link>
+                        //   </Popconfirm>
+                        // ),
                       ]}
                     >
                       <List.Item.Meta

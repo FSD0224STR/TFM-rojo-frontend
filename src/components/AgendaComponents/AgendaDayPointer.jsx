@@ -44,7 +44,7 @@ export const AgendaDayPointer = ({ hour }) => {
       </Divider>
       {doctorId && (
         <Drawer
-          title="Basic Drawer"
+          title="New Date"
           onClose={onCloseCreateNewDate}
           open={openCreateNewDate}
         >

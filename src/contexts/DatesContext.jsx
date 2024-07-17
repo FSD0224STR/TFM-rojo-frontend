@@ -180,6 +180,7 @@ export const DatesProvider = ({ children }) => {
 
   const searchDoctorDates = async (doctorSelectedId) => {
     ResetMessages();
+    setDayDates([]);
     if (doctorSelectedId !== undefined) {
       const response = await findAllDoctorsDates(doctorId);
       // const response = await getAllDates(doctorSelectedId);

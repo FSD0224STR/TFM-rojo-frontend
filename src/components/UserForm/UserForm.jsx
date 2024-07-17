@@ -40,6 +40,7 @@ export const UserForm = ({ type, update }) => {
     userData,
     searchedUser,
     updateUser,
+    findUsers,
   } = useContext(AuthContext);
 
   const [selectProvinces, setSelectProvinces] = useState([]);
@@ -106,7 +107,10 @@ export const UserForm = ({ type, update }) => {
   const handleFinish = (values) => {
     // console.log(values);
     !update && createNewUser(values);
-    update && !userDataChange && setError("No changes were made");
+    update &&
+      !userDataChange &&
+      setError("No changes were made") &&
+      findUsers();
     update && userDataChange && updateUser(values);
   };
 
@@ -268,62 +272,60 @@ export const UserForm = ({ type, update }) => {
             </Form.Item>
 
             {/* Password */}
-            {type !== "patient" ||
-              (update === true && (
-                <Form.Item
-                  name="password"
-                  label="Password"
-                  rules={[
-                    {
-                      validator: (_, value) =>
-                        value.length >= 6
-                          ? Promise.resolve()
-                          : Promise.reject(
-                              new Error(
-                                "The password must be at least 6 characters"
-                              )
-                            ),
-                    },
-                    {
-                      required: true,
-                      message: "Write the password",
-                    },
-                  ]}
-                  hasFeedback
-                >
-                  <Input.Password size="large" placeholder="Password" />
-                </Form.Item>
-              ))}
+            {type === "notPatient" && (
+              <Form.Item
+                name="password"
+                label="Password"
+                rules={[
+                  {
+                    validator: (_, value) =>
+                      value.length >= 6
+                        ? Promise.resolve()
+                        : Promise.reject(
+                            new Error(
+                              "The password must be at least 6 characters"
+                            )
+                          ),
+                  },
+                  {
+                    required: true,
+                    message: "Write the password",
+                  },
+                ]}
+                hasFeedback
+              >
+                <Input.Password size="large" placeholder="Password" />
+              </Form.Item>
+            )}
 
             {/* Confirm password */}
-            {type !== "patient" ||
-              (update === true && (
-                <Form.Item
-                  name="confirmPassword"
-                  label="Confirm password"
-                  dependencies={["password"]}
-                  labe
-                  hasFeedback
-                  rules={[
-                    {
-                      required: true,
-                      message: "Confirm password is required",
+            {type === "notPatient" && (
+              <Form.Item
+                name="confirmPassword"
+                label="Confirm password"
+                dependencies={["password"]}
+                labe
+                hasFeedback
+                rules={[
+                  {
+                    required: true,
+                    message: "Confirm password is required",
+                  },
+                  ({ getFieldValue }) => ({
+                    validator(_, value) {
+                      if (!value || getFieldValue("password") === value) {
+                        return Promise.resolve();
+                      }
+                      return Promise.reject(
+                        new Error("The password do not match")
+                      );
                     },
-                    ({ getFieldValue }) => ({
-                      validator(_, value) {
-                        if (!value || getFieldValue("password") === value) {
-                          return Promise.resolve();
-                        }
-                        return Promise.reject(
-                          new Error("The password do not match")
-                        );
-                      },
-                    }),
-                  ]}
-                >
-                  <Input.Password size="large" placeholder="Confirm password" />
-                </Form.Item>
-              ))}
+                  }),
+                ]}
+              >
+                <Input.Password size="large" placeholder="Confirm password" />
+              </Form.Item>
+            )}
             {/* Country */}
             {/* <Form.Item
               name="country"
@@ -398,6 +400,7 @@ export const UserForm = ({ type, update }) => {
                       message: "Select a rol",
                     },
                   ]}
+                  hidden={type === "patient" ? true : false}
                 >
                   <Input
                     size="large"
@@ -466,19 +469,16 @@ export const UserForm = ({ type, update }) => {
                 <Image
                   width={100}
                   style={{ borderRadius: "50%" }}
-                  src={searchedUser.fileUrlLink ? searchedUser.fileUrlLink : ""}
+                  src={
+                    searchedUser?.fileUrlLink ? searchedUser?.fileUrlLink : ""
+                  }
                 />
               )}
             </Form.Item>
 
             {/* File url */}
             <Form.Item name="fileUrlLink" hidden>
-              <Input
-                // type="hidden"
-                name="fileUrl"
-                // value={fileUrl}
-                // onChange={(e) => setFileUrl(e.target.value)}
-              />
+              <Input />
             </Form.Item>
             {/* END */}
             <div

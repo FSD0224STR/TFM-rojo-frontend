@@ -11,8 +11,15 @@ dayjs.extend(isBetween);
 
 export const TableResume = ({ searchid, type, fullData, datesRange }) => {
   const [update, setUpdate] = useState(true);
-  const { userData, searchUserInfoTable, GetUsers, data, navigate, setError } =
-    useContext(AuthContext);
+  const {
+    userData,
+    searchUserInfoTable,
+    GetUsers,
+    data,
+    navigate,
+    setError,
+    setLoading,
+  } = useContext(AuthContext);
   const { dates, findAllDoctorsDates } = useContext(DatesContext);
   const { GetBills, searchBillInfo, searchedBill, deleteBill } =
     useContext(BillContext);
@@ -92,7 +99,7 @@ export const TableResume = ({ searchid, type, fullData, datesRange }) => {
       key: "idPatient",
       hidden: false,
       render: (_, record) => {
-        return record?.Patient[0].name + " " + record?.Patient[0].lastName;
+        return record?.Patient[0]?.name + " " + record?.Patient[0]?.lastName;
       },
     },
     {
@@ -100,7 +107,6 @@ export const TableResume = ({ searchid, type, fullData, datesRange }) => {
       dataIndex: "date",
       key: "date",
       render: (text) => dayjs(text).format("YYYY-MM-DD"),
-      hidden: update,
     },
     {
       title: "Description",
@@ -216,17 +222,25 @@ export const TableResume = ({ searchid, type, fullData, datesRange }) => {
       } else {
         billsArray = billsArrayNoRemoved;
       }
-      if (datesRange?.length > 0) {
-        return setBillsById(
-          billsArray.filter((bill) =>
-            dayjs(bill?.bill).isBetween(datesRange[0], datesRange[1])
-          )
-        );
-      }
-      console.log(billsArray);
-      return setBillsById(billsArray);
+
+      // console.log(billsArray);
+      setBillsById(billsArray);
+      return billsArray;
     }
   };
+
+  // const billFilterRange = () => {
+
+  // useEffect(() => {
+  //   console.log(datesRange);
+  //   if (datesRange?.length > 0) {
+  //     return setBillsById(
+  //       billsById.filter((bill) =>
+  //         dayjs(bill?.bill).isBetween(datesRange[0], datesRange[1])
+  //       )
+  //     );
+  //   }
+  // }, [datesRange]);
 
   useEffect(() => {
     if (type == "dates") {
@@ -236,21 +250,23 @@ export const TableResume = ({ searchid, type, fullData, datesRange }) => {
     }
   }, []);
 
-  useEffect(() => {
-    findDates();
+  const findBillsByRange = async () => {
+    setLoading(true);
+    const bills = await findBills();
+    console.log(bills);
     if (datesRange?.length > 0) {
-      // console.log(
-      //   "dates pasado por prop",
-      //   dayjs(datesRange[0]).format("YYYY-MM-DD"),
-      //   dayjs(datesRange[1]).format("YYYY-MM-DD")
-      // );
-      setDatesById(
-        datesById.filter((date) => {
-          dayjs(date?.date).format("YYYY-MM-DD") >=
-            dayjs(datesRange[0]).format("YYYY-MM-DD");
-        })
+      const response = bills?.filter((bill) =>
+        dayjs(bill?.date).isBetween(dayjs(datesRange[0]), dayjs(datesRange[1]))
       );
+      console.log(response);
+      setBillsById(response);
     }
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    // findDates();
+    findBillsByRange();
   }, [datesRange]);
 
   return (

@@ -22,6 +22,7 @@ import { TableTest } from "./Routes/TableTest/TableTest.jsx";
 import { Bill } from "./components/CreateBills/Bill.jsx";
 import { ChatLayout } from "./Routes/Chat/ChatLayout.jsx";
 import { SimpleChat } from "./Routes/SimpleChat/SimpleChat.jsx";
+import { FinantialReport } from "./Routes/FinantialReport/FinantialReport.jsx";
 
 const router = createBrowserRouter([
   {
@@ -68,9 +69,10 @@ const router = createBrowserRouter([
         path: "/user",
         element: <UserDetails />,
       },
+
       {
-        path: "/tabletest",
-        element: <TableTest />,
+        path: "/FinantialReport",
+        element: <FinantialReport />,
       },
       {
         path: "/CreateBills/",

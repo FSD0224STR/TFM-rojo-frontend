@@ -6,22 +6,32 @@ import { socket } from "../components/SimpleChatComponents/Socket";
 export const ChatContext = React.createContext();
 
 export const ChatProvider = ({ children }) => {
-  const { userData, setMessage } = useContext(AuthContext);
+  const { userData, setMessage, isLoggedIn } = useContext(AuthContext);
 
   //Set logging level
   useEffect(() => {
-    // console.log(userData);
+    // alert(userData.name);
     const username = userData?.name;
     // console.log(username);
     if (username) {
       socket.emit("login", { user: username });
     }
 
-    socket.on("toastMessage", (user) => {
-      setMessage(`user ${user.user} has logged in`);
+    socket.on("loginMessage", (user) => {
+      // console.log(userData);
+      // console.log(user.user);
+      userData?.name !== user.user &&
+        setMessage(`user ${user.user} has logged in`);
     });
+
+    socket.on("logoutMessage", (user) => {
+      userData?.name !== user.user &&
+        setMessage(`user ${user.user} has logged out`);
+    });
+
     return () => {
-      socket.off("toastMessage");
+      socket.off("loginMessage");
+      socket.off("logoutMessage");
     };
   }, [userData]);
 

@@ -1,6 +1,8 @@
 import { io } from "https://cdn.socket.io/4.7.5/socket.io.esm.min.js";
-
-var socket = io("http://localhost:3000");
+import { url } from "./url";
+const baseUrl = url;
+console.log(url);
+var socket = io(baseUrl);
 
 //   socket.emit("login", { id: userData?.id, name: userData?.name });
 

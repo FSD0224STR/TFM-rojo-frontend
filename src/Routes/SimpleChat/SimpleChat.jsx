@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useContext } from "react";
 import { socket } from "../../components/SimpleChatComponents/Socket";
-import { ConnectionState } from "../../components/SimpleChatComponents/ConnectionState";
 import { ConnectionManager } from "../../components/SimpleChatComponents/ConnectionManager";
 import { Events } from "../../components/SimpleChatComponents/Events";
 import { MyForm } from "../../components/SimpleChatComponents/MyForm";
 import { AuthContext } from "../../contexts/authContext";
 import { ChatConsole } from "../../components/SimpleChatComponents/ChatConsole";
+import { TypingComponent } from "../../components/SimpleChatComponents/TypingComponent";
 
 export const SimpleChat = () => {
   const [isConnected, setIsConnected] = useState(socket.connected);
@@ -60,8 +60,8 @@ export const SimpleChat = () => {
         justifyContent: "space-between",
       }}
     >
-      {/* <ConnectionState isConnected={isConnected} /> */}
       <ChatConsole />
+      <TypingComponent />
       {/* <Events events={fooEvents} /> */}
       {/* <ConnectionManager /> */}
       <MyForm />

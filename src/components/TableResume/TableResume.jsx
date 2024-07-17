@@ -205,12 +205,14 @@ export const TableResume = ({ searchid, type, fullData, datesRange }) => {
     const billsArrayNoRemoved = response.filter(
       (bill) => bill.status !== "removed"
     );
+
     if (billsArrayNoRemoved.length > 0) {
       var billsArray;
       if (searchid) {
         billsArray = billsArrayNoRemoved.filter(
-          (bill) => bill?.Patient === searchid
+          (bill) => bill?.Patient[0]?._id === searchid
         );
+        console.log("billsArray", billsArray);
       } else {
         billsArray = billsArrayNoRemoved;
       }
@@ -221,6 +223,7 @@ export const TableResume = ({ searchid, type, fullData, datesRange }) => {
           )
         );
       }
+      console.log(billsArray);
       return setBillsById(billsArray);
     }
   };

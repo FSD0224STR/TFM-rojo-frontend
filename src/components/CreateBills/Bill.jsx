@@ -93,11 +93,9 @@ export const Bill = ({ bill }) => {
             <strong>Datos paciente:</strong>
             <p>{patientName} </p>
             <p> {bill?.idPatient} </p>
-            <p>
-              {" "}
-              {bill?.adress}
-              {bill?.tel}
-            </p>
+            <p> {bill?.adress} </p>
+           <p>{bill?.tel} </p>
+          
           </div>
 
           <div>

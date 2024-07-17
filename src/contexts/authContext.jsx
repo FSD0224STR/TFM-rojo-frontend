@@ -50,8 +50,8 @@ export const AuthProvider = ({ children }) => {
         setIsLoggedIn(true);
         ResetMessages();
         localStorage.setItem("access_token", `Bearer ${response}`);
-        await getMyProfile();
         navigate("/userdata");
+        await getMyProfile();
         setLoading(false);
       }
     } else {

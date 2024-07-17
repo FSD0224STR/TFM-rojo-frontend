@@ -95,6 +95,21 @@ export const BillProvider = ({ children }) => {
     return response?.name + " " + response?.lastName;
   };
 
+  const generatePdf = async (bill) => {
+    const patientName = await fillUserData(bill?.Patient);
+    console.log(patientName);
+    const doc = new jsPDF();
+    doc.text(`${dayjs(bill?.date).format("DD-MM-YYYY")}`, 10, 10);
+    doc.text(`Nº : ${bill?.billNumber}`, 10, 20);
+    doc.text(`Fecha: ${dayjs(bill?.date).format("DD-MM-YYYY")}`, 10, 30);
+    doc.text(`Cliente: ${patientName}`, 10, 40);
+    doc.text(`${bill?.totalSum}`, 10, 50);
+
+    // guardar el pdf con un nombre especifico
+
+    doc.save(`bill_${bill?.billNumber}.pdf`);
+  };
+
   const BillContextValue = {
     createNewBill,
     GetBills,

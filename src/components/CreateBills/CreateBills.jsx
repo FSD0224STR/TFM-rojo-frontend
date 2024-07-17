@@ -22,32 +22,17 @@ export const CreateBills = ({ update }) => {
     updateBill,
     searchedBill,
     fillUserData,
+    generatePdf,
   } = useContext(BillContext);
 
   const [bill, setBill] = useState({});
   const [billDataChange, setbillDataChange] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [openPrintPdf, setOpenPrintPdf] = useState(false);
 
   const [form] = Form.useForm();
 
   const { userPatients, findPatients } = useContext(DatesContext);
-
-  const generatePdf = () => {
-    // console.log(bill);
-    alert("hola");
-    // const patientName = await fillUserData(bill?.Patient);
-    // console.log(patientName);
-    const doc = new jsPDF();
-    // doc.text(`${dayjs(bill?.date).format("DD-MM-YYYY")}`, 10, 10);
-    // doc.text(`Nº : ${bill?.billNumber}`, 10, 20);
-    // doc.text(`Fecha: ${dayjs(bill?.date).format("DD-MM-YYYY")}`, 10, 30);
-    // doc.text(`Cliente: ${patientName}`, 10, 40);
-    doc.text("`${bill?.totalSum}`", 10, 50);
-
-    // guardar el pdf con un nombre especifico
-
-    doc.save("`bill_${bill?.billNumber}.pdf`");
-  };
 
   const findAllBills = async () => {
     const response = await GetBills();
@@ -121,38 +106,46 @@ export const CreateBills = ({ update }) => {
 
   const saveBillFn = async () => {
     // console.log(bill);
-    !update && createNewBill(bill) && confirmModal();
+    !update && createNewBill(bill) && setOpenPrintPdf(true);
     update && !billDataChange && setError("No changes were made");
-    update && billDataChange && updateBill(bill) && confirmModal();
-    generatePdf();
+    update && billDataChange && updateBill(bill) && setOpenPrintPdf(true);
+    // generatePdf();
   };
 
   const handleCancel = () => {
     setIsModalOpen(false);
   };
 
-  const handleOk = () => {
+  const handlePrintPdf = () => {
+    bill !== undefined && generatePdf(bill);
+    setOpenPrintPdf(false);
     navigate("/FinancialReport");
   };
 
   const handleCancelComfirmPdf = () => {
+    setOpenPrintPdf(false);
     navigate("/FinancialReport");
   };
 
-  const confirmModal = () => {
-    Modal.confirm({
-      title: "Print in pdf",
-      content: "Do you want to print this bill in pdf?",
-      footer: (_, { OkBtn, CancelBtn }) => (
-        <>
-          <CancelBtn onClick={() => handleCancelComfirmPdf()} />
-          <Button onClick={() => handleOk()} type="primary">
-            Print in PDF
-          </Button>
-        </>
-      ),
-    });
-  };
+  // const confirmModal = () => {
+  //   Modal.confirm({
+  //     title: "Print in pdf",
+  //     content: "Do you want to print this bill in pdf?",
+  //     footer: (_, { OkBtn, CancelBtn }) => (
+  //       <>
+  //         <CancelBtn onClick={() => handleCancelComfirmPdf()} />
+  //         <Button
+  //           onClick={() => {
+  //             handlePrintPdf();
+  //           }}
+  //           type="primary"
+  //         >
+  //           Print in PDF
+  //         </Button>
+  //       </>
+  //     ),
+  //   });
+  // };
 
   useEffect(() => {
     if (update === true) {
@@ -396,7 +389,17 @@ export const CreateBills = ({ update }) => {
       >
         <Bill bill={bill} />
       </Modal>
-      <Button onClick={() => generatePdf}>X</Button>
+      <Modal
+        title="Modal"
+        open={openPrintPdf}
+        onOk={() => handlePrintPdf()}
+        onCancel={() => handleCancelComfirmPdf()}
+        okText="Print PDF"
+        cancelText="Cancel"
+      >
+        <p>Do you want to print this bill in pdf?</p>
+      </Modal>
+      {/* <Button onClick={() => generatePdf(bill)}>X</Button> */}
     </>
   );
 };

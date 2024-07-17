@@ -1,6 +1,6 @@
 import React, { useContext, useEffect } from "react";
 import { useState } from "react";
-import { Button, Form, Input } from "antd";
+import { Button, Form, Input, Modal } from "antd";
 import { Bill } from "./Bill";
 import { Cascader, InputNumber, Select, Space, Card } from "antd";
 import { DatePicker } from "antd";
@@ -8,10 +8,12 @@ import { CloseOutlined } from "@ant-design/icons";
 import { BillContext } from "../../contexts/BillsContext";
 import { DatesContext } from "../../contexts/DatesContext";
 import dayjs from "dayjs";
+import { AuthContext } from "../../contexts/authContext";
 
 const { TextArea } = Input;
 
 export const CreateBills = ({ update }) => {
+  const { setError}= useContext(AuthContext);
   const { createNewBill, GetBills, billData, updateBill, searchedBill } =
     useContext(BillContext);
 
@@ -80,11 +82,9 @@ export const CreateBills = ({ update }) => {
     (option?.label ?? "").toLowerCase().includes(input.toLowerCase());
 
   const onFinish = (value) => {
-    console.log(value);
-    setBill(value);
-    !update && createNewBill(value);
+    !update && createNewBill(value) && setBill(value) && showModal
     update && !billDataChange && setError("No changes were made");
-    update && billDataChange && updateBill(value);
+    update && billDataChange && updateBill(value) && setBill(value) && showModal
   };
 
   useEffect(() => {
@@ -100,6 +100,17 @@ export const CreateBills = ({ update }) => {
       });
     }
   }, []);
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
+  const handleOk = () => {
+    setIsModalOpen(false);
+  };
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
 
   const ivaOptions = [
     {
@@ -127,25 +138,44 @@ export const CreateBills = ({ update }) => {
           form={form}
           name="newBill"
           onFinish={onFinish}
+          onFinishFailed={()=> setError("You must fill the form")}
           onValuesChange={handleTotal}
           style={{
             maxWidth: 600,
           }}
           autoComplete="off"
         >
-          <Form.Item name="id" label="id">
+          <Form.Item name="id" label="id" hidden>
             <Input readOnly />
           </Form.Item>
 
-          <Form.Item name="date" label="Date">
+          <Form.Item name="date" label="Date" 
+           rules={[
+              {
+                required: true,
+                message: "Please input!",
+              },
+            ]}>
             <DatePicker />
           </Form.Item>
 
-          <Form.Item name="billNumber" label="Bill Number">
+          <Form.Item name="billNumber" label="Bill Number"
+           rules={[
+            {
+              required: true,
+              message: "Please input!",
+            },
+          ]}>
             <Input readOnly />
           </Form.Item>
 
-          <Form.Item label="Patient" name="Patient">
+          <Form.Item label="Patient" name="Patient"
+           rules={[
+            {
+              required: true,
+              message: "Please input!",
+            },
+          ]}>
             <Select
               size="large"
               showSearch
@@ -166,11 +196,23 @@ export const CreateBills = ({ update }) => {
             <Input readOnly />
           </Form.Item>
 
-          <Form.Item name="description" label="Description">
+          <Form.Item name="description" label="Description"
+           rules={[
+            {
+              required: true,
+              message: "Please input!",
+            },
+          ]}>
             <TextArea rows={4} />
           </Form.Item>
 
-          <Form.List name="treatments">
+          <Form.List name="treatments"
+           rules={[
+            {
+              required: true,
+              message: "Please input!",
+            },
+          ]}>
             {(fields, { add, remove }) => (
               <div
                 style={{
@@ -268,12 +310,15 @@ export const CreateBills = ({ update }) => {
             />
           </Form.Item>
 
-          <Button type="primary" htmlType="submit">
+          <Button type="primary" htmlType="submit"  >
             {!update ? "Save" : "Update"}
           </Button>
         </Form>
       </div>
-      <Bill bill={bill} />
+      <Modal title= " Bill" width={550} centered open={isModalOpen} onOk={handleOk} onCancel={handleCancel} >
+        <Bill bill={bill} />
+      </Modal>
+     
     </>
   );
 };

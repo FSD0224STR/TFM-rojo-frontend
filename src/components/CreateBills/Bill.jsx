@@ -74,7 +74,7 @@ export const Bill = ({ bill }) => {
     <>
       <Space direction="vertical" size={30}>
         <Card
-          title="Factura"
+          title= {`Bill Nº${bill?.billNumber}`}
           style={{
             width: 500,
           }}

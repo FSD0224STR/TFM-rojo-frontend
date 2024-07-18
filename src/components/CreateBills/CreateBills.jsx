@@ -186,10 +186,17 @@ export const CreateBills = ({ update }) => {
   return (
     <>
       <div style={{ height: "100%" }}>
+        <h1>Create new bill</h1>
         <Form
           form={form}
           name="newBill"
           onFinish={onFinish}
+          labelCol={{ span: 20 }}
+          wrapperCol={{ span: 25 }}
+          labelWrap={{ wrap: "wrap" }}
+          labelAlign="left"
+          layout="vertical"
+          scrollToFirstError
           onFinishFailed={() => setError("You must fill the form")}
           onValuesChange={handleTotal}
           style={{
@@ -211,7 +218,7 @@ export const CreateBills = ({ update }) => {
               },
             ]}
           >
-            <DatePicker />
+            <DatePicker size="large" />
           </Form.Item>
 
           <Form.Item
@@ -224,7 +231,7 @@ export const CreateBills = ({ update }) => {
               },
             ]}
           >
-            <Input readOnly />
+            <Input readOnly size="large" />
           </Form.Item>
 
           <Form.Item
@@ -236,6 +243,7 @@ export const CreateBills = ({ update }) => {
                 message: "Please input!",
               },
             ]}
+            size="large"
           >
             <Select
               size="large"
@@ -246,11 +254,11 @@ export const CreateBills = ({ update }) => {
           </Form.Item>
 
           <Form.Item name="dni" label="DNI">
-            <Input readOnly />
+            <Input readOnly size="large" />
           </Form.Item>
 
           <Form.Item name="adress" label="Adress">
-            <Input readOnly />
+            <Input readOnly size="large" />
           </Form.Item>
 
           <Form.Item name="tel" label="Tel">
@@ -267,7 +275,7 @@ export const CreateBills = ({ update }) => {
               },
             ]}
           >
-            <TextArea rows={4} />
+            <TextArea rows={4} size="large" autoSize="none" />
           </Form.Item>
 
           <Form.List
@@ -354,14 +362,19 @@ export const CreateBills = ({ update }) => {
                   </Space>
                 ))}
 
-                <Button type="dashed" onClick={() => add()} block>
+                <Button
+                  type="dashed"
+                  style={{ marginTop: "1em" }}
+                  onClick={() => add()}
+                  block
+                >
                   + Add Treatment
                 </Button>
               </div>
             )}
           </Form.List>
 
-          <Form.Item name="totalSum">
+          <Form.Item name="totalSum" style={{ marginTop: "1em" }}>
             <Input readOnly placeholder="Total Sum" />
           </Form.Item>
 

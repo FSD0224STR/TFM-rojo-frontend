@@ -43,7 +43,7 @@ export const CreateBills = ({ update }) => {
 
   useEffect(() => {
     findPatients();
-    findAllBills();
+    !update && findAllBills();
   }, []);
 
   const patientIdField = Form.useWatch("Patient", form);
@@ -154,7 +154,7 @@ export const CreateBills = ({ update }) => {
         id: searchedBill?._id,
         date: dayjs(searchedBill?.date),
         billNumber: searchedBill?.billNumber,
-        Patient: searchedBill?.Patient[0]._id,
+        Patient: searchedBill?.Patient?._id,
         description: searchedBill?.description,
         treatments: searchedBill?.treatments,
         totalSum: searchedBill?.totalSum,

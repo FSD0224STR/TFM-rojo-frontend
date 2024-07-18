@@ -4,3 +4,8 @@
   /* color: #47a3bc73; */
   /* text-decoration: none; */
 }
+
+.ant-select-selector,
+.ant-select-arrow {
+  display: none !important;
+}

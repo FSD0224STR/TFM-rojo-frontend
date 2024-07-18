@@ -4,6 +4,7 @@ import { Button, Popconfirm, Space, Table, Tag } from "antd";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { DatesContext } from "../../contexts/DatesContext";
 import { BillContext } from "../../contexts/BillsContext";
+
 import dayjs from "dayjs";
 import isBetween from "dayjs/plugin/isBetween";
 import { Link } from "react-router-dom";
@@ -99,7 +100,7 @@ export const TableResume = ({ searchid, type, fullData, datesRange }) => {
       key: "idPatient",
       hidden: false,
       render: (_, record) => {
-        return record?.Patient[0]?.name + " " + record?.Patient[0]?.lastName;
+        return record?.Patient?.name + " " + record?.Patient?.lastName;
       },
     },
     {
@@ -190,18 +191,20 @@ export const TableResume = ({ searchid, type, fullData, datesRange }) => {
     if (response.length > 0) {
       var datesArray;
       if (searchid) {
-        datesArray = response.filter((date) => date.idPatient === searchid);
+        datesArray = response.filter(
+          (date) => date?.idPatient?._id === searchid
+        );
       } else {
         datesArray = response;
       }
-      if (datesRange?.length > 0) {
-        return setDatesById(
-          datesArray.filter((date) =>
-            dayjs(date?.date).isBetween(datesRange[0], datesRange[1])
-          )
-        );
-      }
-      return setDatesById(datesArray);
+      // if (datesRange?.length > 0) {
+      //   return setDatesById(
+      //     datesArray.filter((date) =>
+      //       dayjs(date?.date).isBetween(datesRange[0], datesRange[1])
+      //     )
+      //   );
+      // }
+      // return setDatesById(datesArray);
     }
   };
 
@@ -214,17 +217,21 @@ export const TableResume = ({ searchid, type, fullData, datesRange }) => {
 
     if (billsArrayNoRemoved.length > 0) {
       var billsArray;
+      // console.log(searchid);
+
       if (searchid) {
-        billsArray = billsArrayNoRemoved.filter(
-          (bill) => bill?.Patient[0]?._id === searchid
-        );
+        billsArray = billsArrayNoRemoved.filter((bill) => {
+          if (bill?.Patient?._id === searchid) {
+            return bill;
+          }
+        });
         // console.log("billsArray", billsArray);
+        setBillsById(billsArray);
       } else {
-        billsArray = billsArrayNoRemoved;
+        // console.log(billsArrayNoRemoved);
+        setBillsById(billsArrayNoRemoved);
       }
 
-      // console.log(billsArray);
-      setBillsById(billsArray);
       return billsArray;
     }
   };
@@ -252,7 +259,8 @@ export const TableResume = ({ searchid, type, fullData, datesRange }) => {
 
   const findBillsByRange = async () => {
     setLoading(true);
-    const bills = await findBills();
+    const bills = await GetBills();
+    // alert("Bills");
     console.log(bills);
     if (datesRange?.length > 0) {
       const response = bills?.filter((bill) =>
@@ -277,7 +285,10 @@ export const TableResume = ({ searchid, type, fullData, datesRange }) => {
           dataSource={type === "dates" ? datesById : billsById}
           pagination={{
             pageSize: 5,
+            responsive: false,
           }}
+          responsive={false}
+          size="large"
         />
       </div>
     </>

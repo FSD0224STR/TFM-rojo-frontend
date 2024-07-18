@@ -42,6 +42,7 @@ export const DatesProvider = ({ children }) => {
 
   const createNewDate = async (newDate) => {
     ResetMessages();
+    setLoading(true);
     const response = await createDate(newDate);
     // console.log(response);
     if (response === 200) {
@@ -50,16 +51,18 @@ export const DatesProvider = ({ children }) => {
       setLoading(true);
       findAllDoctorsDates(doctorId);
       setTimeout(() => {
-        reloadAgenda();
+        reloadAgenda(doctorId);
       }, 1000);
       // navigate("/agenda");
     } else {
       setError("Error creating new date");
     }
+    setLoading(false);
   };
 
   const findAllDoctorsDates = async (idDoctor) => {
     const response = await getAllDates(idDoctor);
+    // console.log(response);
     const datesInfo = await response
       ?.map((date) => {
         // console.log(date);
@@ -180,38 +183,38 @@ export const DatesProvider = ({ children }) => {
 
   const searchDoctorDates = async (doctorSelectedId) => {
     ResetMessages();
-    setDayDates([]);
     if (doctorSelectedId !== undefined) {
       const response = await findAllDoctorsDates(doctorId);
+      console.log(doctorSelectedId);
       // const response = await getAllDates(doctorSelectedId);
       const responseDayDates = await response?.filter((date) => {
-        if (date?.idDoctor === doctorSelectedId) {
+        if (date?.idDoctor?._id === doctorSelectedId) {
           return date;
         }
       });
-      // console.log(responseDayDates);
+      console.log("responseDayDates", responseDayDates);
       setDoctorId(doctorSelectedId);
       setPatientsDates(responseDayDates);
       return responseDayDates;
     }
   };
 
-  const searchDayDates = async (date, idDoctor, datesInfo) => {
-    // console.log(datesInfo);
-    setDay(date);
-    // setDayDates([]);
-    const day = date !== "" ? date : dayjs().format("YYYY-MM-DD");
-
-    const response = await datesInfo?.filter((userDate) => {
+  const searchDayDates = async (date, idDoctor, dates) => {
+    const daySelect = date !== undefined ? date : dayjs().format("YYYY-MM-DD");
+    setDayDates([]);
+    // console.log("datesinfo", dates[0].idDoctor._id);
+    const response = await dates?.filter((date) => {
+      // console.log("doctor id date", date?.idDoctor?._id);
       if (
-        userDate.idDoctor === idDoctor &&
-        dayjs(userDate.date).format("YYYY-MM-DD") === day
-      ) {
-        return userDate;
-      }
+        date?.idDoctor?._id === idDoctor &&
+        dayjs(date.date).format("YYYY-MM-DD") === daySelect
+      )
+        return date;
     });
-
-    return setDayDates(response), searchEnabledHours(response, date);
+    // console.log("datesinfoResponse", response);
+    dayDates !== undefined &&
+      (setDayDates(response), searchEnabledHours(response, date));
+    return response;
   };
 
   const findPatients = async () => {
@@ -257,27 +260,32 @@ export const DatesProvider = ({ children }) => {
   };
 
   const deleteDate = async (id) => {
+    setLoading(true);
     ResetMessages();
     const response = await deleteDateApi(id);
     if (response === 200) {
       setSuccess("Successfully deleted");
       setLoading(true);
       setTimeout(() => {
-        reloadAgenda();
+        reloadAgenda(doctorId);
       }, 1000);
     } else {
       setError("Error deleting date");
     }
+    setLoading(false);
   };
 
-  const reloadAgenda = async () => {
-    setLoading(true);
-    setDayDates([]);
+  const reloadAgenda = async (id) => {
+    // setLoading(true);
+    // setDayDates([]);
     // setPatientsDates([]);
     // console.log("doctor id" + doctorId);
-    // console.log(day);
-    const datesInfo = await searchDoctorDates(doctorId);
-    await searchDayDates(day, doctorId, datesInfo);
+    // console.log("reloadAgenda");
+    // console.log(id);
+    const datesInfo = await searchDoctorDates(id);
+    // console.log(datesInfo);
+    console.log("day", dayDates);
+    await searchDayDates(day, id, datesInfo);
     setLoading(false);
   };
 
@@ -305,6 +313,7 @@ export const DatesProvider = ({ children }) => {
   };
 
   const changeStatusDate = async (idDate, newStatus) => {
+    setLoading(true);
     const color = await stateColorSelected(newStatus);
     // console.log(idDate, newStatus);
     const response = await changeStatusDateApi(idDate, newStatus, color);
@@ -312,7 +321,8 @@ export const DatesProvider = ({ children }) => {
       setSuccess("Successfully changed");
       setLoading(true);
       setTimeout(() => {
-        reloadAgenda();
+        reloadAgenda(doctorId);
+        // setLoading(false);
       }, 1000);
     } else {
       setError("Error changing status");

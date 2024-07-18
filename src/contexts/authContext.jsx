@@ -47,10 +47,10 @@ export const AuthProvider = ({ children }) => {
 
         setLoading(false);
       } else {
+        navigate("/userdata");
         setIsLoggedIn(true);
         ResetMessages();
         localStorage.setItem("access_token", `Bearer ${response}`);
-        navigate("/userdata");
         await getMyProfile();
         setLoading(false);
       }
@@ -70,7 +70,7 @@ export const AuthProvider = ({ children }) => {
         setUserData(response.data);
         setDataRole(response.data.role);
         await GetUsers(userRole, response.data.email);
-        if (isLoggedIn === false) setIsLoggedIn(true);
+        if (isLoggedIn === false) setIsLoggedIn(true), navigate("/userdata");
       }
     } else {
       navigate("/");

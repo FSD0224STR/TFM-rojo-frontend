@@ -10,6 +10,7 @@ import { DatesContext } from "../../contexts/DatesContext";
 import dayjs from "dayjs";
 import { AuthContext } from "../../contexts/authContext";
 import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 
 const { TextArea } = Input;
 

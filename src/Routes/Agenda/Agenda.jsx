@@ -1,6 +1,6 @@
 import React, { useContext, useEffect } from "react";
 import { AgendaComponent } from "../../components/AgendaComponents/AgendaComponent";
-import { Button, Cascader, Form, Select } from "antd";
+import { Button, Cascader, Form, Select, TreeSelect } from "antd";
 import { DatesContext } from "../../contexts/DatesContext";
 import { AuthContext } from "../../contexts/authContext";
 import { AgendaTimeLine } from "../../components/AgendaComponents/AgendaTimeLine";
@@ -82,7 +82,7 @@ export const Agenda = () => {
               onSearch={async (e) => {
                 doctorFunc(e);
               }}
-              // disabled={userData?.role == "doctor" ? true : false}
+              // disabled={false}
               placeholder="Select a doctor"
               style={{ width: "20vw" }}
             />

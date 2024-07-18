@@ -33,6 +33,7 @@ export const AuthProvider = ({ children }) => {
   const ResetMessages = () => {
     setError("");
     setSuccess("");
+    // setMessage("");
   };
 
   const login = async (user) => {

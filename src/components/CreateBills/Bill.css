@@ -1,16 +1,14 @@
 .empresa {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
 }
 
 .description {
-    border: black solid 1px;
-    border-radius: 5px;
-    padding: 5px;
-    width: auto;
-    height: 100px;
-    margin-top: 0px;
-
-
+  border: black solid 1px;
+  border-radius: 5px;
+  padding: 5px;
+  width: auto;
+  height: 100px;
+  margin-top: 0px;
 }

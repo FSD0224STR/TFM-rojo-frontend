@@ -114,25 +114,27 @@ function UserDetails() {
           </Descriptions>
         </div>
 
-        <div
-          style={{
-            flex: 1,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            marginLeft: "20px",
-          }}
-        >
-          <div style={{ width: "100%", marginBottom: "20px" }}>
-            <h2 style={{ textAlign: "center" }}>Bills</h2>
-            <TableResume searchid={searchedUser?._id} type="bill" />
-          </div>
+        {searchedUser?.roles === "patient" && (
+          <div
+            style={{
+              flex: 1,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              marginLeft: "20px",
+            }}
+          >
+            <div style={{ width: "100%", marginBottom: "20px" }}>
+              <h2 style={{ textAlign: "center" }}>Bills</h2>
+              <TableResume searchid={searchedUser?._id} type="bill" />
+            </div>
 
-          <div style={{ width: "100%" }}>
-            <h2 style={{ textAlign: "center" }}>Appointments</h2>
-            <TableResume searchid={searchedUser?._id} type="dates" />
+            <div style={{ width: "100%" }}>
+              <h2 style={{ textAlign: "center" }}>Appointments</h2>
+              <TableResume searchid={searchedUser?._id} type="dates" />
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </>
   );

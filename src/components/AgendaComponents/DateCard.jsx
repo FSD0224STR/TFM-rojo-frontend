@@ -39,8 +39,8 @@ export const DateCard = ({ date, i }) => {
   };
 
   const findInfo = async () => {
-    const user = await searchUserInfo(date?.idPatient);
-    setUserInfo(user);
+    // const user = await searchUserInfo(date?.idPatient);
+    // setUserInfo(user);
   };
 
   useEffect(() => {
@@ -79,10 +79,12 @@ export const DateCard = ({ date, i }) => {
                 height: "98%",
                 border: "1px solid #b3aca4",
               }}
-              title={<HeaderDateCard date={date} userInfo={userInfo} i={i} />}
+              title={
+                <HeaderDateCard date={date} userInfo={date?.idPatient} i={i} />
+              }
               headerBg="red"
             >
-              {date.reason}
+              {date?.reason}
             </Card>
           </ConfigProvider>
         </div>
@@ -104,7 +106,7 @@ export const DateCard = ({ date, i }) => {
         >
           <HeaderDateCard
             date={date}
-            userInfo={userInfo}
+            userInfo={date?.idPatient}
             // showModal={showModal}
             i={i}
           />

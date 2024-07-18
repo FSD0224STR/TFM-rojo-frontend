@@ -42,7 +42,7 @@ export const ActionsDateCard = ({ date }) => {
           </Link>
         </Popover>
         <Popover content="Create new bill" trigger="hover" placement="bottom">
-          <Link>
+          <Link to={"/CreateBills"}>
             <FileDoneOutlined />
           </Link>
         </Popover>

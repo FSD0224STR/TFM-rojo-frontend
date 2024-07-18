@@ -7,7 +7,7 @@ import { AgendaTimeLine } from "../../components/AgendaComponents/AgendaTimeLine
 import { AgendaDayPointer } from "../../components/AgendaComponents/AgendaDayPointer";
 
 export const Agenda = () => {
-  const { userData } = useContext(AuthContext);
+  const { userData, setLoading } = useContext(AuthContext);
   const {
     searchDoctors,
     doctors,
@@ -24,14 +24,19 @@ export const Agenda = () => {
     patientsDates,
     dayDates,
     doctorId,
-    setLoading,
   } = useContext(DatesContext);
+
+  const findAllDates = async (value) => {
+    setLoading(true);
+    console.log(value);
+    // await searchDoctorDates(value.doctor);
+    await reloadAgenda(value);
+    setLoading(false);
+  };
 
   useEffect(() => {
     if (userData?.role === "doctor") {
-      const doctorLoaded = `Dr. ${userData.name}`;
-      setDoctor(doctorLoaded);
-      searchDoctorDates(doctorLoaded);
+      findAllDates();
     }
     // findAllDoctorsDates();
 
@@ -41,14 +46,14 @@ export const Agenda = () => {
     // console.log(patientsDates);
   }, [dates]);
 
-  const doctorFunc = async (id) => {
-    // setLoading(true);
-    const doctorInfo = await searchDoctorInfo(id);
+  const doctorFunc = async (value) => {
+    setLoading(true);
+    // console.log(value.doctor);
+    const doctorInfo = await searchDoctorInfo(value.doctor);
     const doctorName = `Dr. ${doctorInfo.name}`;
-    setDoctorId(id);
-    await reloadAgenda();
+    setDoctorId(value.doctor);
     setDoctor(doctorName);
-    await searchDoctorDates(id);
+    findAllDates(value.doctor);
 
     // setLoading(false);
   };
@@ -63,9 +68,12 @@ export const Agenda = () => {
       }}
     >
       <AgendaComponent />
-      {userData?.role === "admin" && (
-        <Form style={{ marginTop: "1em" }}>
-          <Form.Item name="doctors" label="Doctors">
+      {userData?.role !== "patient" && (
+        <Form
+          style={{ marginTop: "1em" }}
+          onValuesChange={(e) => doctorFunc(e)}
+        >
+          <Form.Item name="doctor" label="Doctors">
             <Select
               name="doctors"
               options={doctors}
@@ -74,17 +82,11 @@ export const Agenda = () => {
               onSearch={async (e) => {
                 doctorFunc(e);
               }}
-              onChange={async (e) => {
-                doctorFunc(e);
-              }}
-              disabled={userData?.role == "doctor" ? true : false}
+              // disabled={userData?.role == "doctor" ? true : false}
               placeholder="Select a doctor"
               style={{ width: "20vw" }}
             />
           </Form.Item>
-          {/* <Form.Item>
-            <Button onClick={() => reloadAgenda()}>Reload</Button>
-          </Form.Item> */}
         </Form>
       )}
 

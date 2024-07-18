@@ -19,7 +19,8 @@ export const AgendaTimeLine = () => {
     }}
   />;
 
-  const { dayDates, doctor, enableDayHours, dates } = useContext(DatesContext);
+  const { dayDates, doctor, enableDayHours, dates, reloadAgenda } =
+    useContext(DatesContext);
 
   return (
     <>

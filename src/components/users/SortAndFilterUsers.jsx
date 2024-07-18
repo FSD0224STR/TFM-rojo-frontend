@@ -6,12 +6,12 @@ export const onSearch = (value, data) => {
         return user;
       }
     });
-    var newDataEmail = data.filter((user) => {
-      var email = user.email.split("@")[0].toLowerCase();
-      if (email.includes(value)) {
-        return user;
-      }
-    });
+    // var newDataEmail = data.filter((user) => {
+    //   var email = user.email.split("@")[0].toLowerCase();
+    //   if (email.includes(value)) {
+    //     return user;
+    //   }
+    // });
 
     var newDataDni = data.filter((user) => {
       if (user.dni !== undefined) {
@@ -21,7 +21,7 @@ export const onSearch = (value, data) => {
         }
       }
     });
-    const concatArray = newDataDni.concat(newDataEmail, newDataName);
+    const concatArray = newDataDni.concat(newDataName);
     return concatArray;
   } else {
     return data;

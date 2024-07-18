@@ -21,7 +21,7 @@ import { CreateNewDate } from "../CreateNewDate/CreateNewDate.jsx";
 const { Search } = Input;
 
 export const Users = () => {
-  const { data, roleData, searchUserInfo, GetUsers, getMyProfile } =
+  const { data, roleData, searchUserInfo, GetUsers, getMyProfile, setLoading } =
     useContext(AuthContext);
   const {
     setDoctor,
@@ -51,10 +51,14 @@ export const Users = () => {
 
   const navigate = useNavigate();
 
+  // const findAllUsers = await () => {
+
   const findUsersComponent = async () => {
-    await getMyProfile();
+    // await getMyProfile();
+    const response = await GetUsers();
     // console.log(response);
-    data !== undefined && setListData(data);
+    response !== undefined && setListData(response);
+    setLoading(false);
   };
 
   useEffect(() => {

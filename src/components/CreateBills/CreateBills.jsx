@@ -38,7 +38,9 @@ export const CreateBills = ({ update }) => {
   const findAllBills = async () => {
     const response = await GetBills();
     // console.log (response)
-    form.setFieldsValue({ billNumber: response?.length + 1 });
+    form.setFieldsValue({
+      billNumber: response?.length ? response.length + 1 : 1,
+    });
   };
 
   useEffect(() => {

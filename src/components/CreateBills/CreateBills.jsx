@@ -42,7 +42,7 @@ export const CreateBills = ({ update }) => {
 
   useEffect(() => {
     findPatients();
-    findAllBills();
+    !update && findAllBills();
   }, []);
 
   const patientIdField = Form.useWatch("Patient", form);

@@ -47,10 +47,10 @@ export const AuthProvider = ({ children }) => {
 
         setLoading(false);
       } else {
+        navigate("/userdata");
         setIsLoggedIn(true);
         ResetMessages();
         localStorage.setItem("access_token", `Bearer ${response}`);
-        navigate("/userdata");
         await getMyProfile();
         setLoading(false);
       }

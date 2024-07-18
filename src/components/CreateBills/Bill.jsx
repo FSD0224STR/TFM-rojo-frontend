@@ -62,24 +62,30 @@ export const Bill = ({ bill }) => {
       {patientName !== undefined && (
         <Space direction="vertical" size={30}>
           <Card
-            title={`Bill Nº${bill?.billNumber}`}
+            
             style={{
               width: 500,
             }}
           >
             <div>
-              <p>Nº {bill?.billNumber} </p>
+              <img
+                style={{ width: 70,  }}
+                src="MolarisLogo-removebg-preview.png"
+                alt="Logo"
+              />
+              <div>
+              <strong>BILL Nº {bill?.billNumber} </strong> <br></br>
+              <strong>{dayjs(bill?.date).format("DD-MM-YYYY")}</strong>
+              </div>
             </div>
-
-            <div>{dayjs(bill?.date).format("DD-MM-YYYY")}</div>
             <div className="empresa">
               <Empresa data={dataEmpresa} />
             </div>
 
-            <div>
-              <strong>Datos paciente:</strong>
+            <div style={{ lineHeight: 0.5 }}>
+             <strong>Patient Data:</strong>
               <p>{patientName} </p>
-              <p> {bill?.idPatient} </p>
+              <p> {bill?.dni} </p>
               <p> {bill?.adress} </p>
               <p>{bill?.tel} </p>
             </div>

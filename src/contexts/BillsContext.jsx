@@ -8,7 +8,8 @@ import {
 import { AuthContext } from "../contexts/authContext";
 import jsPDF from "jspdf";
 import dayjs from "dayjs";
-
+import 'jspdf-autotable'
+import autoTable from "jspdf-autotable";
 export const BillContext = React.createContext();
 
 export const BillProvider = ({ children }) => {
@@ -96,14 +97,79 @@ export const BillProvider = ({ children }) => {
   };
 
   const generatePdf = async (bill) => {
+    const dataEmpresa = {
+      name: "Clínica Odontodalia",
+      cif: "B09485939",
+      adress: "Calle San Marcos, 13. Madrid 28012",
+      telefono: "633654782",
+    };
+    // encabezado
+
     const patientName = await fillUserData(bill?.Patient);
     console.log(patientName);
     const doc = new jsPDF();
-    doc.text(`${dayjs(bill?.date).format("DD-MM-YYYY")}`, 10, 10);
-    doc.text(`Nº : ${bill?.billNumber}`, 10, 20);
+    
+    
+    doc.text(`BILL Nº : ${bill?.billNumber}`, 10, 20);
     doc.text(`Fecha: ${dayjs(bill?.date).format("DD-MM-YYYY")}`, 10, 30);
-    doc.text(`Cliente: ${patientName}`, 10, 40);
-    doc.text(`${bill?.totalSum}`, 10, 50);
+    doc.text(`${dataEmpresa.name}`,100,40);
+    doc.text(`${dataEmpresa.cif}`,100,50);
+    doc.text(`${dataEmpresa.adress}`, 100,60);
+    doc.text(`${dataEmpresa.telefono}`,100,70);
+    doc.text(`${patientName}`, 10, 80);
+    doc.text(`${bill?.adress }`, 10,90);
+    doc.text(`${bill?.dni }`, 10,100);
+    doc.text(`${bill?.tel}`, 10,110);
+    doc.text( `Description:
+
+    ${bill?.description}`,10,140);
+  
+
+    const columns = ['QTY', 'TREATMENT', 'PRICE', 'IVA', 'TOTAL'];
+const startX = 30; // Coordenada X inicial
+const startY = 170; // Coordenada Y inicial
+const lineHeight = 10; // Altura de la línea entre filas
+let currentY = startY;
+
+// Función para agregar una fila de texto
+const addRow = (rowData, startY) => {
+  let currentX = startX;
+  const columnWidths = [20, 60, 30, 20, 30]; // Anchos para cada columna
+
+  rowData.forEach((text, index) => {
+    doc.text(text, currentX, startY);
+    currentX += columnWidths[index];
+  });
+};
+ 
+// Agregar las columnas al PDF
+addRow(columns, currentY);
+currentY += lineHeight; // Mover a la siguiente línea
+
+// Verificar si bill y bill.treatments existen
+if (bill && bill.treatments) {
+  bill.treatments.forEach((dato) => {
+    const data = [`${dato.qty}`, `${dato.treatment}`, `${dato.price}`, `${dato.iva}`, `${dato.total}`];
+    addRow(data, currentY);
+    currentY += lineHeight; // Mover a la siguiente línea
+  });
+}
+   
+doc.text(`TOTAL: ${bill?.totalSum}`, 140, 210);
+ //  //crear tabla
+ //  const columns= [`QTY`,`TREATMENT`,`PRICE`,`IVA`, `TOTAL`];
+ ///   const data= [`${bill?.treatments}`];
+ //  bill?.treatments?.map((dato)=>{
+ //   const data= [`${dato.qty}`, `${dato.treatment}`,`${dato.price}`,`${dato.iva}`,`${dato.total}`]
+ //   doc.text(`${dato.iva}`, 10, 130)
+  //  })
+
+ //   doc.autoTable({
+ //     startY:30,
+ //     head: [columns],
+ //     body: data
+ //   }
+ //   )
 
     // guardar el pdf con un nombre especifico
 

@@ -43,6 +43,7 @@ export const ChatProvider = ({ children }) => {
   useEffect(() => {
     socket.on("newMessage", (message) => {
       // setMessages("message");
+      setMessages((prevMessages) => [...prevMessages, message]);
     });
     return () => {
       socket.off("newMessage");

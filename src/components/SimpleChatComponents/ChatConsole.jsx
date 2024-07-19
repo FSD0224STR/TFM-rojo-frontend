@@ -6,7 +6,9 @@ import { AuthContext } from "../../contexts/authContext";
 export const ChatConsole = () => {
   const { userData } = useContext(AuthContext);
   const { messages } = useContext(ChatContext);
-  //   useEffect(() => {}, [messages]);
+  useEffect(() => {
+    console.log(messages);
+  }, [messages]);
 
   return (
     <div className="ChatContainer">

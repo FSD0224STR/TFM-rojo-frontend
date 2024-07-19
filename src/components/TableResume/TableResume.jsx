@@ -188,14 +188,21 @@ export const TableResume = ({ searchid, type, fullData, datesRange }) => {
 
   const findDates = async () => {
     const response = await findAllDoctorsDates();
+    console.log(response);
     if (response.length > 0) {
+      console.log("searchid", searchid);
       var datesArray;
       if (searchid) {
-        datesArray = response.filter(
-          (date) => date?.idPatient?._id === searchid
-        );
+        datesArray = response.filter((date) => {
+          console.log(date?.idPatient?._id);
+          if (date?.idPatient?._id === searchid) {
+            return date;
+          }
+        });
+        console.log(datesArray);
+        return setDatesById(datesArray);
       } else {
-        datesArray = response;
+        return setDatesById(response);
       }
       // if (datesRange?.length > 0) {
       //   return setDatesById(
@@ -204,7 +211,6 @@ export const TableResume = ({ searchid, type, fullData, datesRange }) => {
       //     )
       //   );
       // }
-      // return setDatesById(datesArray);
     }
   };
 
@@ -261,7 +267,7 @@ export const TableResume = ({ searchid, type, fullData, datesRange }) => {
     setLoading(true);
     const bills = await GetBills();
     // alert("Bills");
-    console.log(bills);
+    // console.log(bills);
     if (datesRange?.length > 0) {
       const response = bills?.filter((bill) =>
         dayjs(bill?.date).isBetween(dayjs(datesRange[0]), dayjs(datesRange[1]))

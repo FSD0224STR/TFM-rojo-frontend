@@ -10,7 +10,8 @@ export const ChatProvider = ({ children }) => {
 
   //Set logging level
   useEffect(() => {
-    console.log(userData?.name);
+    setMessage("");
+    // console.log(userData?.name);
     const username = userData?.name;
     // console.log(username);
     if (username) {
@@ -25,12 +26,12 @@ export const ChatProvider = ({ children }) => {
     });
 
     socket.on("logoutMessage", (user) => {
-      userData?.name !== user.user &&
+      isLoggedIn &&
+        userData?.name !== user.user &&
         setMessage(`user ${user.user} has logged out`);
     });
 
     return () => {
-      setMessage("");
       socket.off("loginMessage");
       socket.off("logoutMessage");
     };

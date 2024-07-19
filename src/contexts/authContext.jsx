@@ -113,7 +113,8 @@ export const AuthProvider = ({ children }) => {
           // return response;
         } else if (role === "doctor") {
           const users = await response.filter((user) => {
-            if (user.roles === "patient") return user;
+            if (user.roles === "patient" || user.roles === "doctor")
+              return user;
           });
           setData(users);
           setLoading(false);

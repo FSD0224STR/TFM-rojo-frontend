@@ -49,8 +49,12 @@ export const AgendaComponent = () => {
     }
   };
 
+  const findDoctors = async () => {
+    await searchDoctors();
+  };
+
   useEffect(() => {
-    searchDoctors();
+    findDoctors();
     // searchDoctorDates();
     // cellRender;
   }, [dates]);

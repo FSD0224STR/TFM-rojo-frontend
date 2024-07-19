@@ -21,8 +21,15 @@ import { CreateNewDate } from "../CreateNewDate/CreateNewDate.jsx";
 const { Search } = Input;
 
 export const Users = () => {
-  const { data, roleData, searchUserInfo, GetUsers, getMyProfile, setLoading } =
-    useContext(AuthContext);
+  const {
+    data,
+    roleData,
+    searchUserInfo,
+    GetUsers,
+    getMyProfile,
+    setLoading,
+    userData,
+  } = useContext(AuthContext);
   const {
     setDoctor,
     setDateSelected,
@@ -31,7 +38,7 @@ export const Users = () => {
     setUserSelected,
   } = useContext(DatesContext);
 
-  const [listData, setListData] = useState(data);
+  const [listData, setListData] = useState();
   const [orderItem, setOrderItem] = useState("dni");
   const [orderSort, setOrderSort] = useState("ascending");
   const [openCreateNewDate, setOpenCreateNewDate] = useState(false);
@@ -55,9 +62,12 @@ export const Users = () => {
 
   const findUsersComponent = async () => {
     // await getMyProfile();
-    const response = await GetUsers();
-    // console.log(response);
-    response !== undefined && setListData(response);
+    console.log("data", data);
+    if (userData.role === "doctor") {
+      setListData(data.filter((user) => user.roles === "patient"));
+    } else {
+      setListData(data);
+    }
     setLoading(false);
   };
 

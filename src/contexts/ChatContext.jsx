@@ -30,6 +30,7 @@ export const ChatProvider = ({ children }) => {
     });
 
     return () => {
+      setMessage("");
       socket.off("loginMessage");
       socket.off("logoutMessage");
     };
@@ -40,7 +41,7 @@ export const ChatProvider = ({ children }) => {
 
   useEffect(() => {
     socket.on("newMessage", (message) => {
-      setMessages((prevMessages) => [...prevMessages, message]);
+      // setMessages("message");
     });
     return () => {
       socket.off("newMessage");

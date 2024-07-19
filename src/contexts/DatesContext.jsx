@@ -147,20 +147,28 @@ export const DatesProvider = ({ children }) => {
 
   const searchDoctors = async () => {
     if (userData?.role === "admin") {
+      // console.log(data);
       const response = await data.filter((user) => user.roles === "doctor");
       setDoctors(
-        response.map((user) => {
+        response?.map((user) => {
           return {
-            label: `Dr. ${user?.name} ${user.lastName}`,
+            label: `Dr. ${user?.name} ${user?.lastName}`,
             value: `${user._id}`,
           };
         })
       );
     } else if (userData?.role === "doctor") {
-      setDoctors({
-        label: `Dr. ${userData?.name}`,
-        value: `${userData.id}`,
-      });
+      // alert("doctor");
+      // console.log(data);
+      const response = await data?.filter((user) => user._id === userData.id);
+      setDoctors(
+        response?.map((user) => {
+          return {
+            label: `Dr. ${user?.name} ${user?.lastName}`,
+            value: `${user._id}`,
+          };
+        })
+      );
     }
   };
 

@@ -28,23 +28,23 @@ export const Agenda = () => {
 
   const findAllDates = async (value) => {
     setLoading(true);
-    console.log(value);
+    // console.log(value);
     // await searchDoctorDates(value.doctor);
     await reloadAgenda(value);
     setLoading(false);
   };
 
-  useEffect(() => {
-    if (userData?.role === "doctor") {
-      findAllDates();
-    }
-    // findAllDoctorsDates();
+  // useEffect(() => {
+  //   if (userData?.role === "doctor") {
+  //     findAllDates();
+  //   }
+  //   // findAllDoctorsDates();
 
-    // console.log("dates agenda ");
-    // console.log(dates);
-    // console.log("patients dates");
-    // console.log(patientsDates);
-  }, [dates]);
+  //   // console.log("dates agenda ");
+  //   // console.log(dates);
+  //   // console.log("patients dates");
+  //   // console.log(patientsDates);
+  // }, [dates]);
 
   const doctorFunc = async (value) => {
     setLoading(true);
@@ -57,6 +57,10 @@ export const Agenda = () => {
 
     // setLoading(false);
   };
+
+  useEffect(() => {
+    console.log("doctors", doctors);
+  }, []);
 
   return (
     <div

@@ -75,8 +75,8 @@ export const Navbar = () => {
           label: <Link to={"/"}>Login</Link>,
           id: "loggedin",
         },
-        isLoggedIn &&
-          roleData === "admin" && {
+        !isLoggedIn &&
+          roleData !== "admin" && {
             key: "CreateUser",
             icon: <UserAddOutlined />,
             label: <Link to={"/createuser"}>Create user</Link>,

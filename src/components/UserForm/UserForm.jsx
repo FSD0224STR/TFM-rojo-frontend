@@ -160,7 +160,7 @@ export const UserForm = ({ type, update }) => {
 
   return (
     <>
-      {isLoggedIn && (
+      {!isLoggedIn && (
         <div style={{ height: "100%" }}>
           <Form
             form={userDataForm}
@@ -369,7 +369,8 @@ export const UserForm = ({ type, update }) => {
               ></Select>
             </Form.Item> */}
             {/* Role if admin */}
-            {roleData === "admin" && type !== "patient" && (
+            {
+              // roleData === "admin" && type !== "patient" &&
               <Form.Item
                 name="roles"
                 label="Rol"
@@ -386,7 +387,7 @@ export const UserForm = ({ type, update }) => {
                   placeholder="Rol"
                 ></Select>
               </Form.Item>
-            )}
+            }
 
             {/* Role if not admin */}
             {roleData !== "admin" ||
